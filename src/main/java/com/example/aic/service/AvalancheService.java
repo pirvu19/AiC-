@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.aic.service.NotificationPublisher;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,27 +67,91 @@ public class AvalancheService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AvalancheDTO> search(String title, Integer massifId, Integer typeId, Integer causeId,
-            Integer orientationId, java.time.LocalDate startDate, java.time.LocalDate endDate,
+    public Page<AvalancheDTO> search(
+            String title, List<Integer> massifIds, List<Integer> regionIds, List<Integer> typeIds, List<Integer> causeIds,
+            List<Integer> orientationIds, java.time.LocalDate startDate, java.time.LocalDate endDate,
             Integer minAltitude, Integer maxAltitude, Integer minSlope,
-            String size, Boolean hasVictims, String status, Pageable pageable) {
+            Integer minTrackLength, Integer maxTrackLength,
+            Integer minCrownDepth, Integer maxCrownDepth,
+            Integer minCrownWidth, Integer maxCrownWidth,
+            Integer minVerticalDrop, Integer maxVerticalDrop,
+            String relativeSize, 
+            Boolean hasCaught, Boolean hasPartially, Boolean hasFully, 
+            Boolean hasInjured, Boolean hasKilled, Boolean hasMaterial,
+            String status, Pageable pageable) {
         return avalancheRepository.findAll(com.example.aic.repository.specification.AvalancheSpecification.filterBy(
-                title, massifId, typeId, causeId, orientationId, startDate, endDate,
-                minAltitude, maxAltitude, minSlope, size, hasVictims, status), pageable)
+                title, massifIds, regionIds, typeIds, causeIds, orientationIds, startDate, endDate,
+                minAltitude, maxAltitude, minSlope,
+                minTrackLength, maxTrackLength,
+                minCrownDepth, maxCrownDepth,
+                minCrownWidth, maxCrownWidth,
+                minVerticalDrop, maxVerticalDrop,
+                relativeSize, 
+                hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
+                status), pageable)
                 .map(this::convertToDto);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AvalancheDTO> searchAll(
+            String title, List<Integer> massifIds, List<Integer> regionIds, List<Integer> typeIds, List<Integer> causeIds,
+            List<Integer> orientationIds, java.time.LocalDate startDate, java.time.LocalDate endDate,
+            Integer minAltitude, Integer maxAltitude, Integer minSlope,
+            Integer minTrackLength, Integer maxTrackLength,
+            Integer minCrownDepth, Integer maxCrownDepth,
+            Integer minCrownWidth, Integer maxCrownWidth,
+            Integer minVerticalDrop, Integer maxVerticalDrop,
+            String relativeSize,
+            Boolean hasCaught, Boolean hasPartially, Boolean hasFully,
+            Boolean hasInjured, Boolean hasKilled, Boolean hasMaterial,
+            String status) {
+        return avalancheRepository.findAll(com.example.aic.repository.specification.AvalancheSpecification.filterBy(
+                title, massifIds, regionIds, typeIds, causeIds, orientationIds, startDate, endDate,
+                minAltitude, maxAltitude, minSlope,
+                minTrackLength, maxTrackLength,
+                minCrownDepth, maxCrownDepth,
+                minCrownWidth, maxCrownWidth,
+                minVerticalDrop, maxVerticalDrop,
+                relativeSize,
+                hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
+                status)).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public AvalancheDTO createAvalanche(AvalancheDTO dto, User user) {
         Avalanche avalanche = modelMapper.map(dto, Avalanche.class);
-        avalanche.setContributor(user);
-
-        // Validation logic
-        String roleName = user.getRole().getName().toUpperCase();
-        if (roleName.contains("ADMIN") || roleName.contains("EXPERT")) {
-            avalanche.setStatus(Avalanche.Status.VALIDATED);
+        if (user != null) {
+            avalanche.setVisitor(user);
+            avalanche.setGuestContactInfo(null);
+            
+            // Validation logic for status
+            String roleName = (user.getRole() != null) ? user.getRole().getName().toUpperCase() : "";
+            if (roleName.contains("ADMIN") || roleName.contains("EXPERT")) {
+                avalanche.setStatus(Avalanche.Status.VALIDATED);
+            } else {
+                avalanche.setStatus(Avalanche.Status.PENDING);
+            }
         } else {
+            // Guest users always have PENDING status and MUST provide contact info
             avalanche.setStatus(Avalanche.Status.PENDING);
+            if (dto.getGuestContactInfo() == null || 
+                dto.getGuestContactInfo().getFirstName() == null || dto.getGuestContactInfo().getFirstName().trim().isEmpty() ||
+                dto.getGuestContactInfo().getLastName() == null || dto.getGuestContactInfo().getLastName().trim().isEmpty() ||
+                dto.getGuestContactInfo().getEmail() == null || dto.getGuestContactInfo().getEmail().trim().isEmpty() ||
+                dto.getGuestContactInfo().getPhone() == null || dto.getGuestContactInfo().getPhone().trim().isEmpty()) {
+                throw new RuntimeException("Datele de contact (nume, prenume, email, telefon) sunt obligatorii pentru vizitatori.");
+            }
+            
+            GuestContactInfo guestInfo = new GuestContactInfo();
+            Person person = new Person();
+            person.setFirstName(dto.getGuestContactInfo().getFirstName());
+            person.setLastName(dto.getGuestContactInfo().getLastName());
+            person.setPhone(dto.getGuestContactInfo().getPhone());
+            guestInfo.setPerson(person);
+            guestInfo.setEmail(dto.getGuestContactInfo().getEmail());
+            avalanche.setGuestContactInfo(guestInfo);
         }
 
         // Set relations
@@ -128,12 +191,13 @@ public class AvalancheService {
         }
 
         // 3. Send notifications ONLY after successful creation and image validation
+        String authorName = (user != null) ? user.getUsername() : "Vizitator Anonim";
         if ("VALIDATED".equalsIgnoreCase(created.getStatus())) {
             notificationPublisher.sendAvalancheValidatedEvent(
-                    "O nouă avalanșă a fost publicată direct de utilizatorul: " + user.getUsername());
+                    "O nouă avalanșă a fost publicată direct de utilizatorul: " + authorName);
         } else {
             notificationPublisher.sendAvalancheCreatedEvent(
-                    "O nouă avalanșă a fost adăugată de " + user.getUsername() + " și necesită validare!");
+                    "O nouă avalanșă a fost adăugată de " + authorName + " și necesită validare!");
         }
 
         // 4. Return the fully populated DTO
@@ -155,16 +219,18 @@ public class AvalancheService {
 
     private AvalancheDTO convertToDto(Avalanche avalanche) {
         AvalancheDTO dto = modelMapper.map(avalanche, AvalancheDTO.class);
-        if (avalanche.getMassif() != null)
+        if (avalanche.getMassif() != null) {
             dto.setMassifId(avalanche.getMassif().getId());
+            dto.setMassifName(avalanche.getMassif().getName());
+        }
         if (avalanche.getType() != null)
             dto.setTypeId(avalanche.getType().getId());
         if (avalanche.getCause() != null)
             dto.setCauseId(avalanche.getCause().getId());
         if (avalanche.getOrientation() != null)
             dto.setOrientationId(avalanche.getOrientation().getId());
-        if (avalanche.getContributor() != null)
-            dto.setContributorId(avalanche.getContributor().getId());
+        if (avalanche.getVisitor() != null)
+            dto.setVisitorId(avalanche.getVisitor().getId());
 
         if (avalanche.getImages() != null) {
             int imageCount = avalanche.getImages().size();
@@ -193,7 +259,7 @@ public class AvalancheService {
 
         List<AvalancheImage> savedImages = new java.util.ArrayList<>();
         for (MultipartFile file : files) {
-            String fileName = fileStorageService.storeFile(file);
+            String fileName = fileStorageService.storeFile(file, "avalanches");
             String fileUrl = "/uploads/avalanches/" + fileName;
 
             AvalancheImage image = new AvalancheImage();
@@ -224,15 +290,47 @@ public class AvalancheService {
 
         if (dto.getMassifId() != null) {
             avalanche.setMassif(massifRepository.findById(dto.getMassifId()).orElse(null));
+        } else {
+            avalanche.setMassif(null);
         }
+        
         if (dto.getTypeId() != null) {
             avalanche.setType(typeRepository.findById(dto.getTypeId()).orElse(null));
+        } else {
+            avalanche.setType(null);
         }
+        
         if (dto.getCauseId() != null) {
             avalanche.setCause(causeRepository.findById(dto.getCauseId()).orElse(null));
+        } else {
+            avalanche.setCause(null);
         }
+        
         if (dto.getOrientationId() != null) {
             avalanche.setOrientation(orientationRepository.findById(dto.getOrientationId()).orElse(null));
+        } else {
+            avalanche.setOrientation(null);
+        }
+
+        // Handle nested updates
+        if (dto.getTechnicalDetails() != null) {
+            TechnicalDetails td = avalanche.getTechnicalDetails();
+            if (td == null) {
+                td = new TechnicalDetails();
+                td.setAvalanche(avalanche);
+            }
+            modelMapper.map(dto.getTechnicalDetails(), td);
+            avalanche.setTechnicalDetails(td);
+        }
+
+        if (dto.getDamagesAndVictims() != null) {
+            DamagesAndVictims dv = avalanche.getDamagesAndVictims();
+            if (dv == null) {
+                dv = new DamagesAndVictims();
+                dv.setAvalanche(avalanche);
+            }
+            modelMapper.map(dto.getDamagesAndVictims(), dv);
+            avalanche.setDamagesAndVictims(dv);
         }
 
         Avalanche saved = avalancheRepository.save(avalanche);

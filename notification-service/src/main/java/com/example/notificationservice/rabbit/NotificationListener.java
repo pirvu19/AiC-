@@ -16,6 +16,9 @@ public class NotificationListener {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private com.example.notificationservice.service.EmailService emailService;
+
     @RabbitListener(queues = RabbitMQConfig.ADMIN_QUEUE)
     public void receiveAdminNotification(String message) {
         logger.info("Received Admin Notification: {}", message);
@@ -25,6 +28,53 @@ public class NotificationListener {
     @RabbitListener(queues = RabbitMQConfig.USER_QUEUE)
     public void receiveUserNotification(String message) {
         logger.info("Received User Notification: {}", message);
+        
+        // Check if it's a registration approval (special format)
+        if (message.contains("USER:") && message.contains("|PWD:")) {
+            try {
+                String[] parts = message.split("\\|");
+                // Format: TARGET:username|MSG:USER:email|PWD:password
+                String email = null;
+                String password = null;
+                String username = null;
+                
+                for (String part : parts) {
+                    if (part.startsWith("MSG:USER:")) email = part.substring(9);
+                    if (part.startsWith("PWD:")) password = part.substring(4);
+                    if (part.startsWith("UNAME:")) username = part.substring(6);
+                }
+                
+                if (email != null && password != null) {
+                    logger.info("Processing registration approval for email: {}", email);
+                    emailService.sendCredentialsEmail(email, username != null ? username : email, password);
+                }
+            } catch (Exception e) {
+                logger.error("Failed to parse registration message or send email: {}", e.getMessage());
+            }
+        }
+        
+        // Check if it's a password reset (special format)
+        if (message.contains("USER:") && message.contains("|TOKEN:")) {
+            try {
+                String[] parts = message.split("\\|");
+                // Format: TARGET:username|MSG:USER:email|TOKEN:uuid
+                String email = null;
+                String token = null;
+                
+                for (String part : parts) {
+                    if (part.startsWith("MSG:USER:")) email = part.substring(9);
+                    if (part.startsWith("TOKEN:")) token = part.substring(6);
+                }
+                
+                if (email != null && token != null) {
+                    logger.info("Processing password reset for email: {}", email);
+                    emailService.sendPasswordResetEmail(email, token);
+                }
+            } catch (Exception e) {
+                logger.error("Failed to parse password reset message or send email: {}", e.getMessage());
+            }
+        }
+        
         messagingTemplate.convertAndSend("/topic/users", message);
     }
 }

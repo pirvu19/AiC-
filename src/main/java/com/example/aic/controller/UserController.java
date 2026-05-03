@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'ADMIN_UTILIZATORI', 'DATA_ENGINEER')")
 public class UserController {
 
     @Autowired

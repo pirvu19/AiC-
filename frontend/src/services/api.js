@@ -5,6 +5,18 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    paramsSerializer: (params) => {
+        // Use URLSearchParams for clean serialization without brackets
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                value.forEach(v => searchParams.append(key, v));
+            } else if (value !== undefined && value !== null) {
+                searchParams.append(key, value);
+            }
+        });
+        return searchParams.toString();
+    }
 });
 
 api.interceptors.request.use(

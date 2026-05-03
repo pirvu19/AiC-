@@ -61,11 +61,23 @@ export const connectWebSocket = (user, addNotification, onConnected) => {
         client.subscribe('/topic/users', (message) => {
             if (message.body) {
                 let displayMessage = message.body;
+
+                // Verificăm dacă mesajul are un destinatar specific
                 if (message.body.startsWith('TARGET:')) {
                     const parts = message.body.split('|MSG:');
-                    displayMessage = parts.length === 2 ? parts[1] : message.body;
+                    if (parts.length === 2) {
+                        const target = parts[0].replace('TARGET:', '');
+                        const actualMsg = parts[1];
+
+                        // Dacă e pentru un singur om și nu suntem noi, ignorăm
+                        if (target !== 'ALL' && target !== user.username) {
+                            return;
+                        }
+                        displayMessage = actualMsg;
+                    }
                 }
-                toast.success(`🏔️ Notificare publică: ${displayMessage}`, { toastId: displayMessage });
+
+                toast.success(`🏔️ Notificare: ${displayMessage}`, { toastId: displayMessage });
                 if (addNotification) addNotification(displayMessage, 'public');
             }
         });

@@ -68,6 +68,24 @@ const avalancheService = {
     deleteImage: async (id, imageUrl) => {
         const response = await api.delete(`/avalanches/${id}/images`, { params: { imageUrl } });
         return response.data;
+    },
+
+    exportData: async (params, format) => {
+        const response = await api.get('/avalanches/export', { 
+            params: { ...params, format },
+            responseType: 'blob'
+        });
+        return response.data;
+    },
+
+    syncOne: async (id) => {
+        const response = await api.post(`/admin/sync/avalanches/${id}`);
+        return response.data;
+    },
+
+    syncAll: async () => {
+        const response = await api.post('/admin/sync/avalanches');
+        return response.data;
     }
 };
 

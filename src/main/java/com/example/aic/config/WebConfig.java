@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${file.upload-dir:uploads/avalanches}")
+    @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
     @Override
@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
         Path uploadPath = Paths.get(uploadDir);
         String uploadAbsolutePath = uploadPath.toFile().getAbsolutePath();
 
-        registry.addResourceHandler("/uploads/avalanches/**")
+        registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadAbsolutePath + "/");
     }
 }

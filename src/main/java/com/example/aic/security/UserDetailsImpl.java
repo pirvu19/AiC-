@@ -23,18 +23,29 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private boolean mustChangePassword;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
+        String roleName = (user.getRole() != null) ? user.getRole().getName() : "USER";
+        if (roleName == null) roleName = "USER";
+        
         List<GrantedAuthority> authorities = List
-                .of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName().toUpperCase()));
+                .of(new SimpleGrantedAuthority("ROLE_" + roleName.toUpperCase()));
 
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                Boolean.TRUE.equals(user.getMustChangePassword()),
                 authorities);
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
@@ -65,5 +76,10 @@ public class UserDetailsImpl implements UserDetails {
             return false;
         UserDetailsImpl user = (UserDetailsImpl) o;
         return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -23,7 +23,7 @@ public class FileStorageService {
     @org.springframework.beans.factory.annotation.Autowired
     private VisionServiceClient visionServiceClient;
 
-    public FileStorageService(@Value("${file.upload-dir:uploads/avalanches}") String uploadDir) {
+    public FileStorageService(@Value("${file.upload-dir:uploads}") String uploadDir) {
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
 
         try {
@@ -34,6 +34,10 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file) {
+        return storeFile(file, "");
+    }
+
+    public String storeFile(MultipartFile file, String subFolder) {
         String originalFileName = StringUtils
                 .cleanPath(file.getOriginalFilename() != null ? file.getOriginalFilename() : "");
         String fileExtension = "";
@@ -54,7 +58,13 @@ public class FileStorageService {
 
             String fileName = UUID.randomUUID().toString() + fileExtension;
 
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path targetFolder = this.fileStorageLocation;
+            if (subFolder != null && !subFolder.isEmpty()) {
+                targetFolder = this.fileStorageLocation.resolve(subFolder);
+                Files.createDirectories(targetFolder);
+            }
+
+            Path targetLocation = targetFolder.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;

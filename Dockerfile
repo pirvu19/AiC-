@@ -10,7 +10,8 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Install Python and dependencies
-RUN apt-get update && \
+RUN --mount=type=cache,target=/root/.cache/pip \
+    apt-get update && \
     apt-get install -y python3 python3-pip python3-venv && \
     python3 -m venv /opt/venv && \
     /opt/venv/bin/pip install requests pdfplumber && \

@@ -29,8 +29,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            String headerAuth = request.getHeader("Authorization");
+            logger.debug("Raw Authorization header: {}", headerAuth);
+            
             String jwt = parseJwt(request);
-            if (jwt != null) {
+            if (jwt != null && !jwt.equals("null")) {
                 logger.info("JWT found in request header: {}", jwt);
                 if (jwtUtils.validateJwtToken(jwt)) {
                     String username = jwtUtils.getUserNameFromJwtToken(jwt);

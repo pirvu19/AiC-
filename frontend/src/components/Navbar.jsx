@@ -2,13 +2,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
-import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2 } from 'lucide-react';
+import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers } from 'lucide-react';
 
 const Navbar = () => {
-    const { user, logout, isAdmin, isExpert } = useAuth();
+    const { user, logout, isAdmin, isExpert, isUserAdmin, isReviewer, isDataEngineer } = useAuth();
     const { notifications, unreadCount, markAsRead, markAllAsRead, clearAll } = useNotifications();
     const [showNotifications, setShowNotifications] = useState(false);
     const navigate = useNavigate();
+    const isRestrictedAdmin = isUserAdmin && !isAdmin;
 
     const handleLogout = () => {
         logout();
@@ -25,42 +26,63 @@ const Navbar = () => {
 
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-6">
-                        <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">Acasă</Link>
-
-                        <Link to="/search" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                            <Search size={18} />
-                            <span>Căutare</span>
-                        </Link>
-
-                        <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                            <Cloud size={18} />
-                            <span>Risc Avalanșe (PDF)</span>
-                        </a>
-
-                        <Link to="/meteo" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                            <Cloud size={18} />
-                            <span>Prognoză Montană</span>
-                        </Link>
-
-                        {user && (
-                            <Link to="/add-avalanche" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                <PlusCircle size={18} />
-                                <span>Eveniment Nou</span>
-                            </Link>
+                        {!isRestrictedAdmin && (
+                            <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">Acasă</Link>
                         )}
 
-                        {isExpert && (
+                        {!isRestrictedAdmin && (
+                            <>
+
+                                <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                    <Cloud size={18} />
+                                    <span>Risc Avalanșe (PDF)</span>
+                                </a>
+
+                                <Link to="/meteo" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                    <Cloud size={18} />
+                                    <span>Prognoză Montană</span>
+                                </Link>
+
+                                {!isReviewer && !isDataEngineer && (
+                                    <Link to="/add" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                        <PlusCircle size={18} />
+                                        <span>Eveniment Nou</span>
+                                    </Link>
+                                )}
+                            </>
+                        )}
+
+                        {(isExpert || isReviewer) && (
                             <Link to="/validation" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                 <ShieldCheck size={18} />
                                 <span>Validare</span>
                             </Link>
                         )}
 
-                        {isAdmin && (
-                            <Link to="/admin/users" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                <Users size={18} />
-                                <span>Utilizatori</span>
+                        {user && (
+                            <Link to="/search" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                <Search size={18} />
+                                <span>Căutare</span>
                             </Link>
+                        )}
+
+                        {(isUserAdmin || isDataEngineer) && (
+                            <>
+                                <Link to="/admin/users" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                    <Users size={18} />
+                                    <span>Utilizatori</span>
+                                </Link>
+                                <Link to="/admin/requests" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                    <UserCheck size={18} />
+                                    <span>Cereri Conturi</span>
+                                </Link>
+                                {(isAdmin || isDataEngineer) && (
+                                    <Link to="/admin/metadata" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                        <Layers size={18} />
+                                        <span>Metadate</span>
+                                    </Link>
+                                )}
+                            </>
                         )}
                     </div>
 
@@ -155,7 +177,7 @@ const Navbar = () => {
                             </>
                         ) : (
                             <div className="flex items-center gap-4">
-                                <Link to="/login" className="text-sm font-medium hover:text-primary">Intră în cont</Link>
+                                <Link to="/login" className="btn-primary bg-white/10 hover:bg-white/20 text-white" style={{ padding: '0.6rem 1.2rem' }}>Intră în cont</Link>
                                 <Link to="/register" className="btn-primary" style={{ padding: '0.6rem 1.2rem' }}>Cont nou</Link>
                             </div>
                         )}

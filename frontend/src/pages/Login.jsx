@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogIn, Key, User as UserIcon, AlertCircle } from 'lucide-react';
+import { LogIn, Key, Mail, AlertCircle } from 'lucide-react';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ const Login = () => {
         setError('');
         setLoading(true);
         try {
-            await login(username, password);
+            await login(email, password);
             navigate('/');
         } catch (err) {
             setError('Date de autentificare incorecte. Vă rugăm să încercați din nou.');
@@ -47,21 +47,22 @@ const Login = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-text-muted flex items-center gap-2">
-                            <UserIcon size={16} /> Utilizator
+                            <Mail size={16} /> Email
                         </label>
                         <input
-                            type="text"
+                            type="email"
                             className="w-full"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
-                            placeholder="admin sau expert"
+                            placeholder="adresa@email.ro"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-text-muted flex items-center gap-2">
-                            <Key size={16} /> Parolă
+                        <label className="text-sm font-medium text-text-muted flex items-center justify-between gap-2">
+                            <span className="flex items-center gap-2"><Key size={16} /> Parolă</span>
+                            <Link to="/forgot-password" size="sm" className="text-xs text-primary hover:underline">Ai uitat parola?</Link>
                         </label>
                         <input
                             type="password"

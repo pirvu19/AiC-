@@ -15,8 +15,8 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = async (username, password) => {
-        const response = await api.post('/auth/signin', { username, password });
+    const login = async (email, password) => {
+        const response = await api.post('/auth/signin', { email, password });
         const data = response.data;
         if (data.accessToken || data.token) {
             localStorage.setItem('user', JSON.stringify(data));
@@ -41,9 +41,13 @@ export const AuthProvider = ({ children }) => {
 
     const isAdmin = user?.roles?.some(role => role === 'ROLE_ADMIN' || role === 'ADMIN');
     const isExpert = user?.roles?.some(role => role === 'ROLE_EXPERT' || role === 'EXPERT') || isAdmin;
+    const isUserAdmin = user?.roles?.some(role => role === 'ROLE_ADMIN_UTILIZATORI' || role === 'ADMIN_UTILIZATORI') || isAdmin;
+    const isReviewer = user?.roles?.some(role => role === 'ROLE_REVIEWER' || role === 'REVIEWER') || isAdmin;
+    const isDataEngineer = user?.roles?.some(role => role === 'ROLE_DATA_ENGINEER' || role === 'DATA_ENGINEER') || isAdmin;
+    const mustChangePassword = user?.mustChangePassword;
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, register, isAdmin, isExpert, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, register, isAdmin, isExpert, isUserAdmin, isReviewer, isDataEngineer, mustChangePassword, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );

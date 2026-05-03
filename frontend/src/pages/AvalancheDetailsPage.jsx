@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import avalancheService from '../services/avalancheService';
 import metadataService from '../services/metadataService';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, MapPin, Activity, ChevronLeft, Info, Users, Shield, Ruler, Maximize, Thermometer, Edit, Trash2 } from 'lucide-react';
+import { Calendar, MapPin, Activity, ChevronLeft, Info, Users, Shield, Ruler, Maximize, Thermometer, Edit, Trash2, ShieldCheck, RefreshCw } from 'lucide-react';
 
 const AvalancheDetailsPage = () => {
     const { id } = useParams();
@@ -17,8 +17,19 @@ const AvalancheDetailsPage = () => {
         orientations: []
     });
 
-    const { isAdmin, isExpert } = useAuth();
-    const canEditOrDelete = isAdmin || isExpert;
+    const { isAdmin, isExpert, isReviewer, isDataEngineer } = useAuth();
+    const canEdit = isAdmin || isExpert || isReviewer;
+    const canDelete = isAdmin || isDataEngineer;
+
+    const handleValidate = async () => {
+        try {
+            await avalancheService.validate(id);
+            const data = await avalancheService.getById(id);
+            setAvalanche(data);
+        } catch (err) {
+            alert('Eroare la validare: ' + (err.response?.data?.message || err.message));
+        }
+    };
 
     const handleDelete = async () => {
         if (window.confirm('Sunteți sigur că doriți să ștergeți această avalanșă? Datele vor fi pierdute definitiv!')) {
@@ -28,6 +39,36 @@ const AvalancheDetailsPage = () => {
             } catch (err) {
                 alert('Eroare la ștergerea avalanșei: ' + (err.response?.data?.message || err.message));
             }
+        }
+    };
+
+    const handleSync = async () => {
+        try {
+            if (!avalanche.link) {
+                const newLink = window.prompt("Această avalanșă nu are un link sursă atașat. Introdu link-ul de pe avalanseincarpati.ro pentru a o putea sincroniza:");
+                if (!newLink) return;
+                
+                // Update the avalanche with the new link first
+                await avalancheService.update(id, { ...avalanche, link: newLink });
+                // Refresh local state so the sync process has it
+                avalanche.link = newLink; 
+            }
+
+            setLoading(true);
+            const report = await avalancheService.syncOne(id);
+            if (report.updated > 0) {
+                alert('Avalanșa a fost sincronizată și actualizată cu succes!');
+                const data = await avalancheService.getById(id);
+                setAvalanche(data);
+            } else if (report.errors && report.errors.length > 0) {
+                alert('Eroare la sincronizare: ' + report.errors.join(', '));
+            } else {
+                alert('Avalanșa a fost verificată, dar nu au fost găsite date noi de actualizat pe site-ul sursă.');
+            }
+        } catch (err) {
+            alert('Eroare la sincronizare: ' + (err.response?.data?.message || err.message));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -69,8 +110,9 @@ const AvalancheDetailsPage = () => {
 
     const massifName = metadata.massifs.find(m => m.id === avalanche.massifId)?.name || 'Masiv necunoscut';
     const typeName = metadata.types.find(t => t.id === avalanche.typeId)?.name || 'Nespecificat';
-    const causeName = metadata.causes.find(c => c.id === avalanche.causeId)?.name || 'Nespecificat';
+    const causeName = metadata.causes.find(c => c.id === avalanche.causeId)?.description || 'Nespecificat';
     const orientationName = metadata.orientations.find(o => o.id === avalanche.orientationId)?.direction || 'N/A';
+
 
     return (
         <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
@@ -88,8 +130,17 @@ const AvalancheDetailsPage = () => {
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row items-center gap-3">
-                    {canEditOrDelete && (
-                        <div className="flex gap-2">
+                    <div className="flex gap-2">
+                        {canDelete && (
+                            <button 
+                                onClick={handleSync} 
+                                className="btn-primary bg-indigo-500 hover:bg-indigo-600 flex items-center gap-2 py-2 px-4 shadow-lg mr-2"
+                                title="Sincronizează cu sursa"
+                            >
+                                <RefreshCw size={20} /> <span className="hidden sm:inline">Sync</span>
+                            </button>
+                        )}
+                        {canEdit && (
                             <Link 
                                 to={`/avalanche/edit/${avalanche.id}`} 
                                 className="btn-primary bg-blue-500 hover:bg-blue-600 flex items-center gap-2 py-2 px-4 shadow-lg"
@@ -97,6 +148,8 @@ const AvalancheDetailsPage = () => {
                             >
                                 <Edit size={20} /> <span className="hidden sm:inline">Editează</span>
                             </Link>
+                        )}
+                        {canDelete && (
                             <button 
                                 onClick={handleDelete} 
                                 className="btn-primary bg-accent-red hover:bg-red-600 flex items-center gap-2 py-2 px-4 shadow-lg mr-2"
@@ -104,16 +157,37 @@ const AvalancheDetailsPage = () => {
                             >
                                 <Trash2 size={20} /> <span className="hidden sm:inline">Șterge</span>
                             </button>
-                        </div>
-                    )}
+                        )}
+                        {avalanche.status === 'PENDING' && (isAdmin || isExpert || isReviewer) && (
+                            <button 
+                                onClick={handleValidate} 
+                                className="btn-primary bg-accent-green hover:bg-green-600 flex items-center gap-2 py-2 px-4 shadow-lg mr-2"
+                                title="Validează Avalanșă"
+                            >
+                                <ShieldCheck size={20} /> <span className="hidden sm:inline">Validează</span>
+                            </button>
+                        )}
+                    </div>
                     <div className="flex items-center gap-2">
                         <span className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider ${avalanche.status === 'VALIDATED' ? 'bg-accent-green/20 text-accent-green' : 'bg-primary/20 text-primary'
                         }`}>
-                        {avalanche.status === 'VALIDATED' ? 'Validat' : 'În așteptare'}
-                    </span>
+                            {avalanche.status === 'VALIDATED' ? 'Validat' : 'În așteptare'}
+                        </span>
                     </div>
                 </div>
             </header>
+
+            {/* Helper for rendering standard detail fields */}
+            {(() => {
+                const DetailField = ({ label, value, color = "text-white" }) => (
+                    <div>
+                        <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">{label}</label>
+                        <p className={`font-medium ${color}`}>{value || "-"}</p>
+                    </div>
+                );
+                window.DetailField = DetailField;
+                return null;
+            })()}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Information Sidebar */}
@@ -125,29 +199,38 @@ const AvalancheDetailsPage = () => {
                         <div className="space-y-4">
                             <div>
                                 <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Tip Eveniment</label>
-                                <p className="font-medium">{typeName}</p>
+                                <p className="font-medium">{typeName || "-"}</p>
                             </div>
                             <div>
-                                <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Cauză Probabilă</label>
-                                <p className="font-medium">{causeName}</p>
+                                <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Factor Declanșare</label>
+                                <p className="font-medium">{causeName || "-"}</p>
                             </div>
                             <div>
                                 <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Orientare Pantă</label>
-                                <p className="font-medium">{orientationName}</p>
+                                <p className="font-medium">{orientationName || "-"}</p>
                             </div>
                             <div>
-                                <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Coordonate</label>
+                                <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Coordonate Declanșare</label>
                                 <p className="text-sm font-mono">
-                                    {avalanche.latitude != null ? avalanche.latitude.toFixed(4) : 'N/A'},
-                                    {avalanche.longitude != null ? avalanche.longitude.toFixed(4) : 'N/A'}
+                                    {avalanche.latitude != null ? avalanche.latitude.toFixed(4) : '-'}, 
+                                    {avalanche.longitude != null ? avalanche.longitude.toFixed(4) : '-'}
                                 </p>
                             </div>
-                            {avalanche.zone && (
-                                <div>
-                                    <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Zonă / Vale</label>
-                                    <p className="font-medium">{avalanche.zone}</p>
-                                </div>
-                            )}
+                            <div>
+                                <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Coordonate Acumulare</label>
+                                <p className="text-sm font-mono text-accent-blue">
+                                    {avalanche.technicalDetails?.accumLat != null ? avalanche.technicalDetails.accumLat.toFixed(4) : '-'}, 
+                                    {avalanche.technicalDetails?.accumLng != null ? avalanche.technicalDetails.accumLng.toFixed(4) : '-'}
+                                </p>
+                            </div>
+                            <div>
+                                <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Zonă / Vale</label>
+                                <p className="font-medium">{avalanche.zone || "-"}</p>
+                            </div>
+                            <div>
+                                <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Echipament Protecție</label>
+                                <p className="font-medium text-theme-secondary">{avalanche.safetyEquipment || "Nespecificat"}</p>
+                            </div>
                         </div>
                     </div>
 
@@ -155,31 +238,59 @@ const AvalancheDetailsPage = () => {
                         <h2 className="text-lg font-bold flex items-center gap-2 text-accent-red border-b border-glass-border pb-2">
                             <Users size={18} /> Victime și Pagube
                         </h2>
-                        {avalanche.damagesAndVictims ? (
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
-                                    <label className="text-[10px] uppercase text-text-muted block">Prinși</label>
-                                    <span className="text-xl font-bold">{avalanche.damagesAndVictims.personsCaught}</span>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
+                                <label className="text-[10px] uppercase text-text-muted block">Prinși</label>
+                                <span className="text-xl font-bold">{avalanche.damagesAndVictims?.personsCaught ?? "-"}</span>
+                            </div>
+                            <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
+                                <label className="text-[10px] uppercase text-text-muted block">Decedați</label>
+                                <span className={`text-xl font-bold ${avalanche.damagesAndVictims?.personsKilled > 0 ? 'text-accent-red' : ''}`}>
+                                    {avalanche.damagesAndVictims?.personsKilled ?? "-"}
+                                </span>
+                            </div>
+                            <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
+                                <label className="text-[10px] uppercase text-text-muted block">Răniți</label>
+                                <span className="text-xl font-bold">{avalanche.damagesAndVictims?.personsInjured ?? "-"}</span>
+                            </div>
+                            <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
+                                <label className="text-[10px] uppercase text-text-muted block">Total Acop.</label>
+                                <span className="text-xl font-bold">{avalanche.damagesAndVictims?.personsFully ?? "-"}</span>
+                            </div>
+                            <div className="col-span-2 bg-glass-bg p-3 rounded-xl border border-glass-border">
+                                <label className="text-[10px] uppercase text-text-muted block">Pagube Materiale</label>
+                                <span className="text-lg font-bold">
+                                    {avalanche.damagesAndVictims?.materialDamage ? `${avalanche.damagesAndVictims.materialDamage} unități` : "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="card glass p-6 space-y-4">
+                        <h2 className="text-lg font-bold flex items-center gap-2 text-accent-blue border-b border-glass-border pb-2">
+                            <Users size={18} /> Raportat de
+                        </h2>
+                        {avalanche.guestContactInfo ? (
+                            <div className="space-y-2">
+                                <p className="font-bold text-primary">Vizitator Anonim</p>
+                                <div className="text-sm space-y-1">
+                                    <p className="text-text-muted">Nume: {avalanche.guestContactInfo.firstName} {avalanche.guestContactInfo.lastName}</p>
+                                    {(isAdmin || isExpert) && (
+                                        <>
+                                            <p className="text-text-muted">Email: {avalanche.guestContactInfo.email}</p>
+                                            <p className="text-text-muted">Tel: {avalanche.guestContactInfo.phone}</p>
+                                        </>
+                                    )}
                                 </div>
-                                <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
-                                    <label className="text-[10px] uppercase text-text-muted block">Decedați</label>
-                                    <span className="text-xl font-bold text-accent-red">{avalanche.damagesAndVictims.personsKilled}</span>
-                                </div>
-                                <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
-                                    <label className="text-[10px] uppercase text-text-muted block">Răniți</label>
-                                    <span className="text-xl font-bold">{avalanche.damagesAndVictims.personsInjured}</span>
-                                </div>
-                                <div className="bg-glass-bg p-3 rounded-xl border border-glass-border">
-                                    <label className="text-[10px] uppercase text-text-muted block">Total Acop.</label>
-                                    <span className="text-xl font-bold">{avalanche.damagesAndVictims.personsFully}</span>
-                                </div>
-                                <div className="col-span-2 bg-glass-bg p-3 rounded-xl border border-glass-border">
-                                    <label className="text-[10px] uppercase text-text-muted block">Pagube Materiale</label>
-                                    <span className="text-lg font-bold">{avalanche.damagesAndVictims.materialDamage || 0} unități</span>
-                                </div>
+                                {avalanche.status !== 'VALIDATED' && (
+                                    <p className="text-[10px] text-text-muted italic mt-2">* Datele de contact sunt vizibile doar experților.</p>
+                                )}
                             </div>
                         ) : (
-                            <p className="text-text-muted text-sm italic">Nu au fost raportate victime sau pagube.</p>
+                            <div>
+                                <p className="font-bold">{avalanche.visitorId ? 'Utilizator Înregistrat' : 'Anonim'}</p>
+                                {avalanche.visitorId && <p className="text-sm text-text-muted">ID Vizitator: {avalanche.visitorId}</p>}
+                            </div>
                         )}
                     </div>
                 </div>
@@ -192,72 +303,96 @@ const AvalancheDetailsPage = () => {
                             <Activity className="text-primary" size={28} /> Detalii Tehnice
                         </h2>
 
-                        {avalanche.technicalDetails ? (
-                            <div className="space-y-10">
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
-                                            <Shield size={14} /> Altitudine
-                                        </div>
-                                        <p className="text-2xl font-bold">{avalanche.technicalDetails.altitude} <span className="text-sm font-normal text-text-muted">m</span></p>
+                        <div className="space-y-10">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
+                                        <Shield size={14} /> Altitudine
                                     </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
-                                            <Thermometer size={14} /> Înclinație
-                                        </div>
-                                        <p className="text-2xl font-bold">{avalanche.technicalDetails.slopeInterpolation}°</p>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
-                                            <Ruler size={14} /> Lungime
-                                        </div>
-                                        <p className="text-2xl font-bold">{avalanche.technicalDetails.trackLength} <span className="text-sm font-normal text-text-muted">m</span></p>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
-                                            <Maximize size={14} /> Mărime
-                                        </div>
-                                        <p className="text-2xl font-bold">{avalanche.technicalDetails.relativeSize || 'N/A'}</p>
-                                    </div>
+                                    <p className="text-2xl font-bold">
+                                        {avalanche.technicalDetails?.altitude ?? "-"} 
+                                        {avalanche.technicalDetails?.altitude ? <span className="text-sm font-normal text-text-muted ml-1">m</span> : ""}
+                                    </p>
                                 </div>
-
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-6 border-t border-glass-border">
-                                    <div>
-                                        <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Grosime Coroană</label>
-                                        <p className="font-bold text-lg">{avalanche.technicalDetails.crownDepth} cm</p>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
+                                        <Thermometer size={14} /> Înclinație
                                     </div>
-                                    <div>
-                                        <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Lățime Coroană</label>
-                                        <p className="font-bold text-lg">{avalanche.technicalDetails.crownWidth} m</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Cădere Verticală</label>
-                                        <p className="font-bold text-lg">{avalanche.technicalDetails.verticalDrop} m</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Arie Acumulare</label>
-                                        <p className="font-bold text-lg">{avalanche.technicalDetails.accumulationArea} m²</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Cădere Runout</label>
-                                        <p className="font-bold text-lg">{avalanche.technicalDetails.runoutVerticalDrop} m</p>
-                                    </div>
+                                    <p className="text-2xl font-bold">
+                                        {avalanche.technicalDetails?.slopeInterpolation ?? "-"}
+                                        {avalanche.technicalDetails?.slopeInterpolation ? "°" : ""}
+                                    </p>
                                 </div>
-
-                                {avalanche.technicalDetails.crownDepthText && (
-                                    <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
-                                        <h3 className="font-bold mb-2 flex items-center gap-2 text-primary">
-                                            <Info size={18} /> Observații Zăpadă
-                                        </h3>
-                                        <p className="text-text-muted leading-relaxed">
-                                            {avalanche.technicalDetails.crownDepthText}
-                                        </p>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
+                                        <Ruler size={14} /> Lungime
                                     </div>
-                                )}
+                                    <p className="text-2xl font-bold">
+                                        {avalanche.technicalDetails?.trackLength ?? "-"} 
+                                        {avalanche.technicalDetails?.trackLength ? <span className="text-sm font-normal text-text-muted ml-1">m</span> : ""}
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-text-muted text-xs uppercase font-bold tracking-wider">
+                                        <Maximize size={14} /> Mărime
+                                    </div>
+                                    <p className="text-2xl font-bold capitalize">{avalanche.size ?? "-"}</p>
+                                </div>
                             </div>
-                        ) : (
-                                                    <p className="text-text-muted text-center py-10 italic">Nu există detalii tehnice pentru acest eveniment.</p>
-                        )}
+
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-6 border-t border-glass-border">
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Mărime Relativă</label>
+                                    <p className="font-bold text-lg">
+                                        {avalanche.technicalDetails?.relativeSize ?? "-"}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Grosime Coroană</label>
+                                    <p className="font-bold text-lg">
+                                        {avalanche.technicalDetails?.crownDepth ?? "-"}
+                                        {avalanche.technicalDetails?.crownDepth ? " cm" : ""}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Lățime Coroană</label>
+                                    <p className="font-bold text-lg">
+                                        {avalanche.technicalDetails?.crownWidth ?? "-"}
+                                        {avalanche.technicalDetails?.crownWidth ? " m" : ""}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Cădere Verticală</label>
+                                    <p className="font-bold text-lg">
+                                        {avalanche.technicalDetails?.verticalDrop ?? "-"}
+                                        {avalanche.technicalDetails?.verticalDrop ? " m" : ""}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Arie Acumulare</label>
+                                    <p className="font-bold text-lg">
+                                        {avalanche.technicalDetails?.accumulationArea ?? "-"}
+                                        {avalanche.technicalDetails?.accumulationArea ? " m²" : ""}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-text-muted block mb-1">Cădere Runout</label>
+                                    <p className="font-bold text-lg">
+                                        {avalanche.technicalDetails?.runoutVerticalDrop ?? "-"}
+                                        {avalanche.technicalDetails?.runoutVerticalDrop ? " m" : ""}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
+                                <h3 className="font-bold mb-2 flex items-center gap-2 text-primary">
+                                    <Info size={18} /> Observații Zăpadă
+                                </h3>
+                                <p className="text-text-muted leading-relaxed">
+                                    {avalanche.technicalDetails?.crownDepthText || "Nu există observații specifice pentru stratul de zăpadă."}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Images Section */}

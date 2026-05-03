@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "avalanche")
@@ -54,20 +56,19 @@ public class Avalanche {
     public static class StatusConverter implements AttributeConverter<Status, String> {
         @Override
         public String convertToDatabaseColumn(Status status) {
-            return status == null ? null : status.name();
+            if (status == null) return null;
+            if (status == Status.VALIDATED) return "approved";
+            return status.name().toLowerCase();
         }
 
         @Override
         public Status convertToEntityAttribute(String dbData) {
-            if (dbData == null)
-                return null;
+            if (dbData == null) return null;
+            if ("approved".equalsIgnoreCase(dbData)) return Status.VALIDATED;
             try {
                 return Status.valueOf(dbData.toUpperCase());
             } catch (IllegalArgumentException e) {
-                if ("approved".equalsIgnoreCase(dbData)) {
-                    return Status.VALIDATED;
-                }
-                return Status.PENDING; // Default or handled case
+                return Status.PENDING;
             }
         }
     }
@@ -76,8 +77,13 @@ public class Avalanche {
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "contributor_id")
-    private User contributor;
+    @JoinColumn(name = "visitor_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    private User visitor;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "guest_contact_info_id")
+    private GuestContactInfo guestContactInfo;
 
     @Column(name = "event_time")
     private String eventTime;

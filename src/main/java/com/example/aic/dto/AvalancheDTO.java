@@ -19,11 +19,13 @@ public class AvalancheDTO {
     private Integer typeId;
     private Integer causeId;
     private String status;
-    private Integer contributorId;
+    private String massifName;
+    private Integer visitorId;
     private String eventTime;
     private String activity;
     private Integer orientationId;
     private TechnicalDetailsDTO technicalDetails;
     private DamagesAndVictimsDTO damagesAndVictims;
+    private GuestContactInfoDTO guestContactInfo;
     private List<String> imageUrls;
 }

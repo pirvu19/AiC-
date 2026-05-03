@@ -5,6 +5,9 @@ import com.example.aic.model.Role;
 import com.example.aic.model.User;
 import com.example.aic.repository.RoleRepository;
 import com.example.aic.repository.UserRepository;
+import com.example.aic.repository.AvalancheRepository;
+import com.example.aic.repository.ConditionsRepository;
+import com.example.aic.repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,15 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private AvalancheRepository avalancheRepository;
+
+    @Autowired
+    private ConditionsRepository conditionsRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository tokenRepository;
+
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(this::convertToDto)
@@ -33,15 +45,40 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseGet(() -> {
+                    Role newRole = new Role();
+                    newRole.setName(roleName);
+                    return roleRepository.save(newRole);
+                });
 
         user.setRole(role);
-        return convertToDto(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+
+        // Notify user about role update
+        try {
+            notificationPublisher.sendRoleUpdateEvent(savedUser, roleName);
+        } catch (Exception e) {
+            // Log error but don't fail the transaction
+            System.err.println("Failed to send role update notification: " + e.getMessage());
+        }
+
+        return convertToDto(savedUser);
     }
+
+    @Autowired
+    private NotificationPublisher notificationPublisher;
 
     @Transactional
     public void deleteUser(Integer userId) {
-        userRepository.deleteById(userId);
+        // 1. Set visitor to NULL in Avalanche and Conditions (manual SET NULL because of DB constraint update issues)
+        avalancheRepository.setVisitorToNull(userId);
+        conditionsRepository.setVisitorToNull(userId);
+        
+        // 2. Delete password tokens
+        userRepository.findById(userId).ifPresent(user -> {
+            tokenRepository.deleteByUser(user);
+            userRepository.delete(user);
+        });
     }
 
     private UserDTO convertToDto(User user) {
@@ -51,6 +88,13 @@ public class UserService {
         dto.setEmail(user.getEmail());
         dto.setRoleName(user.getRole() != null ? user.getRole().getName() : null);
         dto.setCreatedAt(user.getCreatedAt());
+        
+        if (user.getPerson() != null) {
+            dto.setFirstName(user.getPerson().getFirstName());
+            dto.setLastName(user.getPerson().getLastName());
+            dto.setPhone(user.getPerson().getPhone());
+        }
+        
         return dto;
     }
 }

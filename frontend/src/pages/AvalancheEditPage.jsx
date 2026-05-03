@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import metadataService from '../services/metadataService';
 import avalancheService from '../services/avalancheService';
-import { Save, ChevronRight, ChevronLeft, Map, Info, Users, Activity, Trash2, Upload, Maximize } from 'lucide-react';
+import { Save, ChevronRight, ChevronLeft, Map, Info, Users, Activity, Trash2, Upload, Maximize, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AvalancheEditPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
-    
+
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(true);
     const [newImages, setNewImages] = useState([]);
@@ -32,12 +32,13 @@ const AvalancheEditPage = () => {
                     metadataService.getCauses(),
                     metadataService.getOrientations()
                 ]);
-                
+
                 setMetadata({ massifs, types, causes, orientations });
-                
+
                 // Initialize form with fetched data
                 setFormData({
                     title: avalanche.title || '',
+                    status: avalanche.status || 'PENDING',
                     date: avalanche.date || new Date().toISOString().split('T')[0],
                     imageUrls: avalanche.imageUrls || [],
                     latitude: avalanche.latitude || 45.0,
@@ -86,13 +87,19 @@ const AvalancheEditPage = () => {
     }, [id, navigate]);
 
     const handleChange = (e, section = null) => {
-        const { name, value } = e.target;
+        let { name, value, type } = e.target;
+        
+        if (type === 'number') {
+            value = value === '' ? null : Number(value);
+        }
+
         if (section) {
             setFormData({
                 ...formData,
                 [section]: { ...formData[section], [name]: value }
             });
         } else {
+            console.log(`Updating ${name} to`, value);
             setFormData({ ...formData, [name]: value });
         }
     };
@@ -175,6 +182,11 @@ const AvalancheEditPage = () => {
                             <input name="title" className="w-full" value={formData.title} onChange={handleChange} required />
                         </div>
 
+                        <div className="space-y-2">
+                            <label>Link Sursă (avalanseincarpati.ro)</label>
+                            <input name="link" className="w-full" value={formData.link || ''} onChange={handleChange} placeholder="https://..." />
+                        </div>
+
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label>Data</label>
@@ -206,7 +218,7 @@ const AvalancheEditPage = () => {
                                         return (
                                             <div key={idx} className="relative group rounded-xl overflow-hidden border border-glass-border">
                                                 <img src={imgSrc} alt="Prezentare avalanșă" className="w-full h-24 object-cover" />
-                                                <button 
+                                                <button
                                                     type="button"
                                                     onClick={() => handleDeleteExistingImage(url)}
                                                     className="absolute top-1 right-1 bg-accent-red hover:bg-red-600 text-white p-1 rounded-full shadow transition-colors"
@@ -224,12 +236,12 @@ const AvalancheEditPage = () => {
                             {formData.imageUrls.length < 4 && (
                                 <div className="space-y-2">
                                     <label className="text-xs text-text-muted">Adaugă imagini noi (cu CTRL)</label>
-                                    <input 
-                                        type="file" 
-                                        multiple 
-                                        accept="image/*" 
-                                        onChange={handleImageChange} 
-                                        className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500/20 file:text-blue-400 hover:file:bg-blue-500/30 text-text-muted cursor-pointer" 
+                                    <input
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500/20 file:text-blue-400 hover:file:bg-blue-500/30 text-text-muted cursor-pointer"
                                     />
                                     {newImages.length > 0 && (
                                         <p className="text-xs text-accent-green mt-2">
@@ -251,17 +263,22 @@ const AvalancheEditPage = () => {
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label>Latitudine</label>
-                                <input name="latitude" type="number" step="0.0001" className="w-full" value={formData.latitude} onChange={handleChange} />
+                                <input name="latitude" type="number" step="any" className="w-full" value={formData.latitude} onChange={handleChange} />
                             </div>
                             <div className="space-y-2">
                                 <label>Longitudine</label>
-                                <input name="longitude" type="number" step="0.0001" className="w-full" value={formData.longitude} onChange={handleChange} />
+                                <input name="longitude" type="number" step="any" className="w-full" value={formData.longitude} onChange={handleChange} />
                             </div>
                         </div>
 
                         <div className="space-y-2">
                             <label>Zonă / Vale</label>
                             <input name="zone" className="w-full" value={formData.zone} onChange={handleChange} />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label>Echipament de Protecție</label>
+                            <input name="safetyEquipment" className="w-full" value={formData.safetyEquipment} onChange={handleChange} placeholder="Ex: transceiver / sonda / lopata" />
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
@@ -272,6 +289,16 @@ const AvalancheEditPage = () => {
                                     {metadata.types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                 </select>
                             </div>
+                            <div className="space-y-2">
+                                <label>Cauză Probabilă</label>
+                                <select name="causeId" className="w-full" value={formData.causeId} onChange={handleChange}>
+                                    <option value="">Alege cauza...</option>
+                                    {metadata.causes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
                             <div className="space-y-2">
                                 <label>Orientare Pantă</label>
                                 <select name="orientationId" className="w-full" value={formData.orientationId} onChange={handleChange}>
@@ -335,11 +362,11 @@ const AvalancheEditPage = () => {
                         <div className="grid grid-cols-3 gap-6">
                             <div className="space-y-2">
                                 <label>Lat Acumulare</label>
-                                <input name="accumLat" type="number" step="0.0001" className="w-full" value={formData.technicalDetails.accumLat} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <input name="accumLat" type="number" step="any" className="w-full" value={formData.technicalDetails.accumLat} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
                                 <label>Lng Acumulare</label>
-                                <input name="accumLng" type="number" step="0.0001" className="w-full" value={formData.technicalDetails.accumLng} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <input name="accumLng" type="number" step="any" className="w-full" value={formData.technicalDetails.accumLng} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
                                 <label>Cădere Runout (m)</label>
@@ -404,9 +431,32 @@ const AvalancheEditPage = () => {
                             Înainte <ChevronRight size={20} />
                         </button>
                     ) : (
-                        <button type="button" onClick={handleFinalSubmit} className="btn-primary bg-accent-green hover:bg-accent-green/80 flex items-center gap-2">
-                            <Save size={20} /> Salvează Modificările
-                        </button>
+                        <div className="flex flex-wrap gap-4">
+                            {formData.status === 'PENDING' && (
+                                <button
+                                    type="button"
+                                    onClick={async () => {
+                                        try {
+                                            await avalancheService.update(id, formData);
+                                            await avalancheService.validate(id);
+                                            navigate('/validate');
+                                        } catch (err) {
+                                            alert('Eroare la salvare și validare.');
+                                        }
+                                    }}
+                                    className="bg-accent-green hover:bg-accent-green/80 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-black transition-all hover:scale-105 shadow-lg shadow-accent-green/20"
+                                >
+                                    <ShieldCheck size={20} /> Salvează și Validează
+                                </button>
+                            )}
+                            <button
+                                type="button"
+                                onClick={handleFinalSubmit}
+                                className="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-black transition-all hover:scale-105 shadow-lg shadow-primary/20"
+                            >
+                                <Save size={20} /> Salvează Modificările
+                            </button>
+                        </div>
                     )}
                 </div>
             </form>

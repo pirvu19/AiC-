@@ -45,4 +45,35 @@ public class NotificationPublisher {
         String payload = "TARGET:ALL|MSG:" + message;
         rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "avalanche.validated", payload);
     }
+
+    public void sendRegistrationRequestEvent(com.example.aic.model.User user, String requestedRole) {
+        logger.info("Sending registration request event for admin approval: {} -> {}", user.getUsername(), requestedRole);
+        String message = "Utilizatorul " + user.getUsername() + " solicită rolul de " + requestedRole.toUpperCase();
+        String payload = "TARGET:ALL|MSG:" + message;
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "avalanche.created", payload);
+    }
+
+    public void sendRoleUpdateEvent(com.example.aic.model.User user, String newRole) {
+        logger.info("Sending role update event to user: {} -> {}", user.getUsername(), newRole);
+        String message = "Rolul tău a fost actualizat la " + newRole.toUpperCase() + ". Felicitări!";
+        String payload = "TARGET:" + user.getUsername() + "|MSG:" + message;
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "avalanche.validated", payload);
+    }
+
+    public void sendRegistrationApprovedEvent(com.example.aic.model.User user, String password) {
+        logger.info("Sending registration approval event (Email with Password) for: {}", user.getEmail());
+        // Updated format: USER:email|PWD:password|UNAME:username (Listener will find USER: and PWD: as before)
+        String message = "USER:" + user.getEmail() + "|PWD:" + password + "|UNAME:" + user.getUsername();
+        String payload = "TARGET:" + user.getUsername() + "|MSG:" + message;
+        // Match the routing key used in previous plans if any, or use registration.approved
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "registration.approved", payload);
+    }
+
+    public void sendPasswordResetEvent(com.example.aic.model.User user, String token) {
+        logger.info("Sending password reset event for: {}", user.getEmail());
+        // Message format: USER:user@example.com|TOKEN:uuid
+        String message = "USER:" + user.getEmail() + "|TOKEN:" + token;
+        String payload = "TARGET:" + user.getUsername() + "|MSG:" + message;
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "password.reset", payload);
+    }
 }

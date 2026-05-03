@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import metadataService from '../services/metadataService';
 import avalancheService from '../services/avalancheService';
-import { Save, ChevronRight, ChevronLeft, Map, Info, Users, Activity, LocateFixed } from 'lucide-react';
+import { Save, ChevronRight, ChevronLeft, Map, Info, Users, Activity, LocateFixed, Contact } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const AvalancheFormPage = () => {
     const [step, setStep] = useState(1);
@@ -13,6 +14,7 @@ const AvalancheFormPage = () => {
         orientations: []
     });
 
+    const { user } = useAuth();
     const [images, setImages] = useState([]);
 
     const [formData, setFormData] = useState({
@@ -50,6 +52,12 @@ const AvalancheFormPage = () => {
             personsInjured: 0,
             personsKilled: 0,
             materialDamage: 0
+        },
+        guestContactInfo: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: ''
         }
     });
 
@@ -69,7 +77,12 @@ const AvalancheFormPage = () => {
     }, []);
 
     const handleChange = (e, section = null) => {
-        const { name, value } = e.target;
+        let { name, value, type } = e.target;
+        
+        if (type === 'number') {
+            value = value === '' ? null : Number(value);
+        }
+
         if (section) {
             setFormData({
                 ...formData,
@@ -101,7 +114,22 @@ const AvalancheFormPage = () => {
         }
     };
 
-    const nextStep = () => setStep(step + 1);
+    const nextStep = () => {
+        if (step === 1) {
+            if (!formData.title || !formData.date || !formData.massifId) {
+                alert('Te rugăm să completezi toate câmpurile obligatorii.');
+                return;
+            }
+            if (!user) {
+                const { firstName, lastName, email, phone } = formData.guestContactInfo;
+                if (!firstName || !lastName || !email || !phone) {
+                    alert('Te rugăm să completezi toate datele de contact.');
+                    return;
+                }
+            }
+        }
+        setStep(step + 1);
+    };
     const prevStep = () => setStep(step - 1);
 
     const handleGetLocation = () => {
@@ -171,12 +199,12 @@ const AvalancheFormPage = () => {
 
                         <div className="space-y-2">
                             <label>Imagini (Țineți apăsat CTRL pt. a alege max. 4)</label>
-                            <input 
-                                type="file" 
-                                multiple 
-                                accept="image/*" 
-                                onChange={handleImageChange} 
-                                className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-button-text hover:file:bg-primary/90 text-text-muted cursor-pointer" 
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-button-text hover:file:bg-primary/90 text-text-muted cursor-pointer"
                             />
                             {images.length > 0 && (
                                 <p className="text-sm text-theme-secondary mt-2">
@@ -184,6 +212,63 @@ const AvalancheFormPage = () => {
                                 </p>
                             )}
                         </div>
+
+                        {!user && (
+                            <div className="pt-6 border-t border-glass-border animate-in fade-in duration-500 space-y-6">
+                                <div className="flex items-center gap-2 text-xl font-bold text-accent-blue">
+                                    <Contact size={24} /> <h2>Date Contact Vizitator</h2>
+                                </div>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label>Nume <span className="text-red-500">*</span></label>
+                                        <input
+                                            name="lastName"
+                                            className="w-full"
+                                            value={formData.guestContactInfo.lastName}
+                                            onChange={(e) => handleChange(e, 'guestContactInfo')}
+                                            placeholder="Numele dumneavoastră"
+                                            required={!user}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label>Prenume <span className="text-red-500">*</span></label>
+                                        <input
+                                            name="firstName"
+                                            className="w-full"
+                                            value={formData.guestContactInfo.firstName}
+                                            onChange={(e) => handleChange(e, 'guestContactInfo')}
+                                            placeholder="Prenumele dumneavoastră"
+                                            required={!user}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label>Email <span className="text-red-500">*</span></label>
+                                        <input
+                                            name="email"
+                                            type="email"
+                                            className="w-full"
+                                            value={formData.guestContactInfo.email}
+                                            onChange={(e) => handleChange(e, 'guestContactInfo')}
+                                            placeholder="adresa@email.com"
+                                            required={!user}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label>Telefon <span className="text-red-500">*</span></label>
+                                        <input
+                                            name="phone"
+                                            className="w-full"
+                                            value={formData.guestContactInfo.phone}
+                                            onChange={(e) => handleChange(e, 'guestContactInfo')}
+                                            placeholder="07xxxxxxxx"
+                                            required={!user}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -205,17 +290,22 @@ const AvalancheFormPage = () => {
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label>Latitudine</label>
-                                <input name="latitude" type="number" step="0.0001" className="w-full" value={formData.latitude} onChange={handleChange} />
+                                <input name="latitude" type="number" step="any" className="w-full" value={formData.latitude} onChange={handleChange} />
                             </div>
                             <div className="space-y-2">
                                 <label>Longitudine</label>
-                                <input name="longitude" type="number" step="0.0001" className="w-full" value={formData.longitude} onChange={handleChange} />
+                                <input name="longitude" type="number" step="any" className="w-full" value={formData.longitude} onChange={handleChange} />
                             </div>
                         </div>
 
                         <div className="space-y-2">
                             <label>Zonă / Vale</label>
                             <input name="zone" className="w-full" value={formData.zone} onChange={handleChange} placeholder="Ex: Căldarea Bâlii" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label>Echipament de Protecție (DVA, Sondă, Lopată, etc.)</label>
+                            <input name="safetyEquipment" className="w-full" value={formData.safetyEquipment} onChange={handleChange} placeholder="Ex: DVA/Sonda/Lopata sau Fără" />
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
@@ -226,6 +316,16 @@ const AvalancheFormPage = () => {
                                     {metadata.types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                 </select>
                             </div>
+                            <div className="space-y-2">
+                                <label>Cauză Probabilă</label>
+                                <select name="causeId" className="w-full" value={formData.causeId} onChange={handleChange}>
+                                    <option value="">Alege cauza...</option>
+                                    {metadata.causes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
                             <div className="space-y-2">
                                 <label>Orientare Pantă</label>
                                 <select name="orientationId" className="w-full" value={formData.orientationId} onChange={handleChange}>
@@ -289,11 +389,11 @@ const AvalancheFormPage = () => {
                         <div className="grid grid-cols-3 gap-6">
                             <div className="space-y-2">
                                 <label>Lat Acumulare</label>
-                                <input name="accumLat" type="number" step="0.0001" className="w-full" value={formData.technicalDetails.accumLat} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <input name="accumLat" type="number" step="any" className="w-full" value={formData.technicalDetails.accumLat} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
                                 <label>Lng Acumulare</label>
-                                <input name="accumLng" type="number" step="0.0001" className="w-full" value={formData.technicalDetails.accumLng} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <input name="accumLng" type="number" step="any" className="w-full" value={formData.technicalDetails.accumLng} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
                                 <label>Cădere Runout (m)</label>

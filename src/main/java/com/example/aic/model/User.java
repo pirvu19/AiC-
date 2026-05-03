@@ -25,6 +25,10 @@ public class User {
     @Column(unique = true, nullable = false, length = 100)
     private String email;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person person;
+
     @Column(name = "password_hash", nullable = false, length = 255)
     private String password;
 
@@ -35,4 +39,7 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @Column(name = "must_change_password")
+    private Boolean mustChangePassword = false;
 }

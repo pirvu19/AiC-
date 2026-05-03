@@ -54,8 +54,12 @@ const UserManagementPanel = () => {
             case 'ROLE_ADMIN': return <Shield size={16} className="text-accent-red" />;
             case 'EXPERT':
             case 'ROLE_EXPERT': return <ShieldCheck size={16} className="text-primary" />;
-            case 'CONTRIBUTOR':
-            case 'ROLE_CONTRIBUTOR': return <Users size={16} className="text-accent-blue" />;
+            case 'ADMIN_UTILIZATORI':
+            case 'ROLE_ADMIN_UTILIZATORI': return <Shield size={16} className="text-indigo-400" />;
+            case 'REVIEWER':
+            case 'ROLE_REVIEWER': return <Shield size={16} className="text-amber-400" />;
+            case 'DATA_ENGINEER':
+            case 'ROLE_DATA_ENGINEER': return <Shield size={16} className="text-violet-400" />;
             default: return <UserIcon size={16} className="text-text-muted" />;
         }
     };
@@ -67,8 +71,12 @@ const UserManagementPanel = () => {
             case 'ROLE_ADMIN': return 'bg-accent-red/10 text-accent-red';
             case 'EXPERT':
             case 'ROLE_EXPERT': return 'bg-primary/10 text-primary';
-            case 'CONTRIBUTOR':
-            case 'ROLE_CONTRIBUTOR': return 'bg-blue-500/10 text-blue-500';
+            case 'ADMIN_UTILIZATORI':
+            case 'ROLE_ADMIN_UTILIZATORI': return 'bg-indigo-500/10 text-indigo-500';
+            case 'REVIEWER':
+            case 'ROLE_REVIEWER': return 'bg-amber-500/10 text-amber-500';
+            case 'DATA_ENGINEER':
+            case 'ROLE_DATA_ENGINEER': return 'bg-violet-500/10 text-violet-500';
             default: return 'bg-glass-bg text-text-muted';
         }
     };
@@ -97,8 +105,8 @@ const UserManagementPanel = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-glass-border bg-white/5">
-                                <th className="p-4 text-xs font-black uppercase text-text-muted">Utilizator</th>
-                                <th className="p-4 text-xs font-black uppercase text-text-muted">Email</th>
+                                <th className="p-4 text-xs font-black uppercase text-text-muted">Utilizator / Nume</th>
+                                <th className="p-4 text-xs font-black uppercase text-text-muted">Contact</th>
                                 <th className="p-4 text-xs font-black uppercase text-text-muted">Status / Rol</th>
                                 <th className="p-4 text-xs font-black uppercase text-text-muted">Creat la</th>
                                 <th className="p-4 text-xs font-black uppercase text-text-muted text-right">Acțiuni</th>
@@ -118,13 +126,21 @@ const UserManagementPanel = () => {
                                     <tr key={u.id} className="border-b border-glass-border hover:bg-white/5 transition-colors">
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
                                                     {u.username.charAt(0).toUpperCase()}
                                                 </div>
-                                                <span className="font-bold">{u.username}</span>
+                                                <div>
+                                                    <div className="font-bold">{u.username}</div>
+                                                    <div className="text-[10px] text-text-muted uppercase tracking-wider">
+                                                        {(u.firstName || u.lastName) ? `${u.firstName || ''} ${u.lastName || ''}`.trim() : 'Fără nume setat'}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="p-4 text-sm text-text-muted">{u.email}</td>
+                                        <td className="p-4">
+                                            <div className="text-sm">{u.email}</div>
+                                            <div className="text-[10px] text-text-muted font-mono">{u.phone || 'Fără telefon'}</div>
+                                        </td>
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
                                                 <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase ${getRoleBadgeClass(u.roleName)}`}>
@@ -137,7 +153,9 @@ const UserManagementPanel = () => {
                                                     onChange={(e) => handleRoleChange(u.id, e.target.value)}
                                                 >
                                                     <option value="USER">USER</option>
-                                                    <option value="CONTRIBUTOR">CONTRIBUTOR</option>
+                                                    <option value="ADMIN_UTILIZATORI">ADMIN UTILIZATORI</option>
+                                                    <option value="REVIEWER">REVIEWER</option>
+                                                    <option value="DATA_ENGINEER">DATA ENGINEER</option>
                                                     <option value="EXPERT">EXPERT</option>
                                                     <option value="ADMIN">ADMIN</option>
                                                 </select>

@@ -35,4 +35,14 @@ public class RabbitMQConfig {
     public Binding bindingUser(Queue userQueue, TopicExchange avalancheExchange) {
         return BindingBuilder.bind(userQueue).to(avalancheExchange).with("avalanche.validated");
     }
+
+    @Bean
+    public Binding bindingRegistration(Queue userQueue, TopicExchange avalancheExchange) {
+        return BindingBuilder.bind(userQueue).to(avalancheExchange).with("registration.approved");
+    }
+
+    @Bean
+    public Binding bindingPasswordReset(Queue userQueue, TopicExchange avalancheExchange) {
+        return BindingBuilder.bind(userQueue).to(avalancheExchange).with("password.reset");
+    }
 }
