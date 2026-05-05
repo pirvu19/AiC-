@@ -44,11 +44,17 @@ services:
 
   frontend:
     build: ./frontend
+    environment:
+      BACKEND_HOST: backend
+      BACKEND_PORT: 8080
+      NOTIFICATION_SERVICE_HOST: notification-service
+      NOTIFICATION_SERVICE_PORT: 8082
     ports:
       - "443:443"
       - "8081:80"
     depends_on:
       - backend
+      - notification-service
 
   vision-service:
     build: ./vision-service
