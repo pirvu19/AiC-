@@ -45,4 +45,14 @@ public class RabbitMQConfig {
     public Binding bindingPasswordReset(Queue userQueue, TopicExchange avalancheExchange) {
         return BindingBuilder.bind(userQueue).to(avalancheExchange).with("password.reset");
     }
+
+    @Bean
+    public Binding bindingConditionsCreated(Queue adminQueue, TopicExchange avalancheExchange) {
+        return BindingBuilder.bind(adminQueue).to(avalancheExchange).with("conditions.created");
+    }
+
+    @Bean
+    public Binding bindingConditionsValidated(Queue userQueue, TopicExchange avalancheExchange) {
+        return BindingBuilder.bind(userQueue).to(avalancheExchange).with("conditions.validated");
+    }
 }

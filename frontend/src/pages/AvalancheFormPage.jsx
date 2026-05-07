@@ -152,7 +152,7 @@ const AvalancheFormPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="container">
             <div className="flex justify-between items-center mb-10">
                 <div>
                     <h1 className="text-3xl font-bold">Eveniment Nou</h1>
@@ -320,7 +320,7 @@ const AvalancheFormPage = () => {
                                 <label>Cauză Probabilă</label>
                                 <select name="causeId" className="w-full" value={formData.causeId} onChange={handleChange}>
                                     <option value="">Alege cauza...</option>
-                                    {metadata.causes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                    {metadata.causes.map(c => <option key={c.id} value={c.id}>{c.description}</option>)}
                                 </select>
                             </div>
                         </div>

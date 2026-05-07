@@ -58,7 +58,7 @@ const MeteoPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="container space-y-8">
             <div className="text-center space-y-2">
                 <MountainSnow className="w-16 h-16 mx-auto text-primary" />
                 <h1 className="text-4xl font-bold">Prognoză Meteo Montană</h1>

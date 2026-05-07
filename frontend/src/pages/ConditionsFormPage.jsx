@@ -103,7 +103,7 @@ const ConditionsFormPage = () => {
     const prevStep = () => setStep(step - 1);
 
     return (
-        <div className="max-w-4xl mx-auto py-10">
+        <div className="container py-10">
             <div className="flex justify-between items-center mb-10">
                 <div>
                     <h1 className="text-3xl font-bold">Raport Condiții Nou</h1>

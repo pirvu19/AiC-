@@ -107,7 +107,17 @@ public class ConditionsService {
             guestInfo.setEmail(dto.getGuestContactInfo().getEmail());
             conditions.setGuestContactInfo(guestInfo);
         }
-        conditions.setStatus(Conditions.Status.PENDING);
+        if (user != null) {
+            String roleName = (user.getRole() != null) ? user.getRole().getName().toUpperCase() : "";
+            if (roleName.contains("ADMIN") || roleName.contains("EXPERT")) {
+                conditions.setStatus(Conditions.Status.VALIDATED);
+            } else {
+                conditions.setStatus(Conditions.Status.PENDING);
+            }
+        } else {
+            conditions.setStatus(Conditions.Status.PENDING);
+        }
+
 
         if (dto.getRegionId() != null) {
             conditions.setRegion(regionRepository.findById(dto.getRegionId()).orElse(null));
@@ -119,6 +129,9 @@ public class ConditionsService {
         Conditions saved = conditionsRepository.save(conditions);
         return convertToDto(saved);
     }
+
+    @Autowired
+    private NotificationPublisher notificationPublisher;
 
     @Transactional
     public ConditionsDTO createWithImages(ConditionsDTO dto, org.springframework.web.multipart.MultipartFile[] files, User user) {
@@ -141,6 +154,15 @@ public class ConditionsService {
                 processed++;
             }
             conditionsRepository.save(conditions);
+        }
+
+        String authorName = (user != null) ? user.getUsername() : "Vizitator Anonim";
+        if (Conditions.Status.VALIDATED.equals(conditions.getStatus())) {
+            notificationPublisher.sendConditionsValidatedEvent(
+                    "O nouă condiție meteo a fost publicată direct de utilizatorul: " + authorName);
+        } else {
+            notificationPublisher.sendConditionsCreatedEvent(
+                    "O nouă condiție meteo a fost adăugată de " + authorName + " și necesită validare!");
         }
 
         return convertToDto(conditions);
@@ -191,7 +213,10 @@ public class ConditionsService {
         Conditions conditions = conditionsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Conditions not found with id: " + id));
         conditions.setStatus(Conditions.Status.VALIDATED);
-        conditionsRepository.save(conditions);
+        Conditions saved = conditionsRepository.save(conditions);
+        
+        notificationPublisher.sendConditionsValidatedEvent(
+                "O nouă condiție meteo („" + saved.getTitle() + "”) a fost validată și este acum publică.");
     }
 
     public ConditionsDTO updateConditions(Integer id, ConditionsDTO dto) {

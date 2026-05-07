@@ -45,8 +45,15 @@ export const connectWebSocket = (user, addNotification, onConnected) => {
                         const target = parts[0].replace('TARGET:', '');
                         const actualMsg = parts[1];
 
-                        // Dacă e pentru un singur om și nu suntem noi, ignorăm
-                        if (target !== 'ALL' && target !== user.username) {
+                        // Logica de filtrare a destinatarului
+                        const isAdmin = user?.roles?.some(r => r === 'ROLE_ADMIN' || r === 'ADMIN');
+                        
+                        if (target === 'ALL') {
+                            // Public broadcast, allow
+                        } else if (target === 'ROLE_ADMIN') {
+                            if (!isAdmin) return; // Only for admins
+                        } else if (target !== user.username && target !== user.email) {
+                            // Target is a specific username/email but not us
                             return;
                         }
                         displayMessage = actualMsg;
@@ -69,8 +76,9 @@ export const connectWebSocket = (user, addNotification, onConnected) => {
                         const target = parts[0].replace('TARGET:', '');
                         const actualMsg = parts[1];
 
-                        // Dacă e pentru un singur om și nu suntem noi, ignorăm
-                        if (target !== 'ALL' && target !== user.username) {
+                        if (target === 'ALL') {
+                            // Public broadcast
+                        } else if (target !== user.username && target !== user.email) {
                             return;
                         }
                         displayMessage = actualMsg;

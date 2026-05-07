@@ -91,10 +91,12 @@ public class ConditionsController {
 
     @PostMapping
     public ResponseEntity<ConditionsDTO> create(@RequestBody ConditionsDTO dto) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        org.springframework.security.core.Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = (auth != null) ? auth.getName() : null;
         User user = null;
-        if (username != null && !"anonymousUser".equals(username)) {
-            user = userRepository.findByUsername(username).orElse(null);
+        if (name != null && !"anonymousUser".equals(name)) {
+            user = userRepository.findByEmail(name)
+                    .orElseGet(() -> userRepository.findByUsername(name).orElse(null));
         }
         return ResponseEntity.ok(conditionsService.createConditions(dto, user));
     }
@@ -119,10 +121,12 @@ public class ConditionsController {
             throws com.fasterxml.jackson.core.JsonProcessingException {
 
         ConditionsDTO dto = objectMapper.readValue(conditionsJson, ConditionsDTO.class);
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        org.springframework.security.core.Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = (auth != null) ? auth.getName() : null;
         User user = null;
-        if (username != null && !"anonymousUser".equals(username)) {
-            user = userRepository.findByUsername(username).orElse(null);
+        if (name != null && !"anonymousUser".equals(name)) {
+            user = userRepository.findByEmail(name)
+                    .orElseGet(() -> userRepository.findByUsername(name).orElse(null));
         }
 
         return ResponseEntity.ok(conditionsService.createWithImages(dto, files, user));

@@ -44,7 +44,7 @@ const AvalancheCard = memo(({ item, view, isExpert, handleValidate }) => {
         : null;
 
     return (
-        <div className="card glass hover:border-primary/50 transition-all group relative overflow-hidden flex flex-row justify-between gap-6 p-6 min-h-[160px]">
+        <div className="card glass hover:border-primary/50 transition-all group relative overflow-hidden flex flex-col sm:flex-row justify-between gap-6 p-6 min-h-[160px]">
             <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 -mr-12 -mt-12 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
 
             {/* Left Section (Info) */}

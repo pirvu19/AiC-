@@ -381,7 +381,7 @@ const SearchPage = () => {
 
     return (
         <div className="min-h-screen">
-            <div className="max-w-5xl mx-auto px-6 space-y-12 animate-in fade-in duration-1000 pb-32">
+            <div className="container space-y-12 animate-in fade-in duration-1000 pb-32">
                 {/* Header */}
                 <header className="space-y-6 text-center py-12">
                     <h1 className="text-5xl font-black tracking-tighter gradient-text leading-tight">

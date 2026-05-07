@@ -134,10 +134,12 @@ public class AvalancheController {
 
     @PostMapping
     public ResponseEntity<AvalancheDTO> create(@RequestBody AvalancheDTO dto) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        org.springframework.security.core.Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = (auth != null) ? auth.getName() : null;
         User user = null;
-        if (username != null && !"anonymousUser".equals(username)) {
-            user = userRepository.findByUsername(username).orElse(null);
+        if (name != null && !"anonymousUser".equals(name)) {
+            user = userRepository.findByEmail(name)
+                    .orElseGet(() -> userRepository.findByUsername(name).orElse(null));
         }
         return ResponseEntity.ok(avalancheService.createAvalanche(dto, user));
     }
@@ -149,10 +151,12 @@ public class AvalancheController {
             throws com.fasterxml.jackson.core.JsonProcessingException {
 
         AvalancheDTO dto = objectMapper.readValue(avalancheJson, AvalancheDTO.class);
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        org.springframework.security.core.Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = (auth != null) ? auth.getName() : null;
         User user = null;
-        if (username != null && !"anonymousUser".equals(username)) {
-            user = userRepository.findByUsername(username).orElse(null);
+        if (name != null && !"anonymousUser".equals(name)) {
+            user = userRepository.findByEmail(name)
+                    .orElseGet(() -> userRepository.findByUsername(name).orElse(null));
         }
 
         return ResponseEntity.ok(avalancheService.createWithImages(dto, files, user));
