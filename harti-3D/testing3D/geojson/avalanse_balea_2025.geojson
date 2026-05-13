@@ -1,0 +1,131 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "avalanche-path",
+      "properties": {
+        "name": "Avalanche Path",
+        "description": "Full avalanche track from crown to accumulation",
+        "type": "path",
+        "incident": "Clasica de Balea 2025",
+        "date": "2025-03-16",
+        "location": "Fagaras, vers N vf Paltinul, sub balcoane",
+        "altitude": 2300,
+        "slope_orientation": "N",
+        "slope_angle": 40,
+        "avalanche_type": "TOPIRE",
+        "trigger": "Spontana",
+        "size": "medium",
+        "track_length_m": 250,
+        "crown_depth_cm": 40,
+        "crown_width_m": 10,
+        "link": "https://avalanseincarpati.ro/clasica-de-balea-2025/",
+        "fill-color": "#ff0000",
+        "fill-opacity": 0.4,
+        "stroke": "#cc0000",
+        "stroke-width": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.610478, 45.599438],
+          [24.610778, 45.599438],
+          [24.610878, 45.599700],
+          [24.610978, 45.600000],
+          [24.611178, 45.600300],
+          [24.611378, 45.600600],
+          [24.611578, 45.600900],
+          [24.611876, 45.601200],
+          [24.612076, 45.601397],
+          [24.611476, 45.601397],
+          [24.611276, 45.601200],
+          [24.611078, 45.600900],
+          [24.610878, 45.600600],
+          [24.610678, 45.600300],
+          [24.610478, 45.600000],
+          [24.610378, 45.599700],
+          [24.610478, 45.599438]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "crown-wall",
+      "properties": {
+        "name": "Crown Wall (Fracture)",
+        "description": "40cm deep fracture, 10m wide",
+        "type": "crown",
+        "height": 0.4,
+        "base_height": 0,
+        "fill-color": "#aa0000",
+        "fill-opacity": 0.8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.610478, 45.599438],
+          [24.610778, 45.599438],
+          [24.610778, 45.599448],
+          [24.610478, 45.599448],
+          [24.610478, 45.599438]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "debris-mound",
+      "properties": {
+        "name": "Debris Mound",
+        "description": "Accumulated debris (~1.5m high)",
+        "type": "debris",
+        "height": 1.5,
+        "base_height": 0,
+        "fill-color": "#ffaa00",
+        "fill-opacity": 0.7
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.611376, 45.601250],
+          [24.611976, 45.601250],
+          [24.612076, 45.601397],
+          [24.611476, 45.601397],
+          [24.611376, 45.601250]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "trigger-point",
+      "properties": {
+        "name": "Trigger Point (Crown)",
+        "description": "GPS declanșare - Fracture initiation",
+        "type": "point",
+        "point_type": "trigger",
+        "marker-color": "#ff0000",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.610628, 45.599438]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "accumulation-point",
+      "properties": {
+        "name": "Accumulation Point",
+        "description": "GPS acumulare - Debris deposit",
+        "type": "point",
+        "point_type": "accumulation",
+        "marker-color": "#ffaa00",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.611776, 45.601397]
+      }
+    }
+  ]
+}

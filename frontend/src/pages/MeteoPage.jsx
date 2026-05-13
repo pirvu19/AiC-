@@ -156,7 +156,7 @@ const MeteoPage = () => {
             {htmlReport && (
                 <div className="w-full mt-10 animate-in fade-in slide-in-from-bottom-8 duration-300">
                     <div
-                        className="mx-auto max-w-6xl w-full"
+                        className="mx-auto w-full"
                         dangerouslySetInnerHTML={{ __html: htmlReport }}
                     />
                 </div>

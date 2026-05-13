@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -18,6 +18,7 @@ import UserManagementPanel from './pages/UserManagementPanel';
 import AccountRequestsPanel from './pages/AccountRequestsPanel';
 import MeteoPage from './pages/MeteoPage';
 import MetadataManagement from './pages/MetadataManagement';
+import Map3DPage from './pages/Map3DPage';
 import { useAuth } from './context/AuthContext';
 import { useEffect } from 'react';
 import { connectWebSocket } from './services/websocketService';
@@ -25,7 +26,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNotifications } from './context/NotificationContext';
 
-// Protected Route Component
 const ProtectedRoute = ({ children, roleRequired }) => {
   const { user, isAdmin, isExpert, isReviewer, isDataEngineer, isUserAdmin, loading } = useAuth();
 
@@ -49,6 +49,9 @@ function App() {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isMap3D = location.pathname === '/map3d';
 
   useEffect(() => {
     const isRestrictedAdmin = user && !user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_ADMIN_UTILIZATORI');
@@ -59,11 +62,9 @@ function App() {
 
   useEffect(() => {
     const token = user?.token || user?.accessToken;
-    // Dacă utilizatorul e logat și nu avem deja un client conectat corect
     if (user && token && !stompClient) {
       stompClient = connectWebSocket(user, addNotification);
     }
-
     return () => {
       if (stompClient) {
         stompClient.deactivate();
@@ -76,60 +77,59 @@ function App() {
     <div className="min-h-screen">
       <ToastContainer position="top-right" autoClose={5000} />
       <Navbar />
-      <main className="container pb-20">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Add more routes here as we build the pages */}
-          <Route path="/add" element={<AddReportSelectionPage />} />
-          <Route path="/add-avalanche" element={<AvalancheFormPage />} />
-          <Route path="/add-conditions" element={<ConditionsFormPage />} />
+      {isMap3D ? (
+        <Map3DPage />
+      ) : (
+        <main className="container pb-20">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/add" element={<AddReportSelectionPage />} />
+            <Route path="/add-avalanche" element={<AvalancheFormPage />} />
+            <Route path="/add-conditions" element={<ConditionsFormPage />} />
+            <Route path="/validation" element={
+              <ProtectedRoute roleRequired="EXPERT_OR_REVIEWER">
+                <ValidationPanel />
+              </ProtectedRoute>
+            } />
+            <Route path="/avalanche/:id" element={<AvalancheDetailsPage />} />
+            <Route path="/avalanche/edit/:id" element={
+              <ProtectedRoute roleRequired="ADMIN_OR_EXPERT_OR_REVIEWER">
+                <AvalancheEditPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/conditions/:id" element={<ConditionsDetailsPage />} />
+            <Route path="/conditions/edit/:id" element={
+              <ProtectedRoute roleRequired="ADMIN_OR_EXPERT_OR_REVIEWER">
+                <ConditionsEditPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/meteo" element={<MeteoPage />} />
+            <Route path="/admin/users" element={
+              <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
+                <UserManagementPanel />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/requests" element={
+              <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
+                <AccountRequestsPanel />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/metadata" element={
+              <ProtectedRoute roleRequired="ADMIN_OR_DATA_ENGINEER">
+                <MetadataManagement />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </main>
+      )}
 
-          <Route path="/validation" element={
-            <ProtectedRoute roleRequired="EXPERT_OR_REVIEWER">
-              <ValidationPanel />
-            </ProtectedRoute>
-          } />
-
-          <Route path="/avalanche/:id" element={<AvalancheDetailsPage />} />
-          <Route path="/avalanche/edit/:id" element={
-            <ProtectedRoute roleRequired="ADMIN_OR_EXPERT_OR_REVIEWER">
-              <AvalancheEditPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/conditions/:id" element={<ConditionsDetailsPage />} />
-          <Route path="/conditions/edit/:id" element={
-            <ProtectedRoute roleRequired="ADMIN_OR_EXPERT_OR_REVIEWER">
-              <ConditionsEditPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/meteo" element={<MeteoPage />} />
-
-          {/* Protected Routes */}
-          <Route path="/admin/users" element={
-            <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
-              <UserManagementPanel />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/requests" element={
-            <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
-              <AccountRequestsPanel />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/metadata" element={
-            <ProtectedRoute roleRequired="ADMIN_OR_DATA_ENGINEER">
-              <MetadataManagement />
-            </ProtectedRoute>
-          } />
-        </Routes>
-      </main>
       <div id="portal-root" />
-
     </div>
   );
 }

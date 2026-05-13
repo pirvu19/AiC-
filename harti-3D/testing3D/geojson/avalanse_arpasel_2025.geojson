@@ -1,0 +1,111 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "avalanche-path-arpasel",
+      "properties": {
+        "name": "Avalanche Path",
+        "description": "Avalansa de topire de suprafata (spontan)",
+        "type": "path",
+        "incident": "Avalansa Arpasel 2025",
+        "date": "2025-05",
+        "location": "M-tii Fagaras, versantul N al Crestei Arpasel",
+        "altitude": 2200,
+        "slope_orientation": "N",
+        "slope_angle": 40,
+        "avalanche_type": "TOPIRE",
+        "trigger": "Spontana, avalansa de topire de suprafata",
+        "size": "medie",
+        "track_length_m": 200,
+        "crown_depth_cm": 35,
+        "crown_depth_label": "30-40",
+        "crown_width_m": 150,
+        "debris_width_m": 260,
+        "run_vertical_m": 130
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.637520, 45.603800],
+          [24.637400, 45.605400],
+          [24.637900, 45.607350],
+          [24.641250, 45.607240],
+          [24.640200, 45.605300],
+          [24.639420, 45.603660],
+          [24.637520, 45.603800]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "crown-wall-arpasel",
+      "properties": {
+        "name": "Crown Wall (Fracture)",
+        "description": "30-40cm adancime coroana, 150m latime",
+        "type": "crown",
+        "height": 0.35,
+        "base_height": 0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.637520, 45.603800],
+          [24.639420, 45.603660],
+          [24.639430, 45.603740],
+          [24.637530, 45.603880],
+          [24.637520, 45.603800]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "debris-mound-arpasel",
+      "properties": {
+        "name": "Debris Mound",
+        "description": "Zona acumulare ~260m latime",
+        "type": "debris",
+        "height": 1.2,
+        "base_height": 0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.637950, 45.607280],
+          [24.641150, 45.607150],
+          [24.641250, 45.607320],
+          [24.638050, 45.607450],
+          [24.637950, 45.607280]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "trigger-point-arpasel",
+      "properties": {
+        "name": "Trigger Point",
+        "description": "GPS zona declansare",
+        "type": "point",
+        "point_type": "trigger"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.638470, 45.603731]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "accumulation-point-arpasel",
+      "properties": {
+        "name": "Accumulation Point",
+        "description": "GPS zona acumulare",
+        "type": "point",
+        "point_type": "accumulation"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.639570, 45.607292]
+      }
+    }
+  ]
+}

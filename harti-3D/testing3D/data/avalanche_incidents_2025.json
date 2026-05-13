@@ -1,0 +1,69 @@
+{
+  "defaultIncidentId": "balea_2025",
+  "order": [
+    "balea_2025",
+    "rodnei_2025",
+    "arpasel_2025"
+  ],
+  "incidents": {
+    "balea_2025": {
+      "id": "balea_2025",
+      "name": "Clasica de Balea 2025",
+      "date": "2025-03-16",
+      "type": "TOPIRE",
+      "triggerText": "Spontana",
+      "size": "medie",
+      "altitude": 2300,
+      "slopeOrientation": "N",
+      "slopeAngle": 40,
+      "trigger": [24.610628, 45.599438],
+      "accumulation": [24.611776, 45.601397],
+      "crownWidthM": 10,
+      "crownDepthCm": 40,
+      "trackLengthM": 250,
+      "debrisWidthM": 24,
+      "runVerticalM": 95,
+      "lockCamera": true,
+      "camera": { "center": [24.611029, 45.600297], "zoom": 15.94, "pitch": 72.5, "bearing": -157.64 }
+    },
+    "rodnei_2025": {
+      "id": "rodnei_2025",
+      "name": "Avalansa Rodnei Gargalau 2025",
+      "date": "2025-12-06 12:00",
+      "type": "PLACA",
+      "triggerText": "Spontana",
+      "size": "mica",
+      "altitude": 2030,
+      "slopeOrientation": "N",
+      "slopeAngle": 40,
+      "trigger": [24.809457, 47.565623],
+      "accumulation": [24.809970, 47.566615],
+      "crownWidthM": 30,
+      "crownDepthCm": 45,
+      "trackLengthM": 30,
+      "debrisWidthM": 18,
+      "runVerticalM": 23,
+      "camera": { "center": [24.80960, 47.56595], "zoom": 15.95, "pitch": 67, "bearing": 18 }
+    },
+    "arpasel_2025": {
+      "id": "arpasel_2025",
+      "name": "Avalansa Arpasel 2025",
+      "date": "2025-05 (ora NA)",
+      "type": "TOPIRE",
+      "triggerText": "Spontana, avalansa de topire de suprafata",
+      "size": "medie",
+      "altitude": 2200,
+      "slopeOrientation": "N",
+      "slopeAngle": 40,
+      "trigger": [24.638470, 45.603731],
+      "accumulation": [24.639570, 45.607292],
+      "crownWidthM": 150,
+      "crownDepthCm": 35,
+      "crownDepthLabel": "30-40",
+      "trackLengthM": 200,
+      "debrisWidthM": 260,
+      "runVerticalM": 130,
+      "camera": { "center": [24.639020, 45.605511], "zoom": 14.85, "pitch": 72, "bearing": -170 }
+    }
+  }
+}

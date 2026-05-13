@@ -1,0 +1,121 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "avalanche-path-rodnei",
+      "properties": {
+        "name": "Avalanche Path",
+        "description": "Avalansa de placa de vant (spontan)",
+        "type": "path",
+        "incident": "Avalansa Rodnei Gargalau 2025",
+        "date": "2025-12-06",
+        "time": "12:00",
+        "location": "M-tii Rodnei, versantul N Creasta principala, vest de Varful Gargalau",
+        "altitude": 2030,
+        "slope_orientation": "N",
+        "slope_angle": 40,
+        "avalanche_type": "PLACA",
+        "trigger": "Spontana",
+        "size": "mica",
+        "track_length_m": 30,
+        "crown_depth_cm": 45,
+        "crown_width_m": 30,
+        "fill-color": "#ff0000",
+        "fill-opacity": 0.4,
+        "stroke": "#cc0000",
+        "stroke-width": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.809382, 47.565641],
+          [24.809448, 47.565769],
+          [24.809514, 47.565897],
+          [24.809664, 47.565861],
+          [24.809598, 47.565733],
+          [24.809532, 47.565605],
+          [24.809382, 47.565641]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "crown-wall-rodnei",
+      "properties": {
+        "name": "Crown Wall (Fracture)",
+        "description": "45cm adancime coroana, 30m latime",
+        "type": "crown",
+        "height": 0.45,
+        "base_height": 0,
+        "fill-color": "#aa0000",
+        "fill-opacity": 0.8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.809269, 47.565668],
+          [24.809645, 47.565579],
+          [24.809652, 47.565591],
+          [24.809276, 47.565680],
+          [24.809269, 47.565668]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "debris-mound-rodnei",
+      "properties": {
+        "name": "Debris Mound",
+        "description": "Zona acumulare 15-20m latime",
+        "type": "debris",
+        "height": 1.0,
+        "base_height": 0,
+        "fill-color": "#ffaa00",
+        "fill-opacity": 0.7
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [24.809476, 47.565906],
+          [24.809702, 47.565852],
+          [24.809728, 47.565903],
+          [24.809502, 47.565957],
+          [24.809476, 47.565906]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "trigger-point-rodnei",
+      "properties": {
+        "name": "Trigger Point",
+        "description": "GPS zona declansare",
+        "type": "point",
+        "point_type": "trigger",
+        "marker-color": "#ff0000",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.809457, 47.565623]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "accumulation-point-rodnei",
+      "properties": {
+        "name": "Accumulation Point",
+        "description": "GPS zona acumulare",
+        "type": "point",
+        "point_type": "accumulation",
+        "marker-color": "#ffaa00",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.809970, 47.566615]
+      }
+    }
+  ]
+}

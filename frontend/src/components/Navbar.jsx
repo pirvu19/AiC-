@@ -31,10 +31,6 @@ const Navbar = () => {
                     {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center gap-6">
                         {!isRestrictedAdmin && (
-                            <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">Acasă</Link>
-                        )}
-
-                        {!isRestrictedAdmin && (
                             <>
                                 <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                     <Cloud size={18} />
@@ -44,6 +40,10 @@ const Navbar = () => {
                                 <Link to="/meteo" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                     <Cloud size={18} />
                                     <span>Prognoză</span>
+                                </Link>
+                                <Link to="/map3d" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                    <Mountain size={18} />
+                                    <span>Hartă 3D</span>
                                 </Link>
 
                                 {(isAdmin || (!isReviewer && !isDataEngineer)) && (
@@ -107,32 +107,79 @@ const Navbar = () => {
                                 </button>
 
                                 {showNotifications && (
-                                    <div className="absolute top-full right-0 mt-4 w-80 md:w-96 bg-[#1e2330] border border-glass-border rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 slide-in-from-top-2">
-                                        <div className="flex items-center justify-between p-4 border-b border-glass-border">
-                                            <h3 className="font-semibold text-text-main m-0">Notificări</h3>
+                                    <div 
+                                        className="absolute top-full right-0 mt-4 w-80 md:w-[450px] rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.9)] z-[1000] overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-2 border border-white/10"
+                                        style={{ backgroundColor: '#0f172a', opacity: 1 }}
+                                    >
+                                        <div className="flex items-center justify-between p-5 bg-[#1e293b]/50 border-b border-white/5">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-primary/10 rounded-lg">
+                                                    <Bell size={20} className="text-primary" />
+                                                </div>
+                                                <h3 className="text-base font-bold text-white m-0 tracking-tight">Centru Notificări</h3>
+                                            </div>
                                             <div className="flex gap-2">
-                                                <button onClick={markAllAsRead} className="text-text-muted hover:text-primary transition-colors bg-transparent" title="Marchează ca citite">
-                                                    <Check size={16} />
+                                                <button 
+                                                    onClick={markAllAsRead} 
+                                                    className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all bg-transparent" 
+                                                    title="Marchează toate ca citite"
+                                                >
+                                                    <Check size={18} />
                                                 </button>
-                                                <button onClick={clearAll} className="text-accent-red hover:text-accent-red/80 transition-colors bg-transparent" title="Șterge toate">
-                                                    <Trash2 size={16} />
+                                                <button 
+                                                    onClick={clearAll} 
+                                                    className="p-2 text-accent-red/70 hover:text-accent-red hover:bg-accent-red/10 rounded-xl transition-all bg-transparent" 
+                                                    title="Șterge tot istoricul"
+                                                >
+                                                    <Trash2 size={18} />
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                                        <div className="max-h-[500px] overflow-y-auto custom-scrollbar bg-[#0f172a]">
                                             {notifications.length === 0 ? (
-                                                <div className="p-6 text-center text-text-muted text-sm italic">Nu ai nicio notificare.</div>
+                                                <div className="p-16 text-center flex flex-col items-center gap-4">
+                                                    <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center">
+                                                        <Bell size={32} className="text-slate-700" />
+                                                    </div>
+                                                    <p className="text-slate-500 text-sm font-medium m-0">Nu ai nicio notificare momentan.</p>
+                                                </div>
                                             ) : (
                                                 notifications.map(notif => (
                                                     <div
                                                         key={notif.id}
                                                         onClick={() => { markAsRead(notif.id); setShowNotifications(false); }}
-                                                        className={`p-4 border-b border-white/5 cursor-pointer flex gap-3 transition-colors ${notif.read ? 'hover:bg-white/5' : 'bg-white/10 hover:bg-white/15'}`}
+                                                        className={`p-5 border-b border-white/5 cursor-pointer flex gap-5 transition-all duration-300 ${
+                                                            notif.read 
+                                                            ? 'bg-[#0f172a] hover:bg-[#1e293b]/30' 
+                                                            : 'bg-[#1e293b]/80 hover:bg-[#1e293b] border-l-4 border-l-primary'
+                                                        }`}
                                                     >
-                                                        <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${notif.type === 'admin' ? 'bg-primary' : 'bg-accent-green'} ${notif.read ? 'opacity-0' : 'opacity-1'}`}></div>
-                                                        <div className="flex-1">
-                                                            <p className={`m-0 text-sm leading-relaxed ${notif.read ? 'text-text-muted' : 'text-white font-medium'}`}>{notif.message}</p>
-                                                            <span className="text-[10px] text-text-muted mt-1.5 block">{new Date(notif.date).toLocaleString()}</span>
+                                                        <div className={`mt-1 flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg ${
+                                                            notif.type === 'admin' 
+                                                            ? 'bg-primary/20 text-primary' 
+                                                            : 'bg-accent-green/20 text-accent-green'
+                                                        }`}>
+                                                            {notif.type === 'admin' ? <ShieldCheck size={20} /> : <Mountain size={20} />}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex justify-between items-start mb-1">
+                                                                <span className={`text-[10px] font-bold uppercase tracking-widest ${notif.type === 'admin' ? 'text-primary' : 'text-accent-green'}`}>
+                                                                    {notif.type === 'admin' ? 'Sistem' : 'Activitate'}
+                                                                </span>
+                                                                {!notif.read && (
+                                                                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+                                                                )}
+                                                            </div>
+                                                            <p className={`m-0 text-sm leading-relaxed break-words ${notif.read ? 'text-slate-400' : 'text-slate-100 font-semibold'}`}>
+                                                                {notif.message}
+                                                            </p>
+                                                            <div className="flex items-center gap-3 mt-3">
+                                                                <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
+                                                                    <span>{new Date(notif.date).toLocaleDateString()}</span>
+                                                                    <span className="opacity-30">|</span>
+                                                                    <span>{new Date(notif.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ))
@@ -178,9 +225,6 @@ const Navbar = () => {
                     <div className="container py-6 flex flex-col gap-4">
                         {!isRestrictedAdmin && (
                             <>
-                                <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
-                                    <span>Acasă</span>
-                                </Link>
                                 <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                     <Cloud size={18} className="text-primary" />
                                     <span>Risc Avalanșe (PDF)</span>
@@ -188,6 +232,10 @@ const Navbar = () => {
                                 <Link to="/meteo" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                     <Cloud size={18} className="text-primary" />
                                     <span>Prognoză Montană</span>
+                                </Link>
+                                <Link to="/map3d" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                    <Mountain size={18} className="text-primary" />
+                                    <span>Hartă 3D Interactivă</span>
                                 </Link>
                                 {(isAdmin || (!isReviewer && !isDataEngineer)) && (
                                     <Link to="/add" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">

@@ -3,7 +3,17 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import avalancheService from '../services/avalancheService';
 import metadataService from '../services/metadataService';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, MapPin, Activity, ChevronLeft, Info, Users, Shield, Ruler, Maximize, Thermometer, Edit, Trash2, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Calendar, MapPin, Activity, ChevronLeft, Info, Users, Shield, Ruler, Maximize, Thermometer, Edit, Trash2, ShieldCheck, RefreshCw, Mountain } from 'lucide-react';
+
+const DB_ID_TO_3D_INCIDENT = {
+    "166": "balea_2025",
+    "163": "incident_163",
+    "133": "incident_133",
+    "120": "incident_120",
+    "111": "incident_111",
+    "79": "incident_79",
+    "25": "incident_25"
+};
 
 const AvalancheDetailsPage = () => {
     const { id } = useParams();
@@ -423,6 +433,47 @@ const AvalancheDetailsPage = () => {
                     )}
                 </div>
             </div>
+
+            {/* Full-width 3D Map Integration */}
+            {DB_ID_TO_3D_INCIDENT[id] && (
+                <div className="w-full mt-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase italic">
+                                <Mountain className="text-primary" size={32} /> Reconstituire Digitală 3D
+                            </h2>
+                            <p className="text-text-muted text-sm font-medium mt-1">Explorare topografică interactivă a zonei de declanșare și acumulare.</p>
+                        </div>
+                        <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/5">
+                            <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Mapbox Terrain-RGB High-Res</span>
+                        </div>
+                    </div>
+                    
+                    <div className="h-[900px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative bg-slate-900/50 group">
+                        <iframe 
+                            src={`/map3d/avalanse_mapbox_demo_dropdown.html?incident=${DB_ID_TO_3D_INCIDENT[id]}`}
+                            className="w-full h-full border-none"
+                            title="Vizualizare 3D Avalanșă"
+                            allow="geolocation"
+                        />
+                        
+                        {/* Overlay Controls Info */}
+                        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div className="glass px-8 py-3 rounded-full border border-white/10 flex gap-8 items-center text-[10px] font-bold uppercase tracking-widest text-white/80">
+                                <span className="flex items-center gap-2"><span className="text-primary">Click Stânga</span> Panoramare</span>
+                                <div className="w-1 h-1 bg-white/20 rounded-full" />
+                                <span className="flex items-center gap-2"><span className="text-primary">Click Dreapta</span> Rotație 3D</span>
+                                <div className="w-1 h-1 bg-white/20 rounded-full" />
+                                <span className="flex items-center gap-2"><span className="text-primary">Scroll</span> Zoom Altitudine</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="text-[11px] text-text-muted mt-6 text-center italic font-medium">
+                        * Modelul digital al terenului (DEM) este randat în timp real pentru o precizie maximă a pantei și a traseului de curgere.
+                    </p>
+                </div>
+            )}
         </div>
     );
 };

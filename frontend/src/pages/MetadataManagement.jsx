@@ -104,6 +104,90 @@ const MetadataManagement = () => {
         }
     };
 
+    const groupedItems = activeTab === 'massifs' 
+        ? items.reduce((acc, item) => {
+            const regionName = item.region ? item.region.name : 'Alte Regiuni';
+            if (!acc[regionName]) acc[regionName] = [];
+            acc[regionName].push(item);
+            return acc;
+        }, {})
+        : null;
+
+    const sortedRegionEntries = groupedItems 
+        ? Object.entries(groupedItems).sort(([a], [b]) => a.localeCompare(b))
+        : [];
+
+    const renderItem = (item) => (
+        <div key={item.id} className="p-4 hover:bg-white/5 transition-colors group">
+            {editingId === item.id ? (
+                <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                        <input 
+                            className="flex-1 bg-slate-800 border border-primary/30 rounded-lg px-3 py-2 text-white outline-none focus:border-primary"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            autoFocus
+                        />
+                        {activeTab === 'massifs' && (
+                            <select
+                                className="bg-slate-800 border border-primary/30 rounded-lg px-3 py-2 text-white outline-none focus:border-primary text-sm"
+                                value={editSecondaryValue}
+                                onChange={(e) => setEditSecondaryValue(e.target.value)}
+                            >
+                                <option value="">Alege regiune...</option>
+                                {regions.map(r => (
+                                    <option key={r.id} value={r.id}>{r.name}</option>
+                                ))}
+                            </select>
+                        )}
+                    </div>
+                    <div className="flex justify-end gap-2 mt-2">
+                        <button 
+                            onClick={() => setEditingId(null)} 
+                            className="p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                            title="Anulează"
+                        >
+                            <X size={18} />
+                        </button>
+                        <button 
+                            onClick={() => handleUpdate(item.id)} 
+                            className="flex items-center gap-2 bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg text-white text-xs font-bold transition-all shadow-lg shadow-primary/20"
+                        >
+                            <Save size={14} /> Salvează
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-500 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                            {item.id}
+                        </div>
+                        <div>
+                            <span className="text-white font-medium tracking-wide">{item[currentTab.field]}</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                        <button 
+                            onClick={() => startEditing(item)} 
+                            className="p-2 text-primary hover:text-white bg-primary/10 hover:bg-primary rounded-lg transition-all"
+                            title="Editează"
+                        >
+                            <Edit2 size={16} />
+                        </button>
+                        <button 
+                            onClick={() => handleDelete(item.id)} 
+                            className="p-2 text-accent-red hover:text-white bg-accent-red/10 hover:bg-accent-red rounded-lg transition-all"
+                            title="Șterge"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
     return (
         <div className="space-y-8 animate-in fade-in duration-500 max-w-5xl mx-auto">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/5">
@@ -145,66 +229,24 @@ const MetadataManagement = () => {
 
                         {!loading && items.length > 0 && (
                             <div className="divide-y divide-white/5">
-                                {items.map((item) => (
-                                    <div key={item.id} className="p-4 hover:bg-white/5 transition-colors group">
-                                        {editingId === item.id ? (
-                                            <div className="flex flex-col gap-3">
-                                                <div className="flex items-center gap-3">
-                                                    <input 
-                                                        className="flex-1 bg-slate-800 border border-primary/30 rounded-lg px-3 py-2 text-white outline-none focus:border-primary"
-                                                        value={editValue}
-                                                        onChange={(e) => setEditValue(e.target.value)}
-                                                        autoFocus
-                                                    />
-                                                    {activeTab === 'massifs' && (
-                                                        <select
-                                                            className="bg-slate-800 border border-primary/30 rounded-lg px-3 py-2 text-white outline-none focus:border-primary text-sm"
-                                                            value={editSecondaryValue}
-                                                            onChange={(e) => setEditSecondaryValue(e.target.value)}
-                                                        >
-                                                            <option value="">Alege regiune...</option>
-                                                            {regions.map(r => (
-                                                                <option key={r.id} value={r.id}>{r.name}</option>
-                                                            ))}
-                                                        </select>
-                                                    )}
-                                                </div>
-                                                <div className="flex justify-end gap-2">
-                                                    <button onClick={() => setEditingId(null)} className="p-2 text-slate-400 hover:text-white">
-                                                        <X size={18} />
-                                                    </button>
-                                                    <button onClick={() => handleUpdate(item.id)} className="flex items-center gap-2 bg-primary px-4 py-2 rounded-lg text-white text-xs font-bold">
-                                                        <Save size={14} /> Salvează
-                                                    </button>
-                                                </div>
+                                {activeTab === 'massifs' ? (
+                                    sortedRegionEntries.map(([regionName, regionItems]) => (
+                                        <div key={regionName} className="border-b border-white/5 last:border-0">
+                                            <div className="bg-slate-800/30 px-6 py-3 flex items-center gap-3 border-b border-white/5">
+                                                <Map size={14} className="text-primary/70" />
+                                                <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">{regionName}</span>
+                                                <span className="ml-auto text-[10px] font-mono bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full shadow-inner">
+                                                    {regionItems.length} masive
+                                                </span>
                                             </div>
-                                        ) : (
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-500 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
-                                                        {item.id}
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-white font-medium">{item[currentTab.field]}</span>
-                                                        {activeTab === 'massifs' && item.region && (
-                                                            <span className="ml-3 px-2 py-0.5 rounded-full bg-slate-800 text-[10px] text-slate-400">
-                                                                {item.region.name}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button onClick={() => startEditing(item)} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg">
-                                                        <Edit2 size={16} />
-                                                    </button>
-                                                    <button onClick={() => handleDelete(item.id)} className="p-2 text-slate-400 hover:text-accent-red hover:bg-accent-red/10 rounded-lg">
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </div>
+                                            <div className="divide-y divide-white/5 bg-slate-900/20">
+                                                {regionItems.map((item) => renderItem(item))}
                                             </div>
-                                        )}
-                                    </div>
-                                ))}
+                                        </div>
+                                    ))
+                                ) : (
+                                    items.map((item) => renderItem(item))
+                                )}
                             </div>
                         )}
                     </div>

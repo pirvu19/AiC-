@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Avalanche 3D - Rodnei 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbm9penoiLCJhIjoiY2lyZXViYjlrMDAxaGlobTRyZ2p3dm45diJ9.JTY15oBLO0T9XGAT890Ahg';
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/thenoizz/clmlpc3ls01wg01r70etz71g1',
+      center: [24.80960, 47.56595],
+      zoom: 15.7,
+      pitch: 62,
+      bearing: 18,
+      antialias: true
+    });
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+    map.on('load', () => {
+      if (!map.getSource('mapbox-dem')) {
+        map.addSource('mapbox-dem', {
+          type: 'raster-dem',
+          url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          tileSize: 512,
+          maxzoom: 14
+        });
+        map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.2 });
+      }
+
+      map.addSource('avalanche', {
+        type: 'geojson',
+        data: 'geojson/avalanse_rodnei_2025.geojson'
+      });
+
+      map.addLayer({
+        id: 'avalanche-path',
+        type: 'fill',
+        source: 'avalanche',
+        filter: ['==', ['get', 'type'], 'path'],
+        paint: {
+          'fill-color': '#ff0000',
+          'fill-opacity': 0.6
+        }
+      });
+
+      map.addLayer({
+        id: 'avalanche-path-outline',
+        type: 'line',
+        source: 'avalanche',
+        filter: ['==', ['get', 'type'], 'path'],
+        paint: {
+          'line-color': '#ffff00',
+          'line-width': 3
+        }
+      });
+
+      map.addLayer({
+        id: 'crown-wall-3d',
+        type: 'fill-extrusion',
+        source: 'avalanche',
+        filter: ['==', ['get', 'type'], 'crown'],
+        paint: {
+          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 5,
+          'fill-extrusion-base': 0,
+          'fill-extrusion-opacity': 0.9
+        }
+      });
+
+      map.addLayer({
+        id: 'debris-mound-3d',
+        type: 'fill-extrusion',
+        source: 'avalanche',
+        filter: ['==', ['get', 'type'], 'debris'],
+        paint: {
+          'fill-extrusion-color': '#ffaa00',
+          'fill-extrusion-height': 8,
+          'fill-extrusion-base': 0,
+          'fill-extrusion-opacity': 0.9
+        }
+      });
+
+      map.addLayer({
+        id: 'trigger-point',
+        type: 'circle',
+        source: 'avalanche',
+        filter: ['all',
+          ['==', ['get', 'type'], 'point'],
+          ['==', ['get', 'point_type'], 'trigger']
+        ],
+        paint: {
+          'circle-radius': 10,
+          'circle-color': '#ff0000',
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+
+      map.addLayer({
+        id: 'accumulation-point',
+        type: 'circle',
+        source: 'avalanche',
+        filter: ['all',
+          ['==', ['get', 'type'], 'point'],
+          ['==', ['get', 'point_type'], 'accumulation']
+        ],
+        paint: {
+          'circle-radius': 10,
+          'circle-color': '#ffaa00',
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+
+      map.on('click', 'avalanche-path', (e) => {
+        const props = e.features[0].properties;
+        new mapboxgl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(`
+            <strong>${props.incident}</strong><br>
+            Date: ${props.date} ${props.time || ''}<br>
+            Type: ${props.avalanche_type}<br>
+            Size: ${props.size}<br>
+            Trigger: ${props.trigger}<br>
+            Crown: ${props.crown_depth_cm}cm x ${props.crown_width_m}m<br>
+            Track: ${props.track_length_m}m
+          `)
+          .addTo(map);
+      });
+
+      map.on('mouseenter', 'avalanche-path', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      map.on('mouseleave', 'avalanche-path', () => {
+        map.getCanvas().style.cursor = '';
+      });
+    });
+  </script>
+</body>
+</html>

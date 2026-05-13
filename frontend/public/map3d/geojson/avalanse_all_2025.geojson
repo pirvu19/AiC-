@@ -1,0 +1,572 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "avalanche-path",
+      "properties": {
+        "name": "Avalanche Path",
+        "description": "Full avalanche track from crown to accumulation",
+        "type": "path",
+        "incident": "Clasica de Balea 2025",
+        "date": "2025-03-16",
+        "location": "Fagaras, vers N vf Paltinul, sub balcoane",
+        "altitude": 2300,
+        "slope_orientation": "N",
+        "slope_angle": 40,
+        "avalanche_type": "TOPIRE",
+        "trigger": "Spontana",
+        "size": "medium",
+        "track_length_m": 250,
+        "crown_depth_cm": 40,
+        "crown_width_m": 10,
+        "link": "https://avalanseincarpati.ro/clasica-de-balea-2025/",
+        "fill-color": "#ff0000",
+        "fill-opacity": 0.4,
+        "stroke": "#cc0000",
+        "stroke-width": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.610478,
+              45.599438
+            ],
+            [
+              24.610778,
+              45.599438
+            ],
+            [
+              24.610878,
+              45.599700
+            ],
+            [
+              24.610978,
+              45.600000
+            ],
+            [
+              24.611178,
+              45.600300
+            ],
+            [
+              24.611378,
+              45.600600
+            ],
+            [
+              24.611578,
+              45.600900
+            ],
+            [
+              24.611876,
+              45.601200
+            ],
+            [
+              24.612076,
+              45.601397
+            ],
+            [
+              24.611476,
+              45.601397
+            ],
+            [
+              24.611276,
+              45.601200
+            ],
+            [
+              24.611078,
+              45.600900
+            ],
+            [
+              24.610878,
+              45.600600
+            ],
+            [
+              24.610678,
+              45.600300
+            ],
+            [
+              24.610478,
+              45.600000
+            ],
+            [
+              24.610378,
+              45.599700
+            ],
+            [
+              24.610478,
+              45.599438
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "crown-wall",
+      "properties": {
+        "name": "Crown Wall (Fracture)",
+        "description": "40cm deep fracture, 10m wide",
+        "type": "crown",
+        "height": 0.4,
+        "base_height": 0,
+        "fill-color": "#aa0000",
+        "fill-opacity": 0.8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.610478,
+              45.599438
+            ],
+            [
+              24.610778,
+              45.599438
+            ],
+            [
+              24.610778,
+              45.599448
+            ],
+            [
+              24.610478,
+              45.599448
+            ],
+            [
+              24.610478,
+              45.599438
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "debris-mound",
+      "properties": {
+        "name": "Debris Mound",
+        "description": "Accumulated debris (~1.5m high)",
+        "type": "debris",
+        "height": 1.5,
+        "base_height": 0,
+        "fill-color": "#ffaa00",
+        "fill-opacity": 0.7
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.611376,
+              45.601250
+            ],
+            [
+              24.611976,
+              45.601250
+            ],
+            [
+              24.612076,
+              45.601397
+            ],
+            [
+              24.611476,
+              45.601397
+            ],
+            [
+              24.611376,
+              45.601250
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "trigger-point",
+      "properties": {
+        "name": "Trigger Point (Crown)",
+        "description": "GPS declanșare - Fracture initiation",
+        "type": "point",
+        "point_type": "trigger",
+        "marker-color": "#ff0000",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.610628,
+          45.599438
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "accumulation-point",
+      "properties": {
+        "name": "Accumulation Point",
+        "description": "GPS acumulare - Debris deposit",
+        "type": "point",
+        "point_type": "accumulation",
+        "marker-color": "#ffaa00",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.611776,
+          45.601397
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "avalanche-path-rodnei",
+      "properties": {
+        "name": "Avalanche Path",
+        "description": "Avalansa de placa de vant (spontan)",
+        "type": "path",
+        "incident": "Avalansa Rodnei Gargalau 2025",
+        "date": "2025-12-06",
+        "time": "12:00",
+        "location": "M-tii Rodnei, versantul N Creasta principala, vest de Varful Gargalau",
+        "altitude": 2030,
+        "slope_orientation": "N",
+        "slope_angle": 40,
+        "avalanche_type": "PLACA",
+        "trigger": "Spontana",
+        "size": "mica",
+        "track_length_m": 30,
+        "crown_depth_cm": 45,
+        "crown_width_m": 30,
+        "fill-color": "#ff0000",
+        "fill-opacity": 0.4,
+        "stroke": "#cc0000",
+        "stroke-width": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.809382,
+              47.565641
+            ],
+            [
+              24.809448,
+              47.565769
+            ],
+            [
+              24.809514,
+              47.565897
+            ],
+            [
+              24.809664,
+              47.565861
+            ],
+            [
+              24.809598,
+              47.565733
+            ],
+            [
+              24.809532,
+              47.565605
+            ],
+            [
+              24.809382,
+              47.565641
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "crown-wall-rodnei",
+      "properties": {
+        "name": "Crown Wall (Fracture)",
+        "description": "45cm adancime coroana, 30m latime",
+        "type": "crown",
+        "height": 0.45,
+        "base_height": 0,
+        "fill-color": "#aa0000",
+        "fill-opacity": 0.8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.809269,
+              47.565668
+            ],
+            [
+              24.809645,
+              47.565579
+            ],
+            [
+              24.809652,
+              47.565591
+            ],
+            [
+              24.809276,
+              47.565680
+            ],
+            [
+              24.809269,
+              47.565668
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "debris-mound-rodnei",
+      "properties": {
+        "name": "Debris Mound",
+        "description": "Zona acumulare 15-20m latime",
+        "type": "debris",
+        "height": 1.0,
+        "base_height": 0,
+        "fill-color": "#ffaa00",
+        "fill-opacity": 0.7
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.809476,
+              47.565906
+            ],
+            [
+              24.809702,
+              47.565852
+            ],
+            [
+              24.809728,
+              47.565903
+            ],
+            [
+              24.809502,
+              47.565957
+            ],
+            [
+              24.809476,
+              47.565906
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "trigger-point-rodnei",
+      "properties": {
+        "name": "Trigger Point",
+        "description": "GPS zona declansare",
+        "type": "point",
+        "point_type": "trigger",
+        "marker-color": "#ff0000",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.809457,
+          47.565623
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "accumulation-point-rodnei",
+      "properties": {
+        "name": "Accumulation Point",
+        "description": "GPS zona acumulare",
+        "type": "point",
+        "point_type": "accumulation",
+        "marker-color": "#ffaa00",
+        "marker-symbol": "triangle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.809970,
+          47.566615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "avalanche-path-arpasel",
+      "properties": {
+        "name": "Avalanche Path",
+        "description": "Avalansa de topire de suprafata (spontan)",
+        "type": "path",
+        "incident": "Avalansa Arpasel 2025",
+        "date": "2025-05",
+        "location": "M-tii Fagaras, versantul N al Crestei Arpasel",
+        "altitude": 2200,
+        "slope_orientation": "N",
+        "slope_angle": 40,
+        "avalanche_type": "TOPIRE",
+        "trigger": "Spontana, avalansa de topire de suprafata",
+        "size": "medie",
+        "track_length_m": 200,
+        "crown_depth_cm": 35,
+        "crown_depth_label": "30-40",
+        "crown_width_m": 150,
+        "debris_width_m": 260,
+        "run_vertical_m": 130
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.637520,
+              45.603800
+            ],
+            [
+              24.637400,
+              45.605400
+            ],
+            [
+              24.637900,
+              45.607350
+            ],
+            [
+              24.641250,
+              45.607240
+            ],
+            [
+              24.640200,
+              45.605300
+            ],
+            [
+              24.639420,
+              45.603660
+            ],
+            [
+              24.637520,
+              45.603800
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "crown-wall-arpasel",
+      "properties": {
+        "name": "Crown Wall (Fracture)",
+        "description": "30-40cm adancime coroana, 150m latime",
+        "type": "crown",
+        "height": 0.35,
+        "base_height": 0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.637520,
+              45.603800
+            ],
+            [
+              24.639420,
+              45.603660
+            ],
+            [
+              24.639430,
+              45.603740
+            ],
+            [
+              24.637530,
+              45.603880
+            ],
+            [
+              24.637520,
+              45.603800
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "debris-mound-arpasel",
+      "properties": {
+        "name": "Debris Mound",
+        "description": "Zona acumulare ~260m latime",
+        "type": "debris",
+        "height": 1.2,
+        "base_height": 0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              24.637950,
+              45.607280
+            ],
+            [
+              24.641150,
+              45.607150
+            ],
+            [
+              24.641250,
+              45.607320
+            ],
+            [
+              24.638050,
+              45.607450
+            ],
+            [
+              24.637950,
+              45.607280
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "trigger-point-arpasel",
+      "properties": {
+        "name": "Trigger Point",
+        "description": "GPS zona declansare",
+        "type": "point",
+        "point_type": "trigger"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.638470,
+          45.603731
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "accumulation-point-arpasel",
+      "properties": {
+        "name": "Accumulation Point",
+        "description": "GPS zona acumulare",
+        "type": "point",
+        "point_type": "accumulation"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.639570,
+          45.607292
+        ]
+      }
+    }
+  ]
+}

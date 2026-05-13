@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Avalanche 3D - Dropdown Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; inset: 0; }
+    #controls {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      background: rgba(20, 30, 42, 0.86);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-width: 300px;
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(183, 207, 230, 0.24);
+    }
+    #controls label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #d7e8f8;
+    }
+    #incident-select {
+      width: 100%;
+      padding: 7px;
+      font-size: 14px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid #6e87a3;
+      background: #cfdceb;
+    }
+    #incident-meta {
+      font-size: 12px;
+      line-height: 1.36;
+      color: #e6f1fb;
+    }
+    #camera-debug {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(183, 207, 230, 0.24);
+      font-size: 11px;
+      line-height: 1.4;
+      color: #d4e5f5;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="controls">
+    <label for="incident-select">Avalanche</label>
+    <select id="incident-select"></select>
+    <div id="incident-meta"></div>
+    <div id="camera-debug"></div>
+  </div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbm9penoiLCJhIjoiY2lyZXViYjlrMDAxaGlobTRyZ2p3dm45diJ9.JTY15oBLO0T9XGAT890Ahg';
+
+    const INCIDENTS_DATA_PATH = 'data/avalanche_incidents_2025.json';
+
+    const select = document.getElementById('incident-select');
+    const meta = document.getElementById('incident-meta');
+    const cameraDebug = document.getElementById('camera-debug');
+    const ZOOM_OUT_DELTA = 0.4;
+    let incidents = {};
+    let incidentOrder = [];
+    let map;
+
+    function metersPerDegree(latDeg) {
+      const lat = latDeg * Math.PI / 180;
+      const latMeters = 111132.92 - 559.82 * Math.cos(2 * lat) + 1.175 * Math.cos(4 * lat);
+      const lonMeters = 111412.84 * Math.cos(lat) - 93.5 * Math.cos(3 * lat);
+      return { latMeters, lonMeters };
+    }
+
+    function metersToLonLat(dx, dy, atLat) {
+      const m = metersPerDegree(atLat);
+      return [dx / m.lonMeters, dy / m.latMeters];
+    }
+
+    function lonLatToMeters(lngLat, referenceLat) {
+      const m = metersPerDegree(referenceLat);
+      return [lngLat[0] * m.lonMeters, lngLat[1] * m.latMeters];
+    }
+
+    function addVec(a, b) {
+      return [a[0] + b[0], a[1] + b[1]];
+    }
+
+    function mulVec(a, s) {
+      return [a[0] * s, a[1] * s];
+    }
+
+    function slopeBearingDeg(fromLngLat, toLngLat, refLat) {
+      const fromM = lonLatToMeters(fromLngLat, refLat);
+      const toM = lonLatToMeters(toLngLat, refLat);
+      const dx = toM[0] - fromM[0];
+      const dy = toM[1] - fromM[1];
+      return (Math.atan2(dx, dy) * 180 / Math.PI + 360) % 360;
+    }
+
+    function buildCameraForIncident(incident) {
+      const refLat = (incident.trigger[1] + incident.accumulation[1]) * 0.5;
+      const trigM = lonLatToMeters(incident.trigger, refLat);
+      const accM = lonLatToMeters(incident.accumulation, refLat);
+      const v = [accM[0] - trigM[0], accM[1] - trigM[1]];
+      const len = Math.max(Math.hypot(v[0], v[1]), 1);
+      const slopeBearing = slopeBearingDeg(incident.trigger, incident.accumulation, refLat);
+      const bearing = ((slopeBearing + 180 + 540) % 360) - 180;
+      if (incident.lockCamera && incident.camera) {
+        return incident.camera;
+      }
+      const center = [
+        (incident.trigger[0] + incident.accumulation[0]) * 0.5,
+        (incident.trigger[1] + incident.accumulation[1]) * 0.5
+      ];
+
+      const widthM = Math.max((incident.crownWidthM || 10) * 1.6, (incident.debrisWidthM || 18) * 1.6);
+      const extentM = Math.max(len * 1.25, widthM);
+      const zoom = Math.max(14.2, Math.min(17.3, 17.3 - Math.log2(extentM / 80)));
+
+      return {
+        center,
+        zoom,
+        bearing,
+        pitch: 72
+      };
+    }
+
+    function buildIncidentFeatures(incident) {
+      const refLat = (incident.trigger[1] + incident.accumulation[1]) * 0.5;
+      const trigM = lonLatToMeters(incident.trigger, refLat);
+      const accM = lonLatToMeters(incident.accumulation, refLat);
+      const v = [accM[0] - trigM[0], accM[1] - trigM[1]];
+      const len = Math.max(Math.hypot(v[0], v[1]), 1);
+      const dir = [v[0] / len, v[1] / len];
+      const perp = [-dir[1], dir[0]];
+
+      const trackLen = Math.max(len, incident.trackLengthM || 0, 20);
+      const start = trigM;
+      const end = addVec(start, mulVec(dir, trackLen));
+
+      const sections = [0, 0.15, 0.35, 0.55, 0.75, 1.0];
+      const leftSide = [];
+      const rightSide = [];
+
+      sections.forEach((t) => {
+        const center = addVec(start, mulVec([end[0] - start[0], end[1] - start[1]], t));
+        const shoulder = Math.sin(t * Math.PI) * 0.5;
+        const centerCurved = addVec(center, mulVec(perp, shoulder * 3.5));
+        const width = incident.crownWidthM + (incident.debrisWidthM - incident.crownWidthM) * t;
+        const half = width * 0.5;
+        leftSide.push(addVec(centerCurved, mulVec(perp, half)));
+        rightSide.push(addVec(centerCurved, mulVec(perp, -half)));
+      });
+
+      const pathMeters = leftSide.concat(rightSide.reverse());
+      pathMeters.push(pathMeters[0]);
+
+      const crownDepthM = Math.max((incident.crownDepthCm || 40) / 100, 0.35);
+      const crownThicknessM = Math.max(incident.crownWidthM * 0.06, 1.2);
+      const crownCenter = addVec(start, mulVec(dir, crownThicknessM * 0.5));
+      const crownLeftA = addVec(addVec(crownCenter, mulVec(perp, incident.crownWidthM * 0.5)), mulVec(dir, -crownThicknessM * 0.5));
+      const crownRightA = addVec(addVec(crownCenter, mulVec(perp, -incident.crownWidthM * 0.5)), mulVec(dir, -crownThicknessM * 0.5));
+      const crownRightB = addVec(crownRightA, mulVec(dir, crownThicknessM));
+      const crownLeftB = addVec(crownLeftA, mulVec(dir, crownThicknessM));
+      const crownMeters = [crownLeftA, crownRightA, crownRightB, crownLeftB, crownLeftA];
+
+      const debrisCenter = addVec(end, mulVec(dir, 2.5));
+      const debrisHalfLong = Math.max(incident.debrisWidthM * 0.55, 6);
+      const debrisHalfWide = Math.max(incident.debrisWidthM * 0.35, 4);
+      const debrisMeters = [];
+      for (let i = 0; i <= 20; i += 1) {
+        const a = (Math.PI * 2 * i) / 20;
+        const local = addVec(
+          mulVec(dir, Math.cos(a) * debrisHalfLong),
+          mulVec(perp, Math.sin(a) * debrisHalfWide)
+        );
+        debrisMeters.push(addVec(debrisCenter, local));
+      }
+
+      const toAbsolute = (xy) => {
+        const d = metersToLonLat(xy[0], xy[1], refLat);
+        return [d[0], d[1]];
+      };
+
+      const pathCoords = pathMeters.map(toAbsolute);
+      const crownCoords = crownMeters.map(toAbsolute);
+      const debrisCoords = debrisMeters.map(toAbsolute);
+
+      const debrisHeight = Math.max(0.9, crownDepthM * 2.1);
+
+      return [
+        {
+          type: 'Feature',
+          properties: {
+            incident_id: incident.id,
+            type: 'path',
+            incident: incident.name,
+            date: incident.date,
+            avalanche_type: incident.type,
+            trigger: incident.triggerText,
+            size: incident.size,
+            track_length_m_reported: incident.trackLengthM,
+            track_length_m_gps: Math.round(len),
+            crown_depth_cm: incident.crownDepthCm,
+            crown_depth_label: incident.crownDepthLabel || String(incident.crownDepthCm),
+            crown_width_m: incident.crownWidthM
+          },
+          geometry: { type: 'Polygon', coordinates: [pathCoords] }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            incident_id: incident.id,
+            type: 'crown',
+            height: crownDepthM
+          },
+          geometry: { type: 'Polygon', coordinates: [crownCoords] }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            incident_id: incident.id,
+            type: 'debris',
+            height: debrisHeight
+          },
+          geometry: { type: 'Polygon', coordinates: [debrisCoords] }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            incident_id: incident.id,
+            type: 'point',
+            point_type: 'trigger'
+          },
+          geometry: { type: 'Point', coordinates: incident.trigger }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            incident_id: incident.id,
+            type: 'point',
+            point_type: 'accumulation'
+          },
+          geometry: { type: 'Point', coordinates: incident.accumulation }
+        }
+      ];
+    }
+
+    function buildFilter(incidentId, featureType, pointType) {
+      const filter = ['all',
+        ['==', ['get', 'incident_id'], incidentId],
+        ['==', ['get', 'type'], featureType]
+      ];
+      if (pointType) filter.push(['==', ['get', 'point_type'], pointType]);
+      return filter;
+    }
+
+    function updateMeta(incidentId) {
+      const i = incidents[incidentId];
+      meta.innerHTML = [
+        `<strong>${i.name}</strong>`,
+        `Date: ${i.date}`,
+        `Altitude: ${i.altitude}m`,
+        `Slope: ${i.slopeOrientation} / ${i.slopeAngle} deg`,
+        `Type: ${i.type}, Size: ${i.size}`,
+        `Track (reported): ${i.trackLengthM}m, Crown: ${(i.crownDepthLabel || i.crownDepthCm)}cm x ${i.crownWidthM}m`
+      ].join('<br>');
+    }
+
+    function updateCameraDebug() {
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      const pitch = map.getPitch();
+      const bearing = map.getBearing();
+      cameraDebug.textContent =
+        `center.lng: ${center.lng.toFixed(6)}\n` +
+        `center.lat: ${center.lat.toFixed(6)}\n` +
+        `zoom: ${zoom.toFixed(2)}\n` +
+        `pitch: ${pitch.toFixed(2)}\n` +
+        `bearing: ${bearing.toFixed(2)}`;
+    }
+
+    function applyIncidentFilter(incidentId) {
+      map.setFilter('avalanche-path', buildFilter(incidentId, 'path'));
+      map.setFilter('avalanche-path-outline', buildFilter(incidentId, 'path'));
+      map.setFilter('crown-wall-3d', buildFilter(incidentId, 'crown'));
+      map.setFilter('debris-mound-3d', buildFilter(incidentId, 'debris'));
+      map.setFilter('trigger-point', buildFilter(incidentId, 'point', 'trigger'));
+      map.setFilter('accumulation-point', buildFilter(incidentId, 'point', 'accumulation'));
+
+      const dynamicCamera = buildCameraForIncident(incidents[incidentId]);
+      map.easeTo({
+        center: dynamicCamera.center,
+        zoom: Math.max(13.8, dynamicCamera.zoom - ZOOM_OUT_DELTA),
+        pitch: dynamicCamera.pitch,
+        bearing: dynamicCamera.bearing,
+        duration: 1200
+      });
+      updateMeta(incidentId);
+      map.once('moveend', updateCameraDebug);
+    }
+
+    async function loadIncidentsData() {
+      const response = await fetch(INCIDENTS_DATA_PATH);
+      if (!response.ok) {
+        throw new Error(`Could not load incidents data: ${response.status}`);
+      }
+      const payload = await response.json();
+      incidents = payload.incidents || {};
+      incidentOrder = payload.order || Object.keys(incidents);
+      const fallbackId = incidentOrder[0];
+      const defaultIncidentId = payload.defaultIncidentId && incidents[payload.defaultIncidentId]
+        ? payload.defaultIncidentId
+        : fallbackId;
+      return defaultIncidentId;
+    }
+
+    function populateIncidentSelect() {
+      select.innerHTML = '';
+      incidentOrder.forEach((incidentId) => {
+        const option = document.createElement('option');
+        option.value = incidentId;
+        option.textContent = incidents[incidentId].name;
+        select.appendChild(option);
+      });
+    }
+
+    function initMap(initialIncidentId) {
+      const initialIncident = incidents[initialIncidentId];
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/thenoizz/clmlpc3ls01wg01r70etz71g1',
+        center: initialIncident.camera.center,
+        zoom: initialIncident.camera.zoom,
+        pitch: initialIncident.camera.pitch,
+        bearing: initialIncident.camera.bearing,
+        antialias: true
+      });
+
+      map.addControl(new mapboxgl.NavigationControl());
+
+      map.on('load', () => {
+        if (!map.getSource('mapbox-dem')) {
+          map.addSource('mapbox-dem', {
+            type: 'raster-dem',
+            url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+            tileSize: 512,
+            maxzoom: 14
+          });
+        }
+        map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.3 });
+        map.setFog({
+          color: '#a9c0d8',
+          'high-color': '#d9e8f6',
+          'horizon-blend': 0.18,
+          range: [0.6, 8],
+          'space-color': '#6a88a6',
+          'star-intensity': 0
+        });
+
+        const combined = {
+          type: 'FeatureCollection',
+          features: incidentOrder.flatMap((incidentId) => buildIncidentFeatures(incidents[incidentId]))
+        };
+
+        map.addSource('avalanche', { type: 'geojson', data: combined });
+
+        map.addLayer({
+          id: 'avalanche-path',
+          type: 'fill',
+          source: 'avalanche',
+          paint: {
+            'fill-color': '#ecf6ff',
+            'fill-opacity': 0.52
+          }
+        });
+
+        map.addLayer({
+          id: 'avalanche-path-outline',
+          type: 'line',
+          source: 'avalanche',
+          paint: {
+            'line-color': '#f6fbff',
+            'line-width': 2.4,
+            'line-opacity': 0.95
+          }
+        });
+
+        map.addLayer({
+          id: 'crown-wall-3d',
+          type: 'fill-extrusion',
+          source: 'avalanche',
+          paint: {
+            'fill-extrusion-color': '#26384a',
+            'fill-extrusion-height': ['*', ['coalesce', ['get', 'height'], 0.4], 1.6],
+            'fill-extrusion-base': 0,
+            'fill-extrusion-opacity': 0.94,
+            'fill-extrusion-vertical-gradient': true
+          }
+        });
+
+        map.addLayer({
+          id: 'debris-mound-3d',
+          type: 'fill-extrusion',
+          source: 'avalanche',
+          paint: {
+            'fill-extrusion-color': '#7d8791',
+            'fill-extrusion-height': ['*', ['coalesce', ['get', 'height'], 1.0], 1.8],
+            'fill-extrusion-base': 0,
+            'fill-extrusion-opacity': 0.9,
+            'fill-extrusion-vertical-gradient': true
+          }
+        });
+
+        map.addLayer({
+          id: 'trigger-point',
+          type: 'circle',
+          source: 'avalanche',
+          paint: {
+            'circle-radius': 7,
+            'circle-color': '#b9e1ff',
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#0d1a28'
+          }
+        });
+
+        map.addLayer({
+          id: 'accumulation-point',
+          type: 'circle',
+          source: 'avalanche',
+          paint: {
+            'circle-radius': 7,
+            'circle-color': '#d7dee6',
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#1b2836'
+          }
+        });
+
+        map.on('click', 'avalanche-path', (e) => {
+          const p = e.features[0].properties;
+          new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(
+              `<strong>${p.incident}</strong><br>` +
+              `Date: ${p.date}<br>` +
+              `Type: ${p.avalanche_type}<br>` +
+              `Trigger: ${p.trigger}<br>` +
+              `Track (reported): ${p.track_length_m_reported}m<br>` +
+              `Track (GPS): ${p.track_length_m_gps}m<br>` +
+              `Crown: ${p.crown_depth_label}cm x ${p.crown_width_m}m`
+            )
+            .addTo(map);
+        });
+
+        map.on('mouseenter', 'avalanche-path', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', 'avalanche-path', () => {
+          map.getCanvas().style.cursor = '';
+        });
+
+        map.on('move', updateCameraDebug);
+        map.on('zoom', updateCameraDebug);
+        map.on('rotate', updateCameraDebug);
+        map.on('pitch', updateCameraDebug);
+
+        applyIncidentFilter(select.value);
+        select.addEventListener('change', () => applyIncidentFilter(select.value));
+        updateCameraDebug();
+      });
+    }
+
+    async function bootstrap() {
+      const defaultIncidentId = await loadIncidentsData();
+      populateIncidentSelect();
+
+      // Allow pre-selecting an incident via URL query param: ?incident=balea_2025
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramIncident = urlParams.get('incident');
+      const startId = (paramIncident && incidents[paramIncident]) ? paramIncident : defaultIncidentId;
+
+      select.value = startId;
+      updateMeta(startId);
+      initMap(startId);
+    }
+
+    bootstrap().catch((error) => {
+      console.error(error);
+      meta.textContent = 'Failed to load avalanche incidents data.';
+    });
+  </script>
+</body>
+</html>
