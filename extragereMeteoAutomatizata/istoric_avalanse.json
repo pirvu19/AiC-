@@ -1,0 +1,1092 @@
+[
+    {
+        "perioada": "13.04.2026 ora 21 - 15.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-6..0 grade spre -3..3 grade°C",
+                "max": "-1..7 grade spre 3..8 grade°C"
+            },
+            "sub_1800m": {
+                "min": "-2…3 grade spre 0…6 grade°C",
+                "max": "2..12 grade spre 8..15 grade°C"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "224 cm la Vârful Omu, 181 cm la Bâlea-Lac, 141 cm la Țarcu, 22 cm la Cuntu, petice la Păltiniș, Sinaia, Predeal și Parâng.",
+            "Orientali": "116 cm la Călimani, 108 cm la Lăcăuți, 84 cm la Ceahlău, 38 cm la Iezer-Rodnei, 26 cm la Penteleu.",
+            "Occidentali": "32 cm la Vlădeasa-1800, 14 cm la Semenic, petice la Băișoara."
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "10.04.2026 ora 21 - 13.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-12 la -6°C",
+                "max": "-6 la 0°C"
+            },
+            "sub_1800m": {
+                "min": "-7 la -2°C",
+                "max": "-1 la 6°C"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "215 cm la Vârful Omu, 188 cm la Bâlea-Lac, 145 cm la Țarcu, 24 cm la Cuntu, 7 cm la Păltiniș, 6 cm la Sinaia, 2 cm la Predeal, petice la Parâng.",
+            "Orientali": "116 cm la Călimani, 114 cm la Lăcăuți, 86 cm la Ceahlău, 40 cm la Iezer-Rodnei, 28 cm la Penteleu, petice la Bucin.",
+            "Occidentali": "32 cm la Vlădeasa-1800, 14 cm la Semenic, 2 cm la Stâna de Vale, 4 cm la Băișoara."
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "08.04.2026 ora 21 - 10.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-14°C",
+                "max": "-4°C"
+            },
+            "sub_1800m": {
+                "min": "-9°C",
+                "max": "1°C"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "206 cm la Vârful Omu, 171 cm la Bâlea-Lac, 142 cm la Țarcu, 23 cm la Cuntu, 6 cm la Sinaia, petice la Păltiniș și Parâng",
+            "Orientali": "106 cm la Călimani, 104 cm la Lăcăuți, 80 cm la Ceahlău, 35 cm la Iezer-Rodnei, 24 cm la Penteleu, petice la Bucin",
+            "Occidentali": "29 cm la Vlădeasa-1800, 16 cm la Semenic, petice la Băișoara"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "03.04.2026 ora 21 - 06.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-7 ... 0°C",
+                "max": "-2 ... 7°C"
+            },
+            "sub_1800m": {
+                "min": "-3 ... 5°C",
+                "max": "5 ... 14°C"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "214 cm la Vârful Omu, 181 cm la Bâlea-Lac, 152 cm la Țarcu, 21 cm la Sinaia, 32 cm la Cuntu, 10 cm la Păltiniș, 9 cm la Parâng.",
+            "Orientali": "114 cm la Călimani, 125 cm la Lăcăuți, 90 cm la Ceahlău, 6 cm la Bucin, 38 cm la Iezer-Rodnei, 29 cm la Penteleu.",
+            "Occidentali": "40 cm la Semenic, 16 cm la Băișoara, 35 cm la Vlădeasa 1800."
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 3
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "01.04.2026 ora 21 - 03.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-7 …-2°C",
+                "max": "-2 … 3°C"
+            },
+            "sub_1800m": {
+                "min": "-4 … 0°C",
+                "max": "0 … 7°C"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "214 cm la Vârful Omu, 181 cm la Bâlea-Lac, 140 cm la Țarcu, 32 cm la Sinaia, 38 cm la Cuntu, 13 cm la Păltiniș, 12 cm la Parâng.",
+            "Orientali": "114 cm la Călimani, 120 cm la Lăcăuți, 90 cm la Ceahlău, 11 cm la Bucin, 39 cm la Iezer-Rodnei, 32 cm la Penteleu.",
+            "Occidentali": "42 cm la Semenic, 21 cm la Băișoara, 36 cm la Vlădeasa 1800."
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 3
+                    },
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 3
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "30.03.2026 ora 21 - 01.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-7",
+                "max": "3"
+            },
+            "sub_1800m": {
+                "min": "-4",
+                "max": "8"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "210 cm la Vârful Omu, 177 cm la Bâlea-Lac, 143 cm la Țarcu, 37 cm la Sinaia, 41 cm la Cuntu, 16 cm la Păltiniș, 21 cm la Parâng",
+            "Orientali": "113 cm la Călimani, 119 cm la Lăcăuți, 83 cm la Ceahlău, 16 cm la Bucin, 36 cm la Iezer-Rodnei, 36 cm la Penteleu",
+            "Occidentali": "42 cm la Semenic, 29 cm la Băișoara, 35 cm la Vlădeasa 1800, petice la Stâna de Vale"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 3
+                    },
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 3
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "27.03.2026 ora 20 - 30.03.2026 ora 20",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-8 … -3 grade",
+                "max": "-5 … 0 grade (luni -3 … 2 grade)"
+            },
+            "sub_1800m": {
+                "min": "-4 … 2 grade",
+                "max": "0 … 6 grade (luni 2 … 3 grade)"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "174 cm la Vârful Omu, 161 cm la Bâlea-Lac, 133 cm la Țarcu, 19 cm la Sinaia, 29 cm la Cuntu, 15 cm la Păltiniș, 14 cm la Parâng",
+            "Orientali": "108 cm la Călimani, 68 cm la Lăcăuți, 20 cm la Bucin, 32 cm la Iezer-Rodnei, 32 cm la Ceahlău, 17 cm la Penteleu",
+            "Occidentali": "42 cm la Semenic, 13 cm la Băișoara, 28 cm la Vlădeasa 1800, petice la Stâna de Vale"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "20.03.2026 ora 20 - 23.03.2026 ora 20",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-12 ... -4 grade°C",
+                "max": "-7 ... 3 grade°C"
+            },
+            "sub_1800m": {
+                "min": "-4 ... 4 grade°C",
+                "max": "-2 ... 8 grade°C"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "166 cm la Vârful Omu, 164 cm la Bâlea-Lac, 132 cm la Țarcu, 27 cm la Sinaia, 34 cm la Cuntu, 19 cm la Păltiniș, 16 cm la Parâng, petice la Predeal și Fundata.",
+            "Orientali": "107 cm la Călimani, 67 cm la Lăcăuți, 30 cm la Bucin, 32 cm la Iezer-Rodnei, 33 cm la Ceahlău, 18 cm la Penteleu.",
+            "Occidentali": "55 cm la Semenic, 25 cm la Băișoara, 29 cm la Vlădeasa 1800, 5 cm la Stâna de Vale."
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "15.04.2026 ora 21 - 17.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-2..3",
+                "max": "2…8"
+            },
+            "sub_1800m": {
+                "min": "3…5",
+                "max": "8…14"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "218 cm la Vârful Omu, 173 cm la Bâlea-Lac, 110 cm la Țarcu, 9 cm la Cuntu, petice la Sinaia, Fundata",
+            "Orientali": "107 cm la Călimani, 102 cm la Lăcăuți, 80 cm la Ceahlău, 38 cm la Iezer-Rodnei, 20 cm la Penteleu, petice la Bucin",
+            "Occidentali": "26 cm la Vlădeasa-1800, petice la Semenic"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "17.04.2026 ora 21 - 20.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-6..1",
+                "max": "-1..5"
+            },
+            "sub_1800m": {
+                "min": "-2..5",
+                "max": "5..14"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "214 cm la Vârful Omu, 168 cm la Bâlea-Lac, 76 cm la Țarcu, petice la Cuntu, Sinaia",
+            "Orientali": "100 cm la Călimani, 91 cm la Lăcăuți, 67 cm la Ceahlău, 30 cm la Iezer-Rodnei, 14 cm la Penteleu, petice la Bucin.",
+            "Occidentali": "17 cm la Vlădeasa-1800, petice la Semenic"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "20.04.2026 ora 21 - 22.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-9…-6 grade",
+                "max": "-6….-1 grad"
+            },
+            "sub_1800m": {
+                "min": "-6…-1 grad",
+                "max": "-1…5 grade"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "205 cm la Vârful Omu, 162 cm la Bâlea-Lac, 62 cm la Țarcu",
+            "Orientali": "97 cm la Călimani, 79 cm la Lăcăuți, 60 cm la Ceahlău, 7 cm la Iezer-Rodnei",
+            "Occidentali": "6 cm la Vlădeasa-1800"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Toate masivele (Vlădeasa etc.)",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "22.04.2026 ora 21 - 24.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-11...-3 grade",
+                "max": "-7...3 grade"
+            },
+            "sub_1800m": {
+                "min": "-5...0 grade",
+                "max": "0...10 grade"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "222 cm la Vârful Omu, 176 cm la Bâlea-Lac, 62 cm la Țarcu, 10 cm la Sinaia 1500, 9 cm la Fundata, 2 cm la Păltiniș",
+            "Orientali": "118 cm la Călimani, 86 cm la Lăcăuți, 65 cm la Ceahlău, 19 cm la Iezer-Rodnei",
+            "Occidentali": "4 cm la Vlădeasa-1800"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "27.04.2026 ora 21 - 29.04.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-6...-1 grad",
+                "max": "-1...6 grade"
+            },
+            "sub_1800m": {
+                "min": "-4...4 grade",
+                "max": "2...13 grade"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "208 cm la Vârful Omu, 161 cm la Bâlea-Lac, 57 cm la Țarcu",
+            "Orientali": "105 cm la Călimani, 65 cm la Lăcăuți, 49 cm la Ceahlău, 5 cm la Iezer-Rodnei",
+            "Occidentali": "petice la Vlădeasa-1800"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 2
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "29.04.2026 ora 21 - 01.05.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-12….-6",
+                "max": "-8….-2"
+            },
+            "sub_1800m": {
+                "min": "-9…-2",
+                "max": "-3… 5"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "203 cm la Vârful Omu, 144 cm la Bâlea-Lac, 55 cm la Țarcu",
+            "Orientali": "101 cm la Călimani, 58 cm la Lăcăuți, 44 cm la Ceahlău, 3 cm la Iezer-Rodnei",
+            "Occidentali": "---"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 0,
+                        "risc_sub_1800": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "08.05.2026 ora 21 - 11.05.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-1...6",
+                "max": "4...11"
+            },
+            "sub_1800m": {
+                "min": "4...8",
+                "max": "9...17"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "195 cm la Vârful Omu, 105 cm la Bâlea-Lac, 14 cm la Țarcu",
+            "Orientali": "55 cm la Călimani, 16 cm la Ceahlău, 4 cm la Lăcăuți",
+            "Occidentali": "Zăpada rămasă pe anumite văi umbrite va continua să se topească accelerat. Nu mai există risc de avalanșă."
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 3,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII OCCIDENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Carpații Occidentali",
+                        "risc_peste_1800": 0,
+                        "risc_sub_1800": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "perioada": "13.05.2026 ora 21 - 15.05.2026 ora 21",
+        "temperaturi": {
+            "peste_1800m": {
+                "min": "-6...2 grade Celsius",
+                "max": "4...11 grade Celsius"
+            },
+            "sub_1800m": {
+                "min": "-2...4 grade Celsius",
+                "max": "8...16 grade Celsius"
+            }
+        },
+        "statistici_zapada": {
+            "Meridionali": "185 cm la Vârful Omu, 74 cm la Bâlea-Lac, 6 cm la Cuntu, 4 cm la Țarcu",
+            "Orientali": "14 cm la Călimani",
+            "Occidentali": "3 cm la Vlădeasa"
+        },
+        "grupe_montane": [
+            {
+                "nume_grupa": "CARPAȚII MERIDIONALI",
+                "masive": [
+                    {
+                        "nume_complet": "Făgăraș",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Bucegi",
+                        "risc_peste_1800": 2,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Țarcu-Godeanu",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Parâng-Șureanu",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            },
+            {
+                "nume_grupa": "CARPAȚII ORIENTALI",
+                "masive": [
+                    {
+                        "nume_complet": "Rodnei",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Ceahlău",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    },
+                    {
+                        "nume_complet": "Călimani",
+                        "risc_peste_1800": 1,
+                        "risc_sub_1800": 1
+                    }
+                ]
+            }
+        ]
+    }
+]
