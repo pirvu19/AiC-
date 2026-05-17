@@ -7,12 +7,14 @@ on:
       - 'pom.xml'
       - 'Dockerfile'
       - '.github/workflows/build-backend.yml'
+      - 'extragereMeteoAutomatizata/**'
   pull_request:
     paths:
       - 'src/**'
       - 'pom.xml'
       - 'Dockerfile'
       - '.github/workflows/build-backend.yml'
+      - 'extragereMeteoAutomatizata/**'
 
 env:
   REGISTRY: ghcr.io
