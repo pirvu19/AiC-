@@ -29,9 +29,11 @@ public class MeteoController {
             Process p = pb.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            StringBuilder pythonLog = new StringBuilder();
             String line;
             String htmlPath = null;
             while ((line = reader.readLine()) != null) {
+                pythonLog.append(line).append("\n");
                 System.out.println("PYTHON: " + line);
                 if (line.contains("path_complet:")) {
                     htmlPath = line.substring(line.indexOf("path_complet:") + "path_complet:".length()).trim();
@@ -44,7 +46,7 @@ public class MeteoController {
                 return ResponseEntity.ok(htmlContent);
             } else {
                 return ResponseEntity.internalServerError().body(
-                        "<h1>Eroare: Nu s-a putut genera sau gasi raportul meteo. Verificati log-urile serverului.</h1>");
+                        "<h1>Eroare: Nu s-a putut genera sau gasi raportul meteo.</h1><pre>" + pythonLog.toString() + "</pre>");
             }
 
         } catch (Exception e) {
