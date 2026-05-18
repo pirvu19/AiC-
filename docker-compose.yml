@@ -18,6 +18,7 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: aic_user
       SPRING_RABBITMQ_PASSWORD: aic_pass
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-YOUR_NEW_API_KEY_HERE}
     ports:
       - "8080:8080"
     depends_on:

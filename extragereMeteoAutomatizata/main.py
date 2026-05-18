@@ -8,10 +8,9 @@ import re
 import sys
 ## 
 # 1. Configurare
-#API_KEY = "AIzaSyD-8d-fMW2A2GMuF6-TucOn_FqeKZ0dWJE"
-API_KEY = "AIzaSyD7iw-RVlObcqUW3_SRuNOvb4vEzmzWvHI"
+# Este obligatoriu sa folosim variabile de mediu pentru a nu ne mai fi revocata cheia de catre Google pe un repo public!
+API_KEY = os.environ.get("GEMINI_API_KEY", "LIPSESTE_CHEIA_API")
 MODEL_NAME = "gemini-3-flash-preview"
-#MODEL_NAME = "gemini-1.5-flash"
 API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={API_KEY}"
 
 
