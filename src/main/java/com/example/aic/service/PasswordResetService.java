@@ -39,7 +39,7 @@ public class PasswordResetService {
         String token = UUID.randomUUID().toString();
         resetToken.setToken(token);
         resetToken.setUser(user);
-        resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+        resetToken.setExpiryDate(LocalDateTime.now().plusHours(24));
         
         tokenRepository.save(resetToken);
 
