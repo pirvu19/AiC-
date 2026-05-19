@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
-import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers, Menu, X } from 'lucide-react';
+import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers, Menu, X, Wind } from 'lucide-react';
 
 const Navbar = () => {
     const { user, logout, isAdmin, isExpert, isUserAdmin, isReviewer, isDataEngineer } = useAuth();
@@ -40,6 +40,10 @@ const Navbar = () => {
                                 <Link to="/meteo" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                     <Cloud size={18} />
                                     <span>Prognoză</span>
+                                </Link>
+                                <Link to="/meteo-ro" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                    <Wind size={18} />
+                                    <span>Meteo RO</span>
                                 </Link>
                                 <Link to="/map3d" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                     <Mountain size={18} />
@@ -232,6 +236,10 @@ const Navbar = () => {
                                 <Link to="/meteo" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                     <Cloud size={18} className="text-primary" />
                                     <span>Prognoză Montană</span>
+                                </Link>
+                                <Link to="/meteo-ro" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                    <Wind size={18} className="text-primary" />
+                                    <span>Meteo RO</span>
                                 </Link>
                                 <Link to="/map3d" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                     <Mountain size={18} className="text-primary" />

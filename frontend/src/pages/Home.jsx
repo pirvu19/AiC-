@@ -2,6 +2,7 @@ import { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import avalancheService from '../services/avalancheService';
 import conditionsService from '../services/conditionsService';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, MapPin, Activity, ShieldCheck, AlertTriangle, ArrowUpDown, Info, Wind, CloudRain, ListFilter, Search, ChevronLeft, ChevronRight, Key } from 'lucide-react';
 
@@ -283,7 +284,7 @@ const Home = () => {
             )}
 
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-8">
-                <p className="text-sm text-text-muted font-medium">
+                    <p className="text-sm text-text-muted font-medium">
                     Afișare <span className="text-white">{data.length}</span> din <span className="text-white">{totalElements}</span> rezultate
                 </p>
 
@@ -318,7 +319,7 @@ const Home = () => {
                         </button>
                     </div>
                 )}
-            </div>
+                </div>
         </div>
     );
 };

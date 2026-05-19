@@ -133,21 +133,21 @@ const MeteoPage = () => {
 
                         <button
                             onClick={fetchForecast}
-                            disabled={loading}
-                            className="w-full btn-primary flex items-center justify-center gap-2 py-3 mt-4"
-                        >
-                            {loading ? (
-                                <>
-                                    <Activity className="animate-spin" size={20} />
-                                    Se extrag datele...
-                                </>
-                            ) : (
-                                <>
-                                    <CloudLightning size={20} />
-                                    Generează Prognoza
-                                </>
-                            )}
-                        </button>
+                                disabled={loading}
+                                className="w-full btn-primary flex items-center justify-center gap-2 py-3 mt-4"
+                            >
+                                {loading ? (
+                                    <>
+                                        <Activity className="animate-spin" size={20} />
+                                        Se extrag datele...
+                                    </>
+                                ) : (
+                                    <>
+                                        <CloudLightning size={20} />
+                                        Generează Prognoza
+                                    </>
+                                )}
+                            </button>
                     </div>
                 </div>
             </div>
