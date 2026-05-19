@@ -10,16 +10,16 @@
       "zoom": 0
     },
     "properties": {
-      "umezeala": 92,
+      "umezeala": 85,
       "fenomen_e": "indisponibil",
       "zapada": "indisponibil",
-      "actualizat": "18-05-2026 ora 19:00",
+      "actualizat": "19-05-2026 ora 19:00",
       "nebulozitate": "indisponibil",
-      "presiunetext": "862.7 mb, in crestere",
+      "presiunetext": "865.3 mb, stationara",
       "icon": "84",
       "nume": "BAISOARA",
-      "tempe": "9.4",
-      "vant": "0.4 m/s, directia : SE",
+      "tempe": "10.2",
+      "vant": "0.9 m/s, directia : N",
       "tempapa": "indisponibil"
     }
   },
@@ -34,16 +34,16 @@
       "zoom": 0
     },
     "properties": {
-      "umezeala": 97,
+      "umezeala": 84,
       "fenomen_e": "aversa ploaie",
-      "zapada": "58 cm la ora 15",
-      "actualizat": "18-05-2026 ora 19:00",
+      "zapada": "55 cm la ora 15",
+      "actualizat": "19-05-2026 ora 19:00",
       "nebulozitate": "cer acoperit",
-      "presiunetext": "791.6 mb, in crestere",
-      "icon": "51",
+      "presiunetext": "793.9 mb, in crestere",
+      "icon": "49",
       "nume": "BALEA LAC",
-      "tempe": "4.1",
-      "vant": "1.1 m/s, directia : NE",
+      "tempe": "3.8",
+      "vant": "1.5 m/s, directia : S",
       "tempapa": "indisponibil"
     }
   },
@@ -61,13 +61,13 @@
       "umezeala": 100,
       "fenomen_e": "ceata",
       "zapada": "indisponibil",
-      "actualizat": "18-05-2026 ora 19:00",
+      "actualizat": "19-05-2026 ora 19:00",
       "nebulozitate": "cer invizibil",
-      "presiunetext": "842.7 mb, in crestere",
+      "presiunetext": "844.4 mb, stationara",
       "icon": "29",
       "nume": "PARANG",
-      "tempe": "6.0",
-      "vant": "0.6 m/s, directia : N",
+      "tempe": "7.3",
+      "vant": "0.9 m/s, directia : N",
       "tempapa": "indisponibil"
     }
   },
@@ -82,16 +82,16 @@
       "zoom": 0
     },
     "properties": {
-      "umezeala": 100,
-      "fenomen_e": "ceata",
+      "umezeala": 98,
+      "fenomen_e": "indisponibil",
       "zapada": "indisponibil",
-      "actualizat": "18-05-2026 ora 19:00",
-      "nebulozitate": "cer invizibil",
-      "presiunetext": "813.2 mb, in crestere",
-      "icon": "29",
+      "actualizat": "19-05-2026 ora 19:00",
+      "nebulozitate": "cer acoperit",
+      "presiunetext": "815.9 mb, stationara",
+      "icon": "5",
       "nume": "VLADEASA 1800",
-      "tempe": "5.2",
-      "vant": "1.7 m/s, directia : S",
+      "tempe": "5.6",
+      "vant": "1.6 m/s, directia : NE",
       "tempapa": "indisponibil"
     }
   },
@@ -106,16 +106,16 @@
       "zoom": 0
     },
     "properties": {
-      "umezeala": 79,
+      "umezeala": 84,
       "fenomen_e": "indisponibil",
       "zapada": "indisponibil",
-      "actualizat": "18-05-2026 ora 19:00",
+      "actualizat": "19-05-2026 ora 19:00",
       "nebulozitate": "indisponibil",
-      "presiunetext": "838.8 mb, in crestere",
+      "presiunetext": "840.6 mb, variabila",
       "icon": "84",
       "nume": "RANCA",
-      "tempe": "9.5",
-      "vant": "3.1 m/s, directia : SV",
+      "tempe": "9.0",
+      "vant": "1.9 m/s, directia : E",
       "tempapa": "indisponibil"
     }
   }
