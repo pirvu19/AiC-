@@ -135,4 +135,31 @@ public class MeteoController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping(value = "/ro", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getMeteoRo() {
+        try {
+            String path = "extragereMeteoAutomatizata/date_meteo_ro.json";
+            if (Files.exists(Paths.get(path))) {
+                String content = new String(Files.readAllBytes(Paths.get(path)));
+                return ResponseEntity.ok(content);
+            } else {
+                String pythonCmd = System.getProperty("os.name").toLowerCase().contains("win") ? "python"
+                        : "/opt/venv/bin/python3";
+                ProcessBuilder pb = new ProcessBuilder(pythonCmd, "-u", "fetch_meteo_ro.py");
+                pb.directory(new File("extragereMeteoAutomatizata"));
+                Process p = pb.start();
+                p.waitFor();
+
+                if (Files.exists(Paths.get(path))) {
+                    String content = new String(Files.readAllBytes(Paths.get(path)));
+                    return ResponseEntity.ok(content);
+                }
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
 }
