@@ -18,6 +18,7 @@ import UserManagementPanel from './pages/UserManagementPanel';
 import AccountRequestsPanel from './pages/AccountRequestsPanel';
 import MeteoPage from './pages/MeteoPage';
 import MeteoRoPage from './pages/MeteoRoPage';
+import AvalancheRiskChartPage from './pages/AvalancheRiskChartPage';
 import MetadataManagement from './pages/MetadataManagement';
 import Map3DPage from './pages/Map3DPage';
 import { useAuth } from './context/AuthContext';
@@ -112,6 +113,7 @@ function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/meteo" element={<MeteoPage />} />
             <Route path="/meteo-ro" element={<MeteoRoPage />} />
+            <Route path="/statistici" element={<AvalancheRiskChartPage />} />
             <Route path="/admin/users" element={
               <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
                 <UserManagementPanel />
