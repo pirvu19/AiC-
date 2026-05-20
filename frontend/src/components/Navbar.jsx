@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
 import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers, Menu, X, Wind, BarChart2 } from 'lucide-react';
@@ -9,8 +9,26 @@ const Navbar = () => {
     const { notifications, unreadCount, markAsRead, markAllAsRead, clearAll } = useNotifications();
     const [showNotifications, setShowNotifications] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [showAdminDropdown, setShowAdminDropdown] = useState(false);
+    const [showMeteoDropdown, setShowMeteoDropdown] = useState(false);
+    const adminRef = useRef(null);
+    const meteoRef = useRef(null);
     const navigate = useNavigate();
     const isRestrictedAdmin = isUserAdmin && !isAdmin;
+
+    // Închide dropdown-urile când se dă click în afara lor
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (adminRef.current && !adminRef.current.contains(e.target)) {
+                setShowAdminDropdown(false);
+            }
+            if (meteoRef.current && !meteoRef.current.contains(e.target)) {
+                setShowMeteoDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => document.removeEventListener('mousedown', handleOutsideClick);
+    }, []);
 
     const handleLogout = () => {
         logout();
@@ -32,19 +50,102 @@ const Navbar = () => {
                     <div className="hidden md:flex items-center gap-6">
                         {!isRestrictedAdmin && (
                             <>
-                                <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                    <Cloud size={18} />
-                                    <span>Risc Avalanșe (PDF)</span>
-                                </a>
+                                {/* ── Dropdown Meteo & Risc (numai pt admin) ── */}
+                                {isAdmin ? (
+                                    <div ref={meteoRef} style={{ position: 'relative' }}>
+                                        <button
+                                            onClick={() => { setShowMeteoDropdown(v => !v); setShowAdminDropdown(false); }}
+                                            style={{
+                                                display: 'flex', alignItems: 'center', gap: '0.4rem',
+                                                fontSize: '0.875rem', fontWeight: 500,
+                                                color: showMeteoDropdown ? 'var(--primary)' : 'inherit',
+                                                background: 'none', border: 'none', cursor: 'pointer',
+                                                padding: '0.25rem 0', transition: 'color 0.2s',
+                                            }}
+                                        >
+                                            <Cloud size={18} />
+                                            <span>Meteo & Risc</span>
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"
+                                                style={{ transition: 'transform 0.2s', transform: showMeteoDropdown ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                                                <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </button>
 
-                                <Link to="/meteo" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                    <Cloud size={18} />
-                                    <span>Prognoză</span>
-                                </Link>
-                                <Link to="/meteo-ro" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                    <Wind size={18} />
-                                    <span>Meteo RO</span>
-                                </Link>
+                                        {showMeteoDropdown && (
+                                            <div style={{
+                                                position: 'absolute', top: 'calc(100% + 0.5rem)', left: 0,
+                                                minWidth: '210px',
+                                                background: '#0f172a',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                borderRadius: '1rem',
+                                                boxShadow: '0 20px 40px -10px rgba(0,0,0,0.7)',
+                                                padding: '0.5rem',
+                                                zIndex: 1000,
+                                            }}>
+                                                <a href="/api/meteo" target="_blank" rel="noreferrer"
+                                                    onClick={() => setShowMeteoDropdown(false)}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                        padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                        fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                        transition: 'background 0.15s', textDecoration: 'none',
+                                                    }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                                >
+                                                    <Cloud size={16} style={{ color: 'var(--primary)' }} />
+                                                    Risc Avalanșe (PDF)
+                                                </a>
+                                                <Link to="/meteo"
+                                                    onClick={() => setShowMeteoDropdown(false)}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                        padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                        fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                        transition: 'background 0.15s',
+                                                    }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                                >
+                                                    <Cloud size={16} style={{ color: 'var(--primary)' }} />
+                                                    Prognoză Montană
+                                                </Link>
+                                                <Link to="/meteo-ro"
+                                                    onClick={() => setShowMeteoDropdown(false)}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                        padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                        fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                        transition: 'background 0.15s',
+                                                    }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                                >
+                                                    <Wind size={16} style={{ color: 'var(--primary)' }} />
+                                                    Meteo RO (Live)
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <>
+                                        <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                            <Cloud size={18} />
+                                            <span>Risc Avalanșe (PDF)</span>
+                                        </a>
+
+                                        <Link to="/meteo" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                            <Cloud size={18} />
+                                            <span>Prognoză</span>
+                                        </Link>
+                                        <Link to="/meteo-ro" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                            <Wind size={18} />
+                                            <span>Meteo RO</span>
+                                        </Link>
+                                    </>
+                                )}
+
+                                {/* ── Standalone links ── */}
                                 <Link to="/statistici" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                     <BarChart2 size={18} />
                                     <span>Statistici</span>
@@ -78,22 +179,85 @@ const Navbar = () => {
                         )}
 
                         {(isUserAdmin || isDataEngineer) && (
-                            <>
-                                <Link to="/admin/users" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                    <Users size={18} />
-                                    <span>Utilizatori</span>
-                                </Link>
-                                <Link to="/admin/requests" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                    <UserCheck size={18} />
-                                    <span>Cereri</span>
-                                </Link>
-                                {(isAdmin || isDataEngineer) && (
-                                    <Link to="/admin/metadata" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                        <Layers size={18} />
-                                        <span>Metadate</span>
-                                    </Link>
+                            <div ref={adminRef} style={{ position: 'relative' }}>
+                                {/* Trigger */}
+                                <button
+                                    onClick={() => { setShowAdminDropdown(v => !v); setShowMeteoDropdown(false); }}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: '0.4rem',
+                                        fontSize: '0.875rem', fontWeight: 500,
+                                        color: showAdminDropdown ? 'var(--primary)' : 'inherit',
+                                        background: 'none', border: 'none', cursor: 'pointer',
+                                        padding: '0.25rem 0', transition: 'color 0.2s',
+                                    }}
+                                >
+                                    <Layers size={18} />
+                                    <span>Administrare</span>
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"
+                                        style={{ transition: 'transform 0.2s', transform: showAdminDropdown ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                                        <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </button>
+
+                                {/* Dropdown panel */}
+                                {showAdminDropdown && (
+                                    <div style={{
+                                        position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0,
+                                        minWidth: '200px',
+                                        background: '#0f172a',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        borderRadius: '1rem',
+                                        boxShadow: '0 20px 40px -10px rgba(0,0,0,0.7)',
+                                        padding: '0.5rem',
+                                        zIndex: 1000,
+                                    }}>
+                                        <Link to="/admin/users"
+                                            onClick={() => setShowAdminDropdown(false)}
+                                            style={{
+                                                display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                transition: 'background 0.15s',
+                                            }}
+                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                        >
+                                            <Users size={16} style={{ color: 'var(--primary)' }} />
+                                            Utilizatori
+                                        </Link>
+                                        <Link to="/admin/requests"
+                                            onClick={() => setShowAdminDropdown(false)}
+                                            style={{
+                                                display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                transition: 'background 0.15s',
+                                            }}
+                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                        >
+                                            <UserCheck size={16} style={{ color: 'var(--primary)' }} />
+                                            Cereri Conturi
+                                        </Link>
+                                        {(isAdmin || isDataEngineer) && (
+                                            <Link to="/admin/metadata"
+                                                onClick={() => setShowAdminDropdown(false)}
+                                                style={{
+                                                    display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                    padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                    fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                    transition: 'background 0.15s',
+                                                }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                            >
+                                                <Layers size={16} style={{ color: 'var(--primary)' }} />
+                                                Metadate
+                                            </Link>
+                                        )}
+                                    </div>
                                 )}
-                            </>
+                            </div>
                         )}
                     </div>
 
