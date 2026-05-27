@@ -213,8 +213,7 @@ const AvalancheEditPage = () => {
                                 <div className="grid grid-cols-4 gap-4">
                                     {formData.imageUrls.map((url, idx) => {
                                         const cleanUrl = url.trim();
-                                        const backendUrl = window.location.origin.includes('localhost') ? 'http://localhost:8080' : window.location.origin.replace(':8081', ':8080');
-                                        const imgSrc = cleanUrl.startsWith('http') ? cleanUrl : `${backendUrl}${cleanUrl}`;
+                                        const imgSrc = cleanUrl.startsWith('http') ? cleanUrl : (cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`);
                                         return (
                                             <div key={idx} className="relative group rounded-xl overflow-hidden border border-glass-border">
                                                 <img src={imgSrc} alt="Prezentare avalanșă" className="w-full h-24 object-cover" />

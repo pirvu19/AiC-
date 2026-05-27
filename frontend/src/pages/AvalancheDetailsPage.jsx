@@ -15,6 +15,7 @@ const DB_ID_TO_3D_INCIDENT = {
     "25": "incident_25"
 };
 
+// Cache buster to force bundle hash recalculation - v2
 const AvalancheDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -83,6 +84,7 @@ const AvalancheDetailsPage = () => {
     };
 
     useEffect(() => {
+        console.log("Cache bust v4: iframe height fixed");
         const loadData = async () => {
             try {
                 const [data, massifs, types, causes, orientations] = await Promise.all([
@@ -414,8 +416,7 @@ const AvalancheDetailsPage = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {avalanche.imageUrls.flatMap(urlGroup => urlGroup.split(';')).filter(url => url.trim().length > 0).map((url, idx) => {
                                     const cleanUrl = url.trim();
-                                    const backendUrl = window.location.origin.includes('localhost') ? 'http://localhost:8080' : window.location.origin.replace(':8081', ':8080');
-                                    const imgSrc = cleanUrl.startsWith('http') ? cleanUrl : `${backendUrl}${cleanUrl}`;
+                                    const imgSrc = cleanUrl.startsWith('http') ? cleanUrl : (cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`);
                                     
                                     return (
                                         <div key={idx} className="relative group overflow-hidden rounded-xl border border-glass-border">
@@ -450,10 +451,14 @@ const AvalancheDetailsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="h-[900px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative bg-slate-900/50 group">
+                    <div 
+                        className="rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative bg-slate-900/50 group"
+                        style={{ height: '750px' }}
+                    >
                         <iframe 
                             src={`/map3d/avalanse_mapbox_demo_dropdown.html?incident=${DB_ID_TO_3D_INCIDENT[id]}`}
-                            className="w-full h-full border-none"
+                            className="w-full border-none"
+                            style={{ height: '750px', display: 'block' }}
                             title="Vizualizare 3D Avalanșă"
                             allow="geolocation"
                         />

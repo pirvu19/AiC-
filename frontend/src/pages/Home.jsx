@@ -40,8 +40,12 @@ const SafeImage = ({ src, alt, className, style }) => {
 
 // Memoized Card component to prevent unnecessary re-renders
 const AvalancheCard = memo(({ item, view, isExpert, handleValidate }) => {
-    const imageUrl = item.imageUrls && item.imageUrls.length > 0
-        ? (item.imageUrls[0].startsWith('http') ? item.imageUrls[0] : (item.imageUrls[0].startsWith('/') ? `http://localhost:8080${item.imageUrls[0]}` : `http://localhost:8080/${item.imageUrls[0]}`))
+    const allUrls = item.imageUrls
+        ? item.imageUrls.flatMap(urlGroup => urlGroup.split(';')).map(url => url.trim()).filter(url => url.length > 0)
+        : [];
+    const firstUrl = allUrls.length > 0 ? allUrls[0] : null;
+    const imageUrl = firstUrl
+        ? (firstUrl.startsWith('http') ? firstUrl : (firstUrl.startsWith('/') ? firstUrl : `/${firstUrl}`))
         : null;
 
     return (
