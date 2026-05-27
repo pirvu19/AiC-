@@ -265,100 +265,21 @@ const Navbar = () => {
                     <div className="flex items-center gap-3 md:pl-6 md:border-l relative">
                         {user ? (
                             <>
-                                <button
-                                    onClick={() => setShowNotifications(!showNotifications)}
-                                    className="p-2 transition-colors relative rounded-full hover:bg-white/5"
-                                    title="Notificări"
-                                >
-                                    <Bell size={20} className="text-text-main" />
+                                <div style={{ position: 'relative' }}>
+                                    <button
+                                        onClick={() => setShowNotifications(!showNotifications)}
+                                        className="p-2 transition-colors rounded-full hover:bg-white/5"
+                                        title="Notificări"
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}
+                                    >
+                                        <Bell size={20} className="text-white" />
+                                    </button>
                                     {unreadCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-accent-red text-white text-[10px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center">
+                                        <span className="notification-badge">
                                             {unreadCount}
                                         </span>
                                     )}
-                                </button>
-
-                                {showNotifications && (
-                                    <div 
-                                        className="absolute top-full right-0 mt-4 w-80 md:w-[450px] rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.9)] z-[1000] overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-2 border border-white/10"
-                                        style={{ backgroundColor: '#0f172a', opacity: 1 }}
-                                    >
-                                        <div className="flex items-center justify-between p-5 bg-[#1e293b]/50 border-b border-white/5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-primary/10 rounded-lg">
-                                                    <Bell size={20} className="text-primary" />
-                                                </div>
-                                                <h3 className="text-base font-bold text-white m-0 tracking-tight">Centru Notificări</h3>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button 
-                                                    onClick={markAllAsRead} 
-                                                    className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all bg-transparent" 
-                                                    title="Marchează toate ca citite"
-                                                >
-                                                    <Check size={18} />
-                                                </button>
-                                                <button 
-                                                    onClick={clearAll} 
-                                                    className="p-2 text-accent-red/70 hover:text-accent-red hover:bg-accent-red/10 rounded-xl transition-all bg-transparent" 
-                                                    title="Șterge tot istoricul"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="max-h-[500px] overflow-y-auto custom-scrollbar bg-[#0f172a]">
-                                            {notifications.length === 0 ? (
-                                                <div className="p-16 text-center flex flex-col items-center gap-4">
-                                                    <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center">
-                                                        <Bell size={32} className="text-slate-700" />
-                                                    </div>
-                                                    <p className="text-slate-500 text-sm font-medium m-0">Nu ai nicio notificare momentan.</p>
-                                                </div>
-                                            ) : (
-                                                notifications.map(notif => (
-                                                    <div
-                                                        key={notif.id}
-                                                        onClick={() => { markAsRead(notif.id); setShowNotifications(false); }}
-                                                        className={`p-5 border-b border-white/5 cursor-pointer flex gap-5 transition-all duration-300 ${
-                                                            notif.read 
-                                                            ? 'bg-[#0f172a] hover:bg-[#1e293b]/30' 
-                                                            : 'bg-[#1e293b]/80 hover:bg-[#1e293b] border-l-4 border-l-primary'
-                                                        }`}
-                                                    >
-                                                        <div className={`mt-1 flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg ${
-                                                            notif.type === 'admin' 
-                                                            ? 'bg-primary/20 text-primary' 
-                                                            : 'bg-accent-green/20 text-accent-green'
-                                                        }`}>
-                                                            {notif.type === 'admin' ? <ShieldCheck size={20} /> : <Mountain size={20} />}
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <div className="flex justify-between items-start mb-1">
-                                                                <span className={`text-[10px] font-bold uppercase tracking-widest ${notif.type === 'admin' ? 'text-primary' : 'text-accent-green'}`}>
-                                                                    {notif.type === 'admin' ? 'Sistem' : 'Activitate'}
-                                                                </span>
-                                                                {!notif.read && (
-                                                                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
-                                                                )}
-                                                            </div>
-                                                            <p className={`m-0 text-sm leading-relaxed break-words ${notif.read ? 'text-slate-400' : 'text-slate-100 font-semibold'}`}>
-                                                                {notif.message}
-                                                            </p>
-                                                            <div className="flex items-center gap-3 mt-3">
-                                                                <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
-                                                                    <span>{new Date(notif.date).toLocaleDateString()}</span>
-                                                                    <span className="opacity-30">|</span>
-                                                                    <span>{new Date(notif.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
+                                </div>
 
                                 <div className="hidden sm:flex items-center gap-2 text-xs text-text-muted bg-white/5 py-1.5 px-3 rounded-full border border-white/5">
                                     <User size={14} />
@@ -369,9 +290,81 @@ const Navbar = () => {
                                     onClick={handleLogout}
                                     className="p-2 hover:bg-accent-red/20 text-accent-red rounded-xl transition-colors"
                                     title="Deconectare"
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
                                 >
                                     <LogOut size={20} />
                                 </button>
+
+                                {showNotifications && (
+                                    <div className="navbar-notifications-dropdown">
+                                        {/* Dropdown Header */}
+                                        <div className="notifications-header">
+                                            <div className="notifications-header-title">
+                                                <div className="notifications-icon-bg">
+                                                    <Bell size={18} className="text-primary" />
+                                                </div>
+                                                <span>Centru Notificări</span>
+                                            </div>
+                                            <div className="notifications-header-actions">
+                                                <button 
+                                                    onClick={markAllAsRead} 
+                                                    className="notifications-action-btn"
+                                                    title="Marchează toate ca citite"
+                                                >
+                                                    <Check size={16} />
+                                                </button>
+                                                <button 
+                                                    onClick={clearAll} 
+                                                    className="notifications-action-btn delete"
+                                                    title="Șterge tot istoricul"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Dropdown Body / List */}
+                                        <div className="notifications-list custom-scrollbar">
+                                            {notifications.length === 0 ? (
+                                                <div className="notifications-empty-state">
+                                                    <div className="notifications-empty-icon">
+                                                        <Bell size={28} />
+                                                    </div>
+                                                    <p>Nu ai nicio notificare momentan.</p>
+                                                </div>
+                                            ) : (
+                                                notifications.map(notif => (
+                                                    <div
+                                                        key={notif.id}
+                                                        onClick={() => { markAsRead(notif.id); setShowNotifications(false); }}
+                                                        className={`notification-item ${notif.read ? 'read' : 'unread'} ${notif.type === 'admin' ? 'admin' : 'activity'}`}
+                                                    >
+                                                        {/* Status badge / icon */}
+                                                        <div className="notification-item-icon-wrap">
+                                                            {notif.type === 'admin' ? <ShieldCheck size={18} /> : <Mountain size={18} />}
+                                                        </div>
+
+                                                        {/* Content */}
+                                                        <div className="notification-item-content">
+                                                            <div className="notification-item-meta">
+                                                                <span className="notification-item-type">
+                                                                    {notif.type === 'admin' ? 'Sistem' : 'Activitate'}
+                                                                </span>
+                                                                {!notif.read && <span className="notification-unread-dot" />}
+                                                            </div>
+                                                            <p className="notification-item-message">{notif.message}</p>
+                                                            <div className="notification-item-time">
+                                                                <span>{new Date(notif.date).toLocaleDateString()}</span>
+                                                                <span className="time-separator">|</span>
+                                                                <span>{new Date(notif.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </>
                         ) : (
                             <div className="hidden sm:flex items-center gap-3">
