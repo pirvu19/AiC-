@@ -19,26 +19,45 @@ const RangeSlider = ({ min, max, step, minVal, maxVal, onChange, label, suffix =
     }, [minVal, maxVal, getPercent]);
 
     return (
-        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
-            <div className="flex justify-between items-center mb-8">
-                <span className="text-xs font-black text-white/40 uppercase tracking-widest">{label}</span>
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-black text-primary bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20 min-w-[60px] text-center">
+        <div className="search-slider-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <span className="search-slider-label">{label}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className="search-slider-value">
                         {minVal}{suffix}
                     </span>
-                    <span className="text-white/20 font-bold">—</span>
-                    <span className="text-sm font-black text-primary bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20 min-w-[60px] text-center">
+                    <span style={{ color: 'rgba(255, 255, 255, 0.2)', fontWeight: 'bold' }}>—</span>
+                    <span className="search-slider-value">
                         {maxVal}{suffix}
                     </span>
                 </div>
             </div>
 
-            <div className="range-slider-container relative h-6 flex items-center">
-                <div className="absolute top-1/2 -translate-y-1/2 h-1.5 w-full bg-white/10 rounded-full" />
+            <div className="range-slider-container">
+                <div 
+                    style={{ 
+                        position: 'absolute', 
+                        top: '50%', 
+                        transform: 'translateY(-50%)', 
+                        height: '6px', 
+                        width: '100%', 
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                        borderRadius: '999px' 
+                    }} 
+                />
                 
                 <div 
                     ref={range} 
-                    className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)] z-[2]" 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        height: '6px',
+                        backgroundColor: 'var(--primary)',
+                        borderRadius: '999px',
+                        boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)',
+                        zIndex: 2
+                    }}
                 />
                 
                 <input
@@ -71,3 +90,4 @@ const RangeSlider = ({ min, max, step, minVal, maxVal, onChange, label, suffix =
 };
 
 export default RangeSlider;
+

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Search, Filter, Calendar, MapPin, Activity, Shield, Users, RefreshCw, X, SlidersHorizontal, ChevronRight, ChevronLeft, LayoutGrid, List as ListIcon, CloudRain, Wind, Info, AlertTriangle, HelpCircle, Heart, ShieldAlert, Home as HomeIcon, Compass, ArrowRight, ChevronDown, FileSpreadsheet, FileJson, FileCode } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Search, Filter, Calendar, MapPin, Activity, Shield, Users, RefreshCw, X, SlidersHorizontal, ChevronRight, ChevronLeft, LayoutGrid, List as ListIcon, CloudRain, Wind, Info, AlertTriangle, HelpCircle, Heart, ShieldAlert, Home as HomeIcon, Compass, ArrowRight, ChevronDown, FileSpreadsheet, FileJson, FileCode, Mountain, Thermometer, Eye, Layers } from 'lucide-react';
 import avalancheService from '../services/avalancheService';
 import conditionsService from '../services/conditionsService';
 import { Download } from 'lucide-react';
@@ -7,6 +7,7 @@ import metadataService from '../services/metadataService';
 import MultiSelect from '../components/MultiSelect';
 import CompassFilter from '../components/CompassFilter';
 import RangeSlider from '../components/RangeSlider';
+import SingleSlider from '../components/SingleSlider';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -70,6 +71,47 @@ const VISIBILITY_OPTIONS = [
     { id: 'redusa', name: 'Redusă (500m-1km)' },
     { id: 'foarte_redusa', name: 'Foarte Redusă (<500m)' }
 ];
+
+/* ─── Collapsible Filter Section ─── */
+const FilterSection = ({ title, icon: Icon, children, defaultOpen = true }) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    return (
+        <div className="search-filter-section">
+            <button
+                type="button"
+                onClick={() => setIsOpen(o => !o)}
+                className="search-filter-section-header"
+            >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="search-filter-icon-wrap">
+                        <Icon size={15} />
+                    </div>
+                    <span>{title}</span>
+                </div>
+                <ChevronDown
+                    size={16}
+                    style={{
+                        transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        opacity: 0.5
+                    }}
+                />
+            </button>
+            <div
+                className="search-filter-section-body"
+                style={{
+                    maxHeight: isOpen ? '2000px' : '0',
+                    opacity: isOpen ? 1 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease',
+                    paddingTop: isOpen ? '20px' : '0'
+                }}
+            >
+                {children}
+            </div>
+        </div>
+    );
+};
 
 const SearchPage = () => {
     const [view, setView] = useState('avalanches');
@@ -379,102 +421,148 @@ const SearchPage = () => {
         return () => clearTimeout(timer);
     }, [view, currentPage, pageSize, filters]);
 
+    /* ─── Compute active filter count for the pills summary ─── */
+    const activeFilterCount = useMemo(() => {
+        let count = 0;
+        if (filters.title) count++;
+        if (filters.safetyEquipment) count++;
+        if (filters.regionId.length > 0) count++;
+        if (filters.massifId.length > 0) count++;
+        if (filters.causeId.length > 0) count++;
+        if (filters.typeId.length > 0) count++;
+        if (filters.orientationId.length > 0) count++;
+        if (filters.startDate || filters.endDate) count++;
+        if (filters.relativeSize) count++;
+        if (filters.windDirection.length > 0) count++;
+        if (filters.visibility.length > 0) count++;
+        if (filters.hasCaught || filters.hasPartially || filters.hasFully || filters.hasInjured || filters.hasKilled || filters.hasMaterial) count++;
+        if (filters.minAltitude > 0 || filters.maxAltitude < 3000) count++;
+        if (filters.minSlope > 0) count++;
+        if (filters.minTrackLength > 0 || filters.maxTrackLength < 2000) count++;
+        if (filters.minCrownDepth > 0 || filters.maxCrownDepth < 300) count++;
+        if (filters.minCrownWidth > 0 || filters.maxCrownWidth < 500) count++;
+        if (filters.minVerticalDrop > 0 || filters.maxVerticalDrop < 1500) count++;
+        if (filters.minTemperature > -30 || filters.maxTemperature < 30) count++;
+        if (filters.minWindSpeed > 0 || filters.maxWindSpeed < 150) count++;
+        if (filters.minSnowDepth > 0 || filters.maxSnowDepth < 500) count++;
+        return count;
+    }, [filters]);
+
     return (
-        <div className="min-h-screen">
-            <div className="container space-y-12 animate-in fade-in duration-1000 pb-32">
-                {/* Header */}
-                <header className="space-y-6 text-center py-12">
-                    <h1 className="text-5xl font-black tracking-tighter gradient-text leading-tight">
-                        Căutare Avansată
+        <div className="search-page-root">
+            {/* ─── Decorative Background ─── */}
+            <div className="search-page-bg-decor">
+                <div className="search-bg-orb search-bg-orb-1" />
+                <div className="search-bg-orb search-bg-orb-2" />
+                <div className="search-bg-orb search-bg-orb-3" />
+            </div>
+
+            <div className="container" style={{ position: 'relative', zIndex: 1, paddingBottom: '8rem' }}>
+
+                {/* ═══════════════ HEADER ═══════════════ */}
+                <header className="search-page-header">
+                    <div className="search-header-badge">
+                        <Search size={13} />
+                        <span>EXPLORARE AVANSATĂ</span>
+                    </div>
+                    <h1 className="search-header-title">
+                        Căutare &amp; Filtrare
                     </h1>
-                    <p className="text-text-muted text-lg max-w-2xl mx-auto">
+                    <p className="search-header-subtitle">
                         Explorează baza de date {view === 'avalanches' ? 'avalanșelor' : 'condițiilor'} din Carpați
                     </p>
 
-                    <div className="flex justify-center gap-4 pt-4">
-                        <button
-                            onClick={() => setView('avalanches')}
-                            className={`px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-500 border-2 ${view === 'avalanches'
-                                    ? 'bg-primary border-primary text-white shadow-[0_0_30px_rgba(59,130,246,0.5)] scale-105'
-                                    : 'bg-white/5 border-white/10 text-white/40 hover:border-white/20 hover:text-white'
-                                }`}
-                        >
-                            Avalanșe
-                        </button>
-                        <button
-                            onClick={() => setView('conditions')}
-                            className={`px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-500 border-2 ${view === 'conditions'
-                                    ? 'bg-primary border-primary text-white shadow-[0_0_30px_rgba(59,130,246,0.5)] scale-105'
-                                    : 'bg-white/5 border-white/10 text-white/40 hover:border-white/20 hover:text-white'
-                                }`}
-                        >
-                            Condiții
-                        </button>
+                    {/* View Toggle */}
+                    <div className="search-view-toggle-wrap">
+                        <div className="search-view-toggle">
+                            <button
+                                onClick={() => setView('avalanches')}
+                                className={`search-view-btn ${view === 'avalanches' ? 'active' : ''}`}
+                            >
+                                <AlertTriangle size={16} />
+                                Avalanșe
+                            </button>
+                            <button
+                                onClick={() => setView('conditions')}
+                                className={`search-view-btn ${view === 'conditions' ? 'active' : ''}`}
+                            >
+                                <CloudRain size={16} />
+                                Condiții
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="pt-4 flex justify-center gap-6">
-                        <div className="bg-white/5 border border-white/10 px-5 py-3 rounded-2xl flex items-center gap-3 shadow-lg">
-                            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Rezultate pe pagină:</span>
+                    {/* Page size + active filters summary */}
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', paddingTop: '8px', flexWrap: 'wrap' }}>
+                        <div className="search-page-size-pill">
+                            <span>Rezultate:</span>
                             <select
                                 value={pageSize}
                                 onChange={(e) => setPageSize(Number(e.target.value))}
-                                className="bg-transparent text-sm font-bold text-white focus:outline-none cursor-pointer appearance-none pr-6"
+                                style={{ background: 'transparent', border: 'none', color: 'white', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', outline: 'none' }}
                             >
-                                {[10, 20, 50, 100].map(val => <option key={val} value={val} className="bg-background">{val}</option>)}
+                                {[10, 20, 50, 100].map(val => <option key={val} value={val} style={{ background: '#0f172a' }}>{val}</option>)}
                             </select>
-                            <ChevronDown size={16} className="text-primary -ml-4 pointer-events-none" />
                         </div>
+                        {activeFilterCount > 0 && (
+                            <div className="search-active-filters-pill" onClick={clearFilters} title="Click pentru a reseta toate filtrele">
+                                <Filter size={13} />
+                                <span>{activeFilterCount} {activeFilterCount === 1 ? 'filtru activ' : 'filtre active'}</span>
+                                <X size={13} style={{ opacity: 0.6 }} />
+                            </div>
+                        )}
                     </div>
                 </header>
 
-                {/* Filter Panel */}
-                <section className="animate-in slide-in-from-top-6 duration-700">
-                    <form onSubmit={handleSearch} className="bg-white/5 rounded-3xl border border-white/10 shadow-2xl p-8 md:p-12 space-y-10">
+                {/* ═══════════════ FILTER PANEL ═══════════════ */}
+                <section style={{ marginTop: '2rem' }}>
+                    <form onSubmit={handleSearch} className="search-filter-panel">
 
-                        {/* Search Bar */}
-                        <div className="space-y-3">
-                            <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                Căutare rapidă
-                            </label>
-                            <div className="relative group">
-                                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-primary/60 transition-colors group-focus-within:text-primary" size={20} />
-                                <input
-                                    name="title"
-                                    value={filters.title}
-                                    onChange={(e) => handleFilterChange('title', e.target.value)}
-                                    placeholder="Caută în titluri, masive, locații..."
-                                    className="pl-14 w-full bg-white/5 border border-white/10 focus:border-primary/50 focus:bg-white/10 transition-all rounded-xl py-3.5 px-6 text-sm font-medium placeholder:text-white/30"
-                                />
-                            </div>
+                        {/* ── Search Bar ── */}
+                        <div className="search-bar-wrapper">
+                            <Search className="search-bar-icon" size={20} />
+                            <input
+                                name="title"
+                                value={filters.title}
+                                onChange={(e) => handleFilterChange('title', e.target.value)}
+                                placeholder="Caută în titluri, masive, locații..."
+                                className="search-bar-input"
+                            />
+                            {filters.title && (
+                                <button type="button" onClick={() => handleFilterChange('title', '')} className="search-bar-clear">
+                                    <X size={16} />
+                                </button>
+                            )}
                         </div>
 
+                        {/* ── Safety Equipment (avalanches only) ── */}
                         {view === 'avalanches' && (
-                            <div className="space-y-3">
-                                <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                    Echipament Protecție
-                                </label>
-                                <div className="relative group">
-                                    <Shield className="absolute left-5 top-1/2 -translate-y-1/2 text-primary/60 transition-colors group-focus-within:text-primary" size={20} />
-                                    <input
-                                        name="safetyEquipment"
-                                        value={filters.safetyEquipment}
-                                        onChange={(e) => handleFilterChange('safetyEquipment', e.target.value)}
-                                        placeholder="Ex: DVA, sondă, lopată..."
-                                        className="pl-14 w-full bg-white/5 border border-white/10 focus:border-primary/50 focus:bg-white/10 transition-all rounded-xl py-3.5 px-6 text-sm font-medium placeholder:text-white/30"
-                                    />
-                                </div>
+                            <div className="search-bar-wrapper" style={{ marginTop: '12px' }}>
+                                <Shield className="search-bar-icon" size={20} />
+                                <input
+                                    name="safetyEquipment"
+                                    value={filters.safetyEquipment}
+                                    onChange={(e) => handleFilterChange('safetyEquipment', e.target.value)}
+                                    placeholder="Echipament protecție: DVA, sondă, lopată..."
+                                    className="search-bar-input"
+                                />
+                                {filters.safetyEquipment && (
+                                    <button type="button" onClick={() => handleFilterChange('safetyEquipment', '')} className="search-bar-clear">
+                                        <X size={16} />
+                                    </button>
+                                )}
                             </div>
                         )}
 
-                        {/* Main Filters */}
-                        <div className="space-y-8">
+                        {/* ── Divider ── */}
+                        <div className="search-filter-divider" />
 
+                        {/* ── Location Filters ── */}
+                        <FilterSection title="Localizare" icon={MapPin} defaultOpen={true}>
                             {/* Region */}
-                            <div className="space-y-3">
-                                <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                    Regiune
-                                </label>
-                                <div className="flex gap-3">
+                            <div style={{ marginBottom: '20px' }}>
+                                <label className="search-filter-label">Regiune</label>
+                                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                     {metadata.regions.map(r => (
                                         <button
                                             key={r.id}
@@ -485,10 +573,7 @@ const SearchPage = () => {
                                                     : [...filters.regionId, r.id];
                                                 handleFilterChange('regionId', newVal);
                                             }}
-                                            className={`flex-1 py-3 px-5 rounded-xl text-sm font-bold transition-all duration-300 border ${filters.regionId.includes(r.id)
-                                                    ? 'bg-primary/20 border-primary text-primary shadow-lg shadow-primary/20'
-                                                    : 'bg-white/5 border-white/10 text-white/80 hover:border-white/20 hover:bg-white/10'
-                                                }`}
+                                            className={`search-chip-btn ${filters.regionId.includes(r.id) ? 'active' : ''}`}
                                         >
                                             {r.name}
                                         </button>
@@ -497,10 +582,8 @@ const SearchPage = () => {
                             </div>
 
                             {/* Massif */}
-                            <div className="space-y-3">
-                                <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                    Masiv Muntos
-                                </label>
+                            <div>
+                                <label className="search-filter-label">Masiv Muntos</label>
                                 <MultiSelect
                                     options={filters.regionId.length > 0
                                         ? metadata.massifs.filter(m => {
@@ -513,259 +596,218 @@ const SearchPage = () => {
                                     placeholder="Selectează masivele..."
                                 />
                             </div>
+                        </FilterSection>
 
-                            {/* Avalanche specific filters */}
-                            {view === 'avalanches' && (
-                                <>
-                                    {/* Cause */}
-                                    <div className="space-y-3">
-                                        <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                            Cauza Avalanșei
-                                        </label>
-                                        <MultiSelect
-                                            options={metadata.causes && metadata.causes.length > 0 ? metadata.causes : CAUSE_OPTIONS}
-                                            value={filters.causeId}
-                                            onChange={(val) => handleFilterChange('causeId', val)}
-                                            placeholder="Selectează cauzele..."
-                                        />
-                                    </div>
-
-                                    {/* Type */}
-                                    <div className="space-y-3">
-                                        <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                            Tip Avalanșă
-                                        </label>
-                                        <MultiSelect
-                                            options={metadata.types.length > 0 ? metadata.types : TYPE_OPTIONS}
-                                            value={filters.typeId}
-                                            onChange={(val) => handleFilterChange('typeId', val)}
-                                            placeholder="Selectează tipul..."
-                                        />
-                                    </div>
-
-                                    {/* Orientation */}
-                                    <div className="space-y-4 flex flex-col items-center">
-                                        <label className="block text-xs font-bold text-white/70 uppercase tracking-widest text-center">
-                                            Orientare Pantă
-                                        </label>
-                                        <CompassFilter 
-                                            value={filters.orientationId}
-                                            onChange={(val) => handleFilterChange('orientationId', val)}
-                                        />
-                                    </div>
-                                </>
-                            )}
-
-                            {/* Conditions specific filters */}
-                            {view === 'conditions' && (
-                                <>
-                                    <div className="space-y-3">
-                                        <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                            Vizibilitate
-                                        </label>
-                                        <MultiSelect
-                                            options={VISIBILITY_OPTIONS}
-                                            value={filters.visibility}
-                                            onChange={(val) => handleFilterChange('visibility', val)}
-                                            placeholder="Selectează vizibilitatea..."
-                                        />
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                            Direcție Vânt
-                                        </label>
-                                        <MultiSelect
-                                            options={WIND_DIRECTIONS}
-                                            value={filters.windDirection}
-                                            onChange={(val) => handleFilterChange('windDirection', val)}
-                                            placeholder="Selectează direcția..."
-                                        />
-                                    </div>
-                                </>
-                            )}
-
-                            {/* Date Interval */}
-                            <div className="space-y-3">
-                                <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                    Interval Temporal
-                                </label>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
-                                    {[
-                                        { key: 'week', label: 'Săpt. Curentă' },
-                                        { key: 'month', label: 'Luna Curentă' },
-                                        { key: '3months', label: 'Ultimele 3 Luni' },
-                                        { key: 'season', label: 'Sezon Iarnă' }
-                                    ].map(preset => (
-                                        <button
-                                            key={preset.key}
-                                            type="button"
-                                            onClick={() => setDatePreset(preset.key)}
-                                            className="py-2.5 px-4 rounded-xl border border-white/10 bg-white/5 text-xs font-bold text-white/70 hover:bg-white/10 hover:border-primary/30 hover:text-white transition-all duration-300"
-                                        >
-                                            {preset.label}
-                                        </button>
-                                    ))}
-                                </div>
-                                <div className="flex gap-3">
-                                    <input
-                                        type="date"
-                                        value={filters.startDate}
-                                        onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white/90 focus:border-primary/50 focus:bg-white/10 transition-all"
-                                    />
-                                    <input
-                                        type="date"
-                                        value={filters.endDate}
-                                        onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white/90 focus:border-primary/50 focus:bg-white/10 transition-all"
+                        {/* ── Avalanche-specific Filters ── */}
+                        {view === 'avalanches' && (
+                            <FilterSection title="Tip & Cauză Avalanșă" icon={Activity} defaultOpen={true}>
+                                {/* Cause */}
+                                <div style={{ marginBottom: '20px' }}>
+                                    <label className="search-filter-label">Cauza Avalanșei</label>
+                                    <MultiSelect
+                                        options={metadata.causes && metadata.causes.length > 0 ? metadata.causes : CAUSE_OPTIONS}
+                                        value={filters.causeId}
+                                        onChange={(val) => handleFilterChange('causeId', val)}
+                                        placeholder="Selectează cauzele..."
                                     />
                                 </div>
-                            </div>
 
-                            {/* Technical Details - Sliders */}
-                            <div className="space-y-10 pt-4">
-                                {view === 'avalanches' && (
-                                    <div className="space-y-4">
-                                        <label className="block text-xs font-black text-white/30 uppercase tracking-[0.2em] mb-4">
-                                            Mărime Avalanșă
-                                        </label>
-                                        <div className="flex flex-wrap gap-4">
-                                            {['mica', 'medie', 'mare'].map(sz => (
-                                                <button
-                                                    key={sz}
-                                                    type="button"
-                                                    onClick={() => handleFilterChange('relativeSize', filters.relativeSize === sz ? '' : sz)}
-                                                    className={`flex-1 min-w-[120px] py-4 px-6 rounded-2xl text-sm font-black uppercase tracking-widest transition-all duration-300 border ${filters.relativeSize === sz
-                                                            ? 'bg-primary/20 border-primary text-primary shadow-lg shadow-primary/20 scale-105'
-                                                            : 'bg-white/5 border-white/10 text-white/50 hover:border-white/20 hover:bg-white/10'
-                                                        }`}
-                                                >
-                                                    {sz}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="space-y-6">
-                                    <label className="block text-xs font-black text-white/30 uppercase tracking-[0.2em]">
-                                        Parametri Tehnici (Intervale)
-                                    </label>
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                        <RangeSlider 
-                                            label="Altitudine" min={0} max={3000} step={50} minVal={filters.minAltitude} maxVal={filters.maxAltitude} suffix="m"
-                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minAltitude' : 'maxAltitude', val)}
-                                        />
-                                        
-                                        {view === 'avalanches' ? (
-                                            <>
-                                                <div className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 group">
-                                                    <div className="flex justify-between items-center mb-8">
-                                                        <span className="text-xs font-black text-white/40 uppercase tracking-widest">Înclinație Pantă</span>
-                                                        <span className="text-sm font-black text-primary bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20">
-                                                            Min: {filters.minSlope}°
-                                                        </span>
-                                                    </div>
-                                                    <div className="h-6 flex items-center">
-                                                        <input
-                                                            type="range"
-                                                            min="0"
-                                                            max="60"
-                                                            step="1"
-                                                            value={filters.minSlope}
-                                                            onChange={(e) => handleFilterChange('minSlope', parseInt(e.target.value))}
-                                                            className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-primary"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <RangeSlider 
-                                                    label="Lungime Traseu" min={0} max={2000} step={50} minVal={filters.minTrackLength} maxVal={filters.maxTrackLength} suffix="m"
-                                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minTrackLength' : 'maxTrackLength', val)}
-                                                />
-                                                <RangeSlider 
-                                                    label="Adâncime Coroană" min={0} max={300} step={5} minVal={filters.minCrownDepth} maxVal={filters.maxCrownDepth} suffix="cm"
-                                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minCrownDepth' : 'maxCrownDepth', val)}
-                                                />
-                                                <RangeSlider 
-                                                    label="Lățime Coroană" min={0} max={500} step={10} minVal={filters.minCrownWidth} maxVal={filters.maxCrownWidth} suffix="m"
-                                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minCrownWidth' : 'maxCrownWidth', val)}
-                                                />
-                                                <RangeSlider 
-                                                    label="Denivelare Verticală" min={0} max={1500} step={50} minVal={filters.minVerticalDrop} maxVal={filters.maxVerticalDrop} suffix="m"
-                                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minVerticalDrop' : 'maxVerticalDrop', val)}
-                                                />
-                                            </>
-                                        ) : (
-                                            <>
-                                                <RangeSlider 
-                                                    label="Temperatură" min={-30} max={30} step={1} minVal={filters.minTemperature} maxVal={filters.maxTemperature} suffix="°C"
-                                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minTemperature' : 'maxTemperature', val)}
-                                                />
-                                                <RangeSlider 
-                                                    label="Viteză Vânt" min={0} max={150} step={5} minVal={filters.minWindSpeed} maxVal={filters.maxWindSpeed} suffix="km/h"
-                                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minWindSpeed' : 'maxWindSpeed', val)}
-                                                />
-                                                <RangeSlider 
-                                                    label="Grosime Zăpadă" min={0} max={500} step={10} minVal={filters.minSnowDepth} maxVal={filters.maxSnowDepth} suffix="cm"
-                                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minSnowDepth' : 'maxSnowDepth', val)}
-                                                />
-                                            </>
-                                        )}
-                                    </div>
+                                {/* Type */}
+                                <div style={{ marginBottom: '20px' }}>
+                                    <label className="search-filter-label">Tip Avalanșă</label>
+                                    <MultiSelect
+                                        options={metadata.types.length > 0 ? metadata.types : TYPE_OPTIONS}
+                                        value={filters.typeId}
+                                        onChange={(val) => handleFilterChange('typeId', val)}
+                                        placeholder="Selectează tipul..."
+                                    />
                                 </div>
-                            </div>
 
-                            {/* Damages & Victims - Avalanche Only */}
-                            {view === 'avalanches' && (
-                                <div className="space-y-3">
-                                    <label className="block text-xs font-bold text-white/70 uppercase tracking-widest">
-                                        Daune & Victime
+                                {/* Orientation */}
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <label className="search-filter-label" style={{ textAlign: 'center', width: '100%' }}>
+                                        Orientare Pantă
                                     </label>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                        {[
-                                            { key: 'hasCaught', label: 'Persoane Prinse', icon: Users },
-                                            { key: 'hasPartially', label: 'Parțial Îngropate', icon: AlertTriangle },
-                                            { key: 'hasFully', label: 'Complet Îngropate', icon: HelpCircle },
-                                            { key: 'hasInjured', label: 'Persoane Rănite', icon: Heart },
-                                            { key: 'hasKilled', label: 'Persoane Decedate', icon: ShieldAlert },
-                                            { key: 'hasMaterial', label: 'Daune Materiale', icon: HomeIcon }
-                                        ].map(flag => (
+                                    <CompassFilter 
+                                        value={filters.orientationId}
+                                        onChange={(val) => handleFilterChange('orientationId', val)}
+                                    />
+                                </div>
+                            </FilterSection>
+                        )}
+
+                        {/* ── Conditions-specific Filters ── */}
+                        {view === 'conditions' && (
+                            <FilterSection title="Condiții Meteo" icon={CloudRain} defaultOpen={true}>
+                                <div style={{ marginBottom: '20px' }}>
+                                    <label className="search-filter-label">Vizibilitate</label>
+                                    <MultiSelect
+                                        options={VISIBILITY_OPTIONS}
+                                        value={filters.visibility}
+                                        onChange={(val) => handleFilterChange('visibility', val)}
+                                        placeholder="Selectează vizibilitatea..."
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="search-filter-label">Direcție Vânt</label>
+                                    <MultiSelect
+                                        options={WIND_DIRECTIONS}
+                                        value={filters.windDirection}
+                                        onChange={(val) => handleFilterChange('windDirection', val)}
+                                        placeholder="Selectează direcția..."
+                                    />
+                                </div>
+                            </FilterSection>
+                        )}
+
+                        {/* ── Date Interval ── */}
+                        <FilterSection title="Interval Temporal" icon={Calendar} defaultOpen={true}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', marginBottom: '12px' }}>
+                                {[
+                                    { key: 'week', label: 'Săpt. Curentă' },
+                                    { key: 'month', label: 'Luna Curentă' },
+                                    { key: '3months', label: 'Ultimele 3 Luni' },
+                                    { key: 'season', label: 'Sezon Iarnă' }
+                                ].map(preset => (
+                                    <button
+                                        key={preset.key}
+                                        type="button"
+                                        onClick={() => setDatePreset(preset.key)}
+                                        className="search-chip-btn"
+                                    >
+                                        {preset.label}
+                                    </button>
+                                ))}
+                            </div>
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <input
+                                    type="date"
+                                    value={filters.startDate}
+                                    onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                                    className="search-date-input"
+                                />
+                                <input
+                                    type="date"
+                                    value={filters.endDate}
+                                    onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                                    className="search-date-input"
+                                />
+                            </div>
+                        </FilterSection>
+
+                        {/* ── Technical Details / Sliders ── */}
+                        <FilterSection title={view === 'avalanches' ? 'Parametri Tehnici' : 'Parametri Condiții'} icon={SlidersHorizontal} defaultOpen={false}>
+                            {view === 'avalanches' && (
+                                <div style={{ marginBottom: '24px' }}>
+                                    <label className="search-filter-label">Mărime Avalanșă</label>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                        {['mica', 'medie', 'mare'].map(sz => (
                                             <button
-                                                key={flag.key}
+                                                key={sz}
                                                 type="button"
-                                                onClick={() => handleFilterChange(flag.key, !filters[flag.key])}
-                                                className={`px-4 py-3 rounded-xl text-sm font-bold flex items-center gap-3 transition-all duration-300 border ${filters[flag.key]
-                                                        ? 'bg-accent-red/15 border-accent-red/50 text-accent-red shadow-lg shadow-accent-red/10'
-                                                        : 'bg-white/5 border-white/10 text-white/70 hover:border-white/20 hover:bg-white/10'
-                                                    }`}
+                                                onClick={() => handleFilterChange('relativeSize', filters.relativeSize === sz ? '' : sz)}
+                                                className={`search-size-btn ${filters.relativeSize === sz ? 'active' : ''}`}
                                             >
-                                                <flag.icon size={18} /> {flag.label}
+                                                {sz === 'mica' && '🔹'} {sz === 'medie' && '🔶'} {sz === 'mare' && '🔴'} {sz.charAt(0).toUpperCase() + sz.slice(1)}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
                             )}
 
-                        </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                                <RangeSlider 
+                                    label="Altitudine" min={0} max={3000} step={50} minVal={filters.minAltitude} maxVal={filters.maxAltitude} suffix="m"
+                                    onChange={(type, val) => handleFilterChange(type === 'min' ? 'minAltitude' : 'maxAltitude', val)}
+                                />
+                                
+                                {view === 'avalanches' ? (
+                                    <>
+                                        <SingleSlider 
+                                            label="Înclinație Pantă" min={0} max={60} step={1} value={filters.minSlope} suffix="°"
+                                            onChange={(val) => handleFilterChange('minSlope', val)}
+                                        />
+                                        <RangeSlider 
+                                            label="Lungime Traseu" min={0} max={2000} step={50} minVal={filters.minTrackLength} maxVal={filters.maxTrackLength} suffix="m"
+                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minTrackLength' : 'maxTrackLength', val)}
+                                        />
+                                        <RangeSlider 
+                                            label="Adâncime Coroană" min={0} max={300} step={5} minVal={filters.minCrownDepth} maxVal={filters.maxCrownDepth} suffix="cm"
+                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minCrownDepth' : 'maxCrownDepth', val)}
+                                        />
+                                        <RangeSlider 
+                                            label="Lățime Coroană" min={0} max={500} step={10} minVal={filters.minCrownWidth} maxVal={filters.maxCrownWidth} suffix="m"
+                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minCrownWidth' : 'maxCrownWidth', val)}
+                                        />
+                                        <RangeSlider 
+                                            label="Denivelare Verticală" min={0} max={1500} step={50} minVal={filters.minVerticalDrop} maxVal={filters.maxVerticalDrop} suffix="m"
+                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minVerticalDrop' : 'maxVerticalDrop', val)}
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <RangeSlider 
+                                            label="Temperatură" min={-30} max={30} step={1} minVal={filters.minTemperature} maxVal={filters.maxTemperature} suffix="°C"
+                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minTemperature' : 'maxTemperature', val)}
+                                        />
+                                        <RangeSlider 
+                                            label="Viteză Vânt" min={0} max={150} step={5} minVal={filters.minWindSpeed} maxVal={filters.maxWindSpeed} suffix="km/h"
+                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minWindSpeed' : 'maxWindSpeed', val)}
+                                        />
+                                        <RangeSlider 
+                                            label="Grosime Zăpadă" min={0} max={500} step={10} minVal={filters.minSnowDepth} maxVal={filters.maxSnowDepth} suffix="cm"
+                                            onChange={(type, val) => handleFilterChange(type === 'min' ? 'minSnowDepth' : 'maxSnowDepth', val)}
+                                        />
+                                    </>
+                                )}
+                            </div>
+                        </FilterSection>
 
-                        {/* Action Buttons */}
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-6 border-t border-white/10">
+                        {/* ── Damages & Victims (avalanches only) ── */}
+                        {view === 'avalanches' && (
+                            <FilterSection title="Daune & Victime" icon={AlertTriangle} defaultOpen={false}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                                    {[
+                                        { key: 'hasCaught', label: 'Persoane Prinse', icon: Users, color: '#f59e0b' },
+                                        { key: 'hasPartially', label: 'Parțial Îngropate', icon: AlertTriangle, color: '#f97316' },
+                                        { key: 'hasFully', label: 'Complet Îngropate', icon: HelpCircle, color: '#ef4444' },
+                                        { key: 'hasInjured', label: 'Persoane Rănite', icon: Heart, color: '#ec4899' },
+                                        { key: 'hasKilled', label: 'Persoane Decedate', icon: ShieldAlert, color: '#dc2626' },
+                                        { key: 'hasMaterial', label: 'Daune Materiale', icon: HomeIcon, color: '#8b5cf6' }
+                                    ].map(flag => (
+                                        <button
+                                            key={flag.key}
+                                            type="button"
+                                            onClick={() => handleFilterChange(flag.key, !filters[flag.key])}
+                                            className={`search-damage-btn ${filters[flag.key] ? 'active' : ''}`}
+                                            style={filters[flag.key] ? { borderColor: flag.color + '80', background: flag.color + '15', color: flag.color } : {}}
+                                        >
+                                            <flag.icon size={16} />
+                                            <span>{flag.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </FilterSection>
+                        )}
+
+                        {/* ── Action Buttons ── */}
+                        <div className="search-actions-bar">
                             {!isDataEngineer && (
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-primary hover:bg-primary-hover text-white py-4 px-8 rounded-xl font-black uppercase tracking-wider text-sm shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3"
+                                    className="search-action-primary"
                                     disabled={loading}
                                 >
                                     {loading ? (
                                         <>
-                                            <RefreshCw size={20} className="animate-spin" />
+                                            <RefreshCw size={18} className="animate-spin" />
                                             Se încarcă...
                                         </>
                                     ) : (
                                         <>
-                                            <Filter size={20} />
-                                            Aplică Filtre
+                                            <Search size={18} />
+                                            Caută
                                         </>
                                     )}
                                 </button>
@@ -773,56 +815,47 @@ const SearchPage = () => {
                             <button
                                 type="button"
                                 onClick={clearFilters}
-                                className="px-8 py-4 rounded-xl border border-white/20 bg-white/5 text-white/80 font-bold uppercase text-sm tracking-wider hover:bg-accent-red/10 hover:border-accent-red/50 hover:text-accent-red transition-all duration-300 flex items-center justify-center gap-2"
+                                className="search-action-reset"
                             >
-                                <X size={18} />
+                                <X size={16} />
                                 Resetare
                             </button>
 
                             <button
                                 type="button"
                                 onClick={() => setShowExportOptions(!showExportOptions)}
-                                className={`px-8 py-4 rounded-xl border font-black uppercase text-sm tracking-wider transition-all duration-300 flex items-center justify-center gap-3 ${showExportOptions ? 'bg-primary border-primary text-white shadow-lg shadow-primary/30' : 'border-primary/20 bg-primary/5 text-primary hover:bg-primary/10'}`}
+                                className={`search-action-export ${showExportOptions ? 'active' : ''}`}
                             >
-                                <Download size={18} />
+                                <Download size={16} />
                                 Export
-                                <ChevronDown size={14} className={`transition-transform duration-300 ${showExportOptions ? 'rotate-180' : ''}`} />
+                                <ChevronDown size={14} style={{ transition: 'transform 0.3s', transform: showExportOptions ? 'rotate(180deg)' : 'none' }} />
                             </button>
                         </div>
 
-                        {/* Horizontal Export Options */}
+                        {/* ── Export Options ── */}
                         {showExportOptions && (
-                            <div className="pt-8 border-t border-white/5 animate-in slide-in-from-top-4 duration-500">
-                                <div className="text-center mb-6">
-                                    <h4 className="text-xs font-black text-white/30 uppercase tracking-[0.3em]">Exportă Rezultatele</h4>
-                                </div>
-                                <div className="flex flex-row gap-4 items-stretch">
+                            <div className="search-export-panel">
+                                <p className="search-export-title">Exportă Rezultatele</p>
+                                <div style={{ display: 'flex', gap: '12px' }}>
                                     {[
-                                        { id: 'csv', name: 'CSV', icon: FileSpreadsheet, color: 'text-accent-green', bg: 'bg-accent-green/5', border: 'border-accent-green/20' },
-                                        { id: 'json', name: 'JSON', icon: FileJson, color: 'text-primary', bg: 'bg-primary/5', border: 'border-primary/20' },
-                                        { id: 'xml', name: 'XML', icon: FileCode, color: 'text-orange-400', bg: 'bg-orange-400/5', border: 'border-orange-400/20' }
+                                        { id: 'csv', name: 'CSV', icon: FileSpreadsheet, color: '#22c55e' },
+                                        { id: 'json', name: 'JSON', icon: FileJson, color: '#3b82f6' },
+                                        { id: 'xml', name: 'XML', icon: FileCode, color: '#f97316' }
                                     ].map(format => (
                                         <button
                                             key={format.id}
                                             type="button"
                                             disabled={loading}
                                             onClick={() => handleExport(format.id)}
-                                            className={`flex-1 relative group/item flex flex-col items-center justify-center py-4 px-3 rounded-2xl border ${format.bg} ${format.border} transition-all duration-300 hover:scale-[1.02] hover:bg-white/5 hover:border-white/20 shadow-xl ${loading && exportingFormat !== format.id ? 'opacity-50' : ''}`}
+                                            className="search-export-btn"
+                                            style={{ '--export-color': format.color }}
                                         >
-                                            <div className={`${format.color} mb-2 group-hover/item:scale-110 transition-transform duration-300`}>
-                                                {exportingFormat === format.id ? (
-                                                    <RefreshCw size={20} className="animate-spin" />
-                                                ) : (
-                                                    <format.icon size={20} />
-                                                )}
-                                            </div>
-                                            <span className="text-[10px] font-black text-white/80 group-hover/item:text-white transition-colors uppercase tracking-widest">{format.name}</span>
-                                            
-                                            {exportingFormat === format.id && (
-                                                <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px] rounded-2xl flex items-center justify-center">
-                                                    <RefreshCw size={18} className="animate-spin text-primary" />
-                                                </div>
+                                            {exportingFormat === format.id ? (
+                                                <RefreshCw size={20} className="animate-spin" style={{ color: format.color }} />
+                                            ) : (
+                                                <format.icon size={20} style={{ color: format.color }} />
                                             )}
+                                            <span>{format.name}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -831,22 +864,23 @@ const SearchPage = () => {
                     </form>
                 </section>
 
-                {/* Results Section */}
-                <main className="space-y-8 animate-in fade-in duration-1000">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 pb-6 border-b border-white/10">
-                        <div className="flex items-center gap-4">
-                            <h3 className="text-xl md:text-2xl font-black text-white flex items-center gap-3">
-                                {loading ? (
-                                    <RefreshCw className="animate-spin text-primary" size={24} />
-                                ) : (
-                                    <div className="w-2.5 h-2.5 bg-primary rounded-full animate-pulse shadow-lg shadow-primary/50"></div>
-                                )}
-                                <span className="text-primary">{totalElements}</span>
-                                <span className="text-text-muted font-medium text-base md:text-xl">rezultate găsite</span>
+                {/* ═══════════════ RESULTS ═══════════════ */}
+                <main style={{ marginTop: '2.5rem' }}>
+                    {/* Results Header */}
+                    <div className="search-results-header">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            {loading ? (
+                                <RefreshCw className="animate-spin" size={22} style={{ color: 'var(--primary)' }} />
+                            ) : (
+                                <div className="search-results-dot" />
+                            )}
+                            <h3 className="search-results-count">
+                                <span style={{ color: 'var(--primary)', fontWeight: 900 }}>{totalElements}</span>
+                                <span style={{ color: 'var(--text-muted)', fontWeight: 500, fontSize: '1rem', marginLeft: '8px' }}>rezultate găsite</span>
                             </h3>
                         </div>
 
-                        <div className="flex gap-1 bg-white/5 rounded-xl border border-white/10 p-1.5 shadow-lg">
+                        <div className="search-layout-toggle">
                             {[
                                 { id: 'grid', icon: LayoutGrid },
                                 { id: 'list', icon: ListIcon }
@@ -854,10 +888,7 @@ const SearchPage = () => {
                                 <button
                                     key={l.id}
                                     onClick={() => setLayout(l.id)}
-                                    className={`p-2.5 rounded-lg transition-all duration-300 ${layout === l.id
-                                            ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                                            : 'text-white/60 hover:text-white hover:bg-white/10'
-                                        }`}
+                                    className={`search-layout-btn ${layout === l.id ? 'active' : ''}`}
                                 >
                                     <l.icon size={18} />
                                 </button>
@@ -865,76 +896,91 @@ const SearchPage = () => {
                         </div>
                     </div>
 
-                    <div className={`grid gap-6 ${layout === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
-                        {results.map(item => (
-                            <div key={item.id} className="card glass hover:border-primary/50 transition-all group relative overflow-hidden flex flex-col h-full bg-glass-bg shadow-2xl p-6">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 -mr-16 -mt-16 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700"></div>
+                    {/* Loading Skeleton */}
+                    {loading && results.length === 0 && (
+                        <div className={`search-results-grid ${layout === 'grid' ? 'grid-view' : 'list-view'}`}>
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="search-skeleton-card">
+                                    <div className="search-skeleton-line" style={{ width: '40%', height: '12px' }} />
+                                    <div className="search-skeleton-line" style={{ width: '70%', height: '20px', marginTop: '16px' }} />
+                                    <div className="search-skeleton-line" style={{ width: '90%', height: '14px', marginTop: '12px' }} />
+                                    <div className="search-skeleton-line" style={{ width: '60%', height: '14px', marginTop: '8px' }} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
-                                <div className="flex justify-between items-start mb-6 relative z-10 w-full">
-                                    <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap shadow-sm ${item.status === 'VALIDATED'
-                                            ? 'bg-accent-green/20 text-accent-green border border-accent-green/20'
-                                            : 'bg-primary/20 text-primary border border-primary/20'
-                                        }`}>
-                                        {item.status === 'VALIDATED' ? 'Validat' : 'În așteptare'}
+                    {/* Results Grid */}
+                    <div className={`search-results-grid ${layout === 'grid' ? 'grid-view' : 'list-view'}`}>
+                        {results.map(item => (
+                            <div key={item.id} className="search-result-card">
+                                {/* Gradient top border accent */}
+                                <div className="search-card-accent" />
+
+                                {/* Card header */}
+                                <div className="search-card-header">
+                                    <span className={`search-card-status ${item.status === 'VALIDATED' ? 'validated' : 'pending'}`}>
+                                        {item.status === 'VALIDATED' ? '✓ Validat' : '⏳ În așteptare'}
                                     </span>
-                                    <div className="flex items-center gap-2 text-[12px] text-text-muted font-bold bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
-                                        <Calendar size={14} className="text-primary" />
+                                    <div className="search-card-date">
+                                        <Calendar size={13} />
                                         {new Date(item.date || item.createdAt).toLocaleDateString('ro-RO')}
                                     </div>
                                 </div>
 
-                                <h3 className="text-2xl font-black mb-6 line-clamp-1 group-hover:text-primary transition-colors relative z-10 tracking-tight">
+                                {/* Title */}
+                                <h3 className="search-card-title">
                                     {item.title || (view === 'conditions' ? 'Raport Vizibilitate & Zăpadă' : 'Fără titlu')}
                                 </h3>
 
-                                <div className="space-y-4 mb-8 flex-grow relative z-10">
-                                    <div className="flex items-center gap-4 text-sm text-text-muted group-hover:text-white transition-all duration-300 bg-white/2 p-3 rounded-2xl border border-white/5 hover:bg-white/5">
-                                        <MapPin size={20} className="text-primary shrink-0" />
-                                        <span className="font-bold">{metadata.massifs.find(m => m.id === (item.massifId || item.massif?.id))?.name || item.massifName || 'Masiv necunoscut'}</span>
+                                {/* Card body */}
+                                <div className="search-card-body">
+                                    <div className="search-card-info-row">
+                                        <MapPin size={16} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+                                        <span>{metadata.massifs.find(m => m.id === (item.massifId || item.massif?.id))?.name || item.massifName || 'Masiv necunoscut'}</span>
                                     </div>
                                     {view === 'avalanches' ? (
                                         <>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <div className="flex items-center gap-3 text-xs text-text-muted p-2.5 bg-white/2 rounded-xl border border-white/5">
-                                                    <Activity size={16} className="text-primary/70 shrink-0" />
-                                                    <span>Mărime: <b className="text-white">{item.size || 'N/A'}</b></span>
+                                            <div className="search-card-details-grid">
+                                                <div className="search-card-detail">
+                                                    <Activity size={14} style={{ color: 'var(--primary)', opacity: 0.7 }} />
+                                                    <span>Mărime: <strong>{item.size || 'N/A'}</strong></span>
                                                 </div>
-                                                <div className="flex items-center gap-3 text-xs text-text-muted p-2.5 bg-white/2 rounded-xl border border-white/5">
-                                                    <Compass size={16} className="text-primary/70 shrink-0" />
-                                                    <span>Orientare: <b className="text-white">{metadata.orientations.find(o => o.id === item.orientationId)?.direction || '--'}</b></span>
+                                                <div className="search-card-detail">
+                                                    <Compass size={14} style={{ color: 'var(--primary)', opacity: 0.7 }} />
+                                                    <span>Orientare: <strong>{metadata.orientations.find(o => o.id === item.orientationId)?.direction || '--'}</strong></span>
                                                 </div>
                                             </div>
-                                            <div className="mt-3 text-[10px] text-text-muted flex items-center gap-2">
-                                                <Shield size={12} className="text-primary/50" />
-                                                <span>Echip.: <b className="text-white">{item.safetyEquipment || 'N/A'}</b></span>
+                                            <div className="search-card-equip">
+                                                <Shield size={12} style={{ color: 'var(--primary)', opacity: 0.5 }} />
+                                                <span>Echip.: <strong>{item.safetyEquipment || 'N/A'}</strong></span>
                                             </div>
                                         </>
                                     ) : (
-                                        <>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <div className="flex items-center gap-3 text-xs text-text-muted p-2.5 bg-white/2 rounded-xl border border-white/5">
-                                                    <Wind size={18} className="text-primary shrink-0" />
-                                                    <span>Vânt: <b className="text-white">{item.windSpeed || 0} km/h</b></span>
-                                                </div>
-                                                <div className="flex items-center gap-3 text-xs text-text-muted p-2.5 bg-white/2 rounded-xl border border-white/5">
-                                                    <Info size={18} className="text-primary shrink-0" />
-                                                    <span>Zăpadă: <b className="text-white">{item.snowDepth || 0} cm</b></span>
-                                                </div>
+                                        <div className="search-card-details-grid">
+                                            <div className="search-card-detail">
+                                                <Wind size={14} style={{ color: 'var(--primary)' }} />
+                                                <span>Vânt: <strong>{item.windSpeed || 0} km/h</strong></span>
                                             </div>
-                                        </>
+                                            <div className="search-card-detail">
+                                                <Layers size={14} style={{ color: 'var(--primary)' }} />
+                                                <span>Zăpadă: <strong>{item.snowDepth || 0} cm</strong></span>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
 
-                                <div className="pt-6 border-t border-white/5 flex items-center justify-between mt-auto relative z-10">
+                                {/* Card footer */}
+                                <div className="search-card-footer">
                                     <Link
                                         to={`/${view === 'avalanches' ? 'avalanche' : 'conditions'}/${item.id}`}
-                                        className="text-[10px] font-black text-primary flex items-center gap-2 hover:gap-3 transition-all uppercase tracking-[0.3em] group/link px-4 py-2 hover:bg-primary/10 rounded-xl"
+                                        className="search-card-link"
                                     >
-                                        Vezi Detalii <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
+                                        Vezi Detalii <ArrowRight size={14} className="search-card-link-arrow" />
                                     </Link>
 
                                     {item.damagesAndVictims?.personsKilled > 0 && (
-                                        <div className="flex items-center gap-1.5 text-accent-red bg-accent-red/10 px-2 py-1 rounded text-[10px] font-bold uppercase animate-pulse">
+                                        <div className="search-card-fatal-badge">
                                             <AlertTriangle size={12} /> Fatalitate
                                         </div>
                                     )}
@@ -943,16 +989,16 @@ const SearchPage = () => {
                         ))}
                     </div>
 
+                    {/* Empty State */}
                     {results.length === 0 && !loading && (
-                        <div className="card glass p-20 md:p-32 text-center space-y-8 border-dashed border-2 border-glass-border bg-white/2 rounded-3xl">
-                            <Search size={64} className="mx-auto text-text-muted opacity-10" />
-                            <div className="space-y-3">
-                                <h3 className="text-2xl md:text-3xl font-black tracking-tight">Niciun rezultat găsit</h3>
-                                <p className="text-text-muted text-sm md:text-base max-w-sm mx-auto font-medium opacity-70">
-                                    Încearcă să modifici criteriile de filtrare pentru a găsi rezultate.
-                                </p>
+                        <div className="search-empty-state">
+                            <div className="search-empty-icon">
+                                <Search size={48} />
                             </div>
-                            <button onClick={clearFilters} className="btn-primary px-8 md:px-12 py-3 md:py-4 rounded-2xl text-xs md:text-sm uppercase font-black tracking-wider">
+                            <h3>Niciun rezultat găsit</h3>
+                            <p>Încearcă să modifici criteriile de filtrare pentru a găsi rezultate.</p>
+                            <button onClick={clearFilters} className="search-action-primary" style={{ marginTop: '1.5rem' }}>
+                                <RefreshCw size={16} />
                                 Resetează Filtrele
                             </button>
                         </div>
@@ -960,41 +1006,36 @@ const SearchPage = () => {
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-12 border-t border-white/10 mt-10">
-                            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 text-sm">
-                                <p className="text-text-muted font-bold tracking-tight">
-                                    Pagina <span className="text-white bg-primary/20 px-2.5 py-1 rounded-lg">{currentPage + 1}</span> din <span className="text-white">{totalPages}</span>
-                                </p>
-                                <span className="w-1.5 h-1.5 bg-white/10 rounded-full"></span>
-                                <p className="text-xs text-text-muted uppercase font-black tracking-widest">{totalElements} Total</p>
+                        <div className="search-pagination">
+                            <div className="search-pagination-info">
+                                <span>Pagina <strong style={{ color: 'white', background: 'rgba(59,130,246,0.15)', padding: '2px 10px', borderRadius: '8px' }}>{currentPage + 1}</strong> din <strong style={{ color: 'white' }}>{totalPages}</strong></span>
+                                <span className="search-pagination-dot" />
+                                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '0.1em' }}>{totalElements} Total</span>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="search-pagination-controls">
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
                                     disabled={currentPage === 0}
-                                    className="p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white disabled:opacity-20 hover:bg-white/10 hover:scale-110 transition-all shadow-lg"
+                                    className="search-pagination-btn"
                                 >
-                                    <ChevronLeft size={20} />
+                                    <ChevronLeft size={18} />
                                 </button>
 
-                                <div className="flex items-center gap-1.5">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     {[...Array(totalPages)].map((_, i) => {
                                         if (totalPages <= 5 || i === 0 || i === totalPages - 1 || (i >= currentPage - 1 && i <= currentPage + 1)) {
                                             return (
                                                 <button
                                                     key={i}
                                                     onClick={() => setCurrentPage(i)}
-                                                    className={`w-10 h-10 rounded-xl font-black text-sm transition-all border ${currentPage === i
-                                                            ? 'bg-primary/20 border-primary text-primary shadow-lg shadow-primary/20'
-                                                            : 'bg-white/5 border-white/10 text-text-muted hover:text-white hover:border-white/20 hover:bg-white/10'
-                                                        }`}
+                                                    className={`search-pagination-num ${currentPage === i ? 'active' : ''}`}
                                                 >
                                                     {i + 1}
                                                 </button>
                                             );
                                         } else if ((i === 1 && currentPage > 2) || (i === totalPages - 2 && currentPage < totalPages - 3)) {
-                                            return <span key={i} className="px-1 text-text-muted font-black">...</span>;
+                                            return <span key={i} style={{ padding: '0 4px', color: 'var(--text-muted)', fontWeight: 900 }}>...</span>;
                                         }
                                         return null;
                                     })}
@@ -1003,9 +1044,9 @@ const SearchPage = () => {
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
                                     disabled={currentPage === totalPages - 1}
-                                    className="p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white disabled:opacity-20 hover:bg-white/10 hover:scale-110 transition-all shadow-lg"
+                                    className="search-pagination-btn"
                                 >
-                                    <ChevronRight size={20} />
+                                    <ChevronRight size={18} />
                                 </button>
                             </div>
                         </div>
