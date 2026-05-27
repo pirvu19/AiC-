@@ -19,6 +19,9 @@ import AccountRequestsPanel from './pages/AccountRequestsPanel';
 import MeteoPage from './pages/MeteoPage';
 import MeteoRoPage from './pages/MeteoRoPage';
 import AvalancheRiskChartPage from './pages/AvalancheRiskChartPage';
+import HumanImpactStatsPage from './pages/HumanImpactStatsPage';
+import TerrainStatsPage from './pages/TerrainStatsPage';
+import TypologyStatsPage from './pages/TypologyStatsPage';
 import MetadataManagement from './pages/MetadataManagement';
 import Map3DPage from './pages/Map3DPage';
 import { useAuth } from './context/AuthContext';
@@ -114,6 +117,9 @@ function App() {
             <Route path="/meteo" element={<MeteoPage />} />
             <Route path="/meteo-ro" element={<MeteoRoPage />} />
             <Route path="/statistici" element={<AvalancheRiskChartPage />} />
+            <Route path="/statistici/bilant-uman" element={<HumanImpactStatsPage />} />
+            <Route path="/statistici/analiza-teren" element={<TerrainStatsPage />} />
+            <Route path="/statistici/cauze-tipologii" element={<TypologyStatsPage />} />
             <Route path="/admin/users" element={
               <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
                 <UserManagementPanel />

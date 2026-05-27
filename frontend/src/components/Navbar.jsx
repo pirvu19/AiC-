@@ -2,17 +2,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
-import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers, Menu, X, Wind, BarChart2 } from 'lucide-react';
+import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers, Menu, X, Wind, BarChart2, Activity, PieChart } from 'lucide-react';
 
 const Navbar = () => {
-    const { user, logout, isAdmin, isExpert, isUserAdmin, isReviewer, isDataEngineer } = useAuth();
+    const { user, logout, isAdmin, isExpert, isReviewer, isDataEngineer, isUserAdmin } = useAuth();
     const { notifications, unreadCount, markAsRead, markAllAsRead, clearAll } = useNotifications();
     const [showNotifications, setShowNotifications] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showAdminDropdown, setShowAdminDropdown] = useState(false);
     const [showMeteoDropdown, setShowMeteoDropdown] = useState(false);
+    const [showStatsDropdown, setShowStatsDropdown] = useState(false);
     const adminRef = useRef(null);
     const meteoRef = useRef(null);
+    const statsRef = useRef(null);
     const navigate = useNavigate();
     const isRestrictedAdmin = isUserAdmin && !isAdmin;
 
@@ -24,6 +26,9 @@ const Navbar = () => {
             }
             if (meteoRef.current && !meteoRef.current.contains(e.target)) {
                 setShowMeteoDropdown(false);
+            }
+            if (statsRef.current && !statsRef.current.contains(e.target)) {
+                setShowStatsDropdown(false);
             }
         };
         document.addEventListener('mousedown', handleOutsideClick);
@@ -54,7 +59,7 @@ const Navbar = () => {
                                 {isAdmin ? (
                                     <div ref={meteoRef} style={{ position: 'relative' }}>
                                         <button
-                                            onClick={() => { setShowMeteoDropdown(v => !v); setShowAdminDropdown(false); }}
+                                            onClick={() => { setShowMeteoDropdown(v => !v); setShowAdminDropdown(false); setShowStatsDropdown(false); }}
                                             style={{
                                                 display: 'flex', alignItems: 'center', gap: '0.4rem',
                                                 fontSize: '0.875rem', fontWeight: 500,
@@ -145,11 +150,126 @@ const Navbar = () => {
                                     </>
                                 )}
 
-                                {/* ── Standalone links ── */}
-                                <Link to="/statistici" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                                    <BarChart2 size={18} />
-                                    <span>Statistici</span>
-                                </Link>
+                                {/* ── Dropdown Statistici ── */}
+                                <div ref={statsRef} style={{ position: 'relative' }}>
+                                    <button
+                                        onClick={() => { 
+                                            setShowStatsDropdown(v => !v); 
+                                            setShowAdminDropdown(false); 
+                                            setShowMeteoDropdown(false); 
+                                        }}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: '0.4rem',
+                                            fontSize: '0.875rem', fontWeight: 500,
+                                            color: showStatsDropdown ? 'var(--primary)' : 'inherit',
+                                            background: 'none', border: 'none', cursor: 'pointer',
+                                            padding: '0.25rem 0', transition: 'color 0.2s',
+                                        }}
+                                    >
+                                        <BarChart2 size={18} />
+                                        <span>Statistici</span>
+                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"
+                                            style={{ transition: 'transform 0.2s', transform: showStatsDropdown ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                                            <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                                        </svg>
+                                    </button>
+
+                                    {showStatsDropdown && (
+                                        <div style={{
+                                            position: 'absolute', top: 'calc(100% + 0.5rem)', left: 0,
+                                            minWidth: '320px',
+                                            background: '#0f172a',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '1rem',
+                                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.7)',
+                                            padding: '0.75rem',
+                                            zIndex: 1000,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: '0.25rem',
+                                        }}>
+                                            <Link to="/statistici"
+                                                onClick={() => setShowStatsDropdown(false)}
+                                                style={{
+                                                    display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                                                    padding: '0.75rem 0.9rem', borderRadius: '0.75rem',
+                                                    color: 'inherit', textDecoration: 'none',
+                                                    transition: 'background 0.15s',
+                                                }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                            >
+                                                <BarChart2 size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
+                                                <div>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Risc Avalanșă</div>
+                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                        Evoluția gradelor de risc în zonele monitorizate
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                            
+                                            <Link to="/statistici/bilant-uman"
+                                                onClick={() => setShowStatsDropdown(false)}
+                                                style={{
+                                                    display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                                                    padding: '0.75rem 0.9rem', borderRadius: '0.75rem',
+                                                    color: 'inherit', textDecoration: 'none',
+                                                    transition: 'background 0.15s',
+                                                }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                            >
+                                                <Activity size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
+                                                <div>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Bilanț Uman &amp; Victime</div>
+                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                        Focus pe siguranță, decese/salvări, echipamente folosite
+                                                    </div>
+                                                </div>
+                                            </Link>
+
+                                            <Link to="/statistici/analiza-teren"
+                                                onClick={() => setShowStatsDropdown(false)}
+                                                style={{
+                                                    display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                                                    padding: '0.75rem 0.9rem', borderRadius: '0.75rem',
+                                                    color: 'inherit', textDecoration: 'none',
+                                                    transition: 'background 0.15s',
+                                                }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                            >
+                                                <Mountain size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
+                                                <div>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Analiza Terenului</div>
+                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                        Top masive active, orientări pante, altitudini vs. înclinație
+                                                    </div>
+                                                </div>
+                                            </Link>
+
+                                            <Link to="/statistici/cauze-tipologii"
+                                                onClick={() => setShowStatsDropdown(false)}
+                                                style={{
+                                                    display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                                                    padding: '0.75rem 0.9rem', borderRadius: '0.75rem',
+                                                    color: 'inherit', textDecoration: 'none',
+                                                    transition: 'background 0.15s',
+                                                }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                            >
+                                                <PieChart size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
+                                                <div>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Cauze &amp; Tipologii</div>
+                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                        Tipuri de zăpadă, cauze naturale vs. umane, dimensiuni
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
                                 <Link to="/map3d" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                     <Mountain size={18} />
                                     <span>Hartă 3D</span>
@@ -182,7 +302,7 @@ const Navbar = () => {
                             <div ref={adminRef} style={{ position: 'relative' }}>
                                 {/* Trigger */}
                                 <button
-                                    onClick={() => { setShowAdminDropdown(v => !v); setShowMeteoDropdown(false); }}
+                                    onClick={() => { setShowAdminDropdown(v => !v); setShowMeteoDropdown(false); setShowStatsDropdown(false); }}
                                     style={{
                                         display: 'flex', alignItems: 'center', gap: '0.4rem',
                                         fontSize: '0.875rem', fontWeight: 500,
@@ -402,10 +522,25 @@ const Navbar = () => {
                                     <Wind size={18} className="text-primary" />
                                     <span>Meteo RO</span>
                                 </Link>
-                                <Link to="/statistici" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
-                                    <BarChart2 size={18} className="text-primary" />
-                                    <span>Statistici Risc</span>
-                                </Link>
+                                <div className="mt-2 pt-2 border-t border-white/5 flex flex-col gap-2">
+                                    <span className="px-3 text-[10px] font-bold text-text-muted uppercase tracking-widest">Statistici</span>
+                                    <Link to="/statistici" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                        <BarChart2 size={18} className="text-primary" />
+                                        <span>Risc Avalanșă</span>
+                                    </Link>
+                                    <Link to="/statistici/bilant-uman" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                        <Activity size={18} className="text-primary" />
+                                        <span>Bilanț Uman &amp; Victime</span>
+                                    </Link>
+                                    <Link to="/statistici/analiza-teren" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                        <Mountain size={18} className="text-primary" />
+                                        <span>Analiza Terenului</span>
+                                    </Link>
+                                    <Link to="/statistici/cauze-tipologii" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                        <PieChart size={18} className="text-primary" />
+                                        <span>Cauze &amp; Tipologii</span>
+                                    </Link>
+                                </div>
                                 <Link to="/map3d" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                     <Mountain size={18} className="text-primary" />
                                     <span>Hartă 3D Interactivă</span>
