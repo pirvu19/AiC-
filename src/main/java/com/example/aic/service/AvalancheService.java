@@ -195,6 +195,10 @@ public class AvalancheService {
         if ("VALIDATED".equalsIgnoreCase(created.getStatus())) {
             notificationPublisher.sendAvalancheValidatedEvent(
                     "O nouă avalanșă a fost publicată direct de utilizatorul: " + authorName);
+            Avalanche entity = avalancheRepository.findById(created.getId()).orElse(null);
+            if (entity != null) {
+                notificationPublisher.sendAvalancheEmailNotification(entity);
+            }
         } else {
             notificationPublisher.sendAvalancheCreatedEvent(
                     "O nouă avalanșă a fost adăugată de " + authorName + " și necesită validare!");
@@ -213,6 +217,7 @@ public class AvalancheService {
 
         notificationPublisher
                 .sendAvalancheValidatedEvent("Avalanșa cu ID-ul " + id + " a fost validată de către un admin!");
+        notificationPublisher.sendAvalancheEmailNotification(saved);
 
         return convertToDto(saved);
     }
