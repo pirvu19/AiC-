@@ -230,7 +230,7 @@ const ConditionsDetailsPage = () => {
                             .map((url, index) => (
                                 <div key={index} className="aspect-square rounded-xl overflow-hidden border border-glass-border bg-black/20">
                                     <img 
-                                        src={url.startsWith('http') ? url : `http://localhost:8080${url}`} 
+                                        src={url.startsWith('http') ? url : (url.startsWith('/') ? url : `/${url}`)} 
                                         alt={`Condiție ${index + 1}`} 
                                         className="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer"
                                     />
