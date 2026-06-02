@@ -49,7 +49,7 @@ const AvalancheCard = memo(({ item, view, isExpert, handleValidate }) => {
         : null;
 
     return (
-        <div className="card glass hover:border-primary/50 transition-all group relative overflow-hidden flex flex-col sm:flex-row justify-between gap-6 p-6 min-h-[160px]">
+        <div className="card glass hover:border-primary transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-2xl group relative overflow-hidden flex flex-col sm:flex-row justify-between gap-6 p-6 min-h-[160px]">
             <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 -mr-12 -mt-12 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
 
             {/* Left Section (Info) */}
@@ -187,7 +187,14 @@ const Home = () => {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-8 animate-in fade-in duration-500 relative" style={{ position: 'relative', zIndex: 1 }}>
+            {/* ─── Decorative Background ─── */}
+            <div className="search-page-bg-decor">
+                <div className="search-bg-orb search-bg-orb-1" />
+                <div className="search-bg-orb search-bg-orb-2" />
+                <div className="search-bg-orb search-bg-orb-3" />
+            </div>
+
             {user && mustChangePassword && (
                 <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl flex items-center gap-4 animate-in slide-in-from-top-4 duration-300 mb-6">
                     <div className="p-2 bg-amber-500/20 rounded-lg">
@@ -205,7 +212,7 @@ const Home = () => {
 
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/5">
                 <div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2">Monitorizare Centralizată</h1>
+                    <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 gradient-text">Monitorizare Centralizată</h1>
                     <p className="text-text-muted text-lg font-medium">Situația în timp real din munții noștri</p>
                 </div>
 
@@ -287,43 +294,56 @@ const Home = () => {
                 </div>
             )}
 
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-8">
-                    <p className="text-sm text-text-muted font-medium">
-                    Afișare <span className="text-white">{data.length}</span> din <span className="text-white">{totalElements}</span> rezultate
-                </p>
+            {totalPages > 1 ? (
+                <div className="search-pagination" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', marginTop: '2rem' }}>
+                    <div className="search-pagination-info">
+                        <span>Pagina <strong style={{ color: 'white', background: 'rgba(59,130,246,0.15)', padding: '2px 10px', borderRadius: '8px' }}>{currentPage + 1}</strong> din <strong style={{ color: 'white' }}>{totalPages}</strong></span>
+                        <span className="search-pagination-dot" />
+                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '0.1em' }}>{totalElements} Total</span>
+                    </div>
 
-                {totalPages > 1 && (
-                    <div className="flex items-center gap-2">
+                    <div className="search-pagination-controls">
                         <button
                             onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
                             disabled={currentPage === 0}
-                            className="p-2 rounded-xl bg-glass-bg border border-glass-border text-white disabled:opacity-30"
+                            className="search-pagination-btn"
                         >
-                            <ChevronLeft size={20} />
+                            <ChevronLeft size={18} />
                         </button>
 
-                        <div className="flex items-center gap-1">
-                            {[...Array(totalPages)].map((_, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => setCurrentPage(i)}
-                                    className={`w-10 h-10 rounded-xl font-bold text-sm transition-all border ${currentPage === i ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' : 'bg-glass-bg border-glass-border text-text-muted hover:text-white'}`}
-                                >
-                                    {i + 1}
-                                </button>
-                            ))}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {[...Array(totalPages)].map((_, i) => {
+                                if (totalPages <= 5 || i === 0 || i === totalPages - 1 || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                                    return (
+                                        <button
+                                            key={i}
+                                            onClick={() => setCurrentPage(i)}
+                                            className={`search-pagination-num ${currentPage === i ? 'active' : ''}`}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    );
+                                } else if ((i === 1 && currentPage > 2) || (i === totalPages - 2 && currentPage < totalPages - 3)) {
+                                    return <span key={i} style={{ padding: '0 4px', color: 'var(--text-muted)', fontWeight: 900 }}>...</span>;
+                                }
+                                return null;
+                            })}
                         </div>
 
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
                             disabled={currentPage === totalPages - 1}
-                            className="p-2 rounded-xl bg-glass-bg border border-glass-border text-white disabled:opacity-30"
+                            className="search-pagination-btn"
                         >
-                            <ChevronRight size={20} />
+                            <ChevronRight size={18} />
                         </button>
                     </div>
-                )}
                 </div>
+            ) : (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '2rem', marginTop: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+                    <span>Afișare <strong style={{ color: 'white' }}>{data.length}</strong> din <strong style={{ color: 'white' }}>{totalElements}</strong> rezultate</span>
+                </div>
+            )}
         </div>
     );
 };

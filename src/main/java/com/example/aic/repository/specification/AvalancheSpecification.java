@@ -20,7 +20,8 @@ public class AvalancheSpecification {
             Integer minCrownDepth, Integer maxCrownDepth,
             Integer minCrownWidth, Integer maxCrownWidth,
             Integer minVerticalDrop, Integer maxVerticalDrop,
-            String relativeSize, 
+            List<String> relativeSize, 
+            String activity,
             Boolean hasCaught, Boolean hasPartially, Boolean hasFully, 
             Boolean hasInjured, Boolean hasKilled, Boolean hasMaterial,
             String status) {
@@ -31,6 +32,10 @@ public class AvalancheSpecification {
 
             if (title != null && !title.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
+            }
+
+            if (activity != null && !activity.isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("activity")), "%" + activity.toLowerCase() + "%"));
             }
 
             Join<Avalanche, Massif> massifJoin = null;
@@ -101,9 +106,9 @@ public class AvalancheSpecification {
             }
 
             if (relativeSize != null && !relativeSize.isEmpty()) {
-                Predicate p1 = cb.equal(root.get("size"), relativeSize);
+                Predicate p1 = root.get("size").in(relativeSize);
                 if (techJoin != null) {
-                    Predicate p2 = cb.equal(techJoin.get("relativeSize"), relativeSize);
+                    Predicate p2 = techJoin.get("relativeSize").in(relativeSize);
                     predicates.add(cb.or(p1, p2));
                 } else {
                     predicates.add(p1);

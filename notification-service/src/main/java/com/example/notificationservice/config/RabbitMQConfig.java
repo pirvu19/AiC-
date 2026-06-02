@@ -55,4 +55,9 @@ public class RabbitMQConfig {
     public Binding bindingConditionsValidated(Queue userQueue, TopicExchange avalancheExchange) {
         return BindingBuilder.bind(userQueue).to(avalancheExchange).with("conditions.validated");
     }
+
+    @Bean
+    public Binding bindingAvalancheEmail(Queue userQueue, TopicExchange avalancheExchange) {
+        return BindingBuilder.bind(userQueue).to(avalancheExchange).with("avalanche.validated.email");
+    }
 }

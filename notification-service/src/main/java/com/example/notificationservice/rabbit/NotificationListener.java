@@ -29,6 +29,34 @@ public class NotificationListener {
     public void receiveUserNotification(String message) {
         logger.info("Received User Notification: {}", message);
         
+        // Check if it's an email send request
+        if (message.startsWith("SEND_EMAIL:")) {
+            try {
+                String[] parts = message.split("\\|", 3);
+                String to = null;
+                String subject = null;
+                String body = null;
+                
+                for (String part : parts) {
+                    if (part.startsWith("SEND_EMAIL:")) {
+                        to = part.substring(11);
+                    } else if (part.startsWith("SUBJECT:")) {
+                        subject = part.substring(8);
+                    } else if (part.startsWith("BODY:")) {
+                        body = part.substring(5);
+                    }
+                }
+                
+                if (to != null && subject != null && body != null) {
+                    logger.info("Processing SEND_EMAIL to destinatar: {}", to);
+                    emailService.sendEmail(to, subject, body);
+                }
+            } catch (Exception e) {
+                logger.error("Failed to parse and send email: {}", e.getMessage(), e);
+            }
+            return; // Intercept and stop WebSocket propagation
+        }
+        
         // Check if it's a registration approval (special format)
         if (message.contains("USER:") && message.contains("|PWD:")) {
             try {
