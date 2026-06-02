@@ -75,7 +75,8 @@ public class AvalancheService {
             Integer minCrownDepth, Integer maxCrownDepth,
             Integer minCrownWidth, Integer maxCrownWidth,
             Integer minVerticalDrop, Integer maxVerticalDrop,
-            String relativeSize, 
+            List<String> relativeSize, 
+            String activity,
             Boolean hasCaught, Boolean hasPartially, Boolean hasFully, 
             Boolean hasInjured, Boolean hasKilled, Boolean hasMaterial,
             String status, Pageable pageable) {
@@ -86,7 +87,7 @@ public class AvalancheService {
                 minCrownDepth, maxCrownDepth,
                 minCrownWidth, maxCrownWidth,
                 minVerticalDrop, maxVerticalDrop,
-                relativeSize, 
+                relativeSize, activity,
                 hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
                 status), pageable)
                 .map(this::convertToDto);
@@ -101,7 +102,8 @@ public class AvalancheService {
             Integer minCrownDepth, Integer maxCrownDepth,
             Integer minCrownWidth, Integer maxCrownWidth,
             Integer minVerticalDrop, Integer maxVerticalDrop,
-            String relativeSize,
+            List<String> relativeSize,
+            String activity,
             Boolean hasCaught, Boolean hasPartially, Boolean hasFully,
             Boolean hasInjured, Boolean hasKilled, Boolean hasMaterial,
             String status) {
@@ -112,7 +114,7 @@ public class AvalancheService {
                 minCrownDepth, maxCrownDepth,
                 minCrownWidth, maxCrownWidth,
                 minVerticalDrop, maxVerticalDrop,
-                relativeSize,
+                relativeSize, activity,
                 hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
                 status)).stream()
                 .map(this::convertToDto)

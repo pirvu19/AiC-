@@ -22,6 +22,15 @@ public class DataMigrationInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        logger.info("Updating database schema: widening event_time and size columns...");
+        try {
+            jdbcTemplate.execute("ALTER TABLE avalanche MODIFY COLUMN event_time VARCHAR(255)");
+            jdbcTemplate.execute("ALTER TABLE avalanche MODIFY COLUMN size VARCHAR(255)");
+            logger.info("Successfully altered event_time and size columns in avalanche table.");
+        } catch (Exception e) {
+            logger.warn("Database column update check: {}", e.getMessage());
+        }
+
         logger.info("Starting data migration to normalized Person entity...");
 
         migrateTable("users", "id");

@@ -64,7 +64,8 @@ public class AvalancheController {
             @RequestParam(required = false) Integer maxCrownWidth,
             @RequestParam(required = false) Integer minVerticalDrop,
             @RequestParam(required = false) Integer maxVerticalDrop,
-            @RequestParam(required = false) String relativeSize,
+            @RequestParam(required = false) List<String> relativeSize,
+            @RequestParam(required = false) String activity,
             @RequestParam(required = false) Boolean hasCaught,
             @RequestParam(required = false) Boolean hasPartially,
             @RequestParam(required = false) Boolean hasFully,
@@ -77,7 +78,7 @@ public class AvalancheController {
                 startDate, endDate, minAltitude, maxAltitude, minSlope,
                 minTrackLength, maxTrackLength, minCrownDepth, maxCrownDepth,
                 minCrownWidth, maxCrownWidth, minVerticalDrop, maxVerticalDrop,
-                relativeSize, hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
+                relativeSize, activity, hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
                 status, pageable));
     }
 
@@ -105,7 +106,8 @@ public class AvalancheController {
             @RequestParam(required = false) Integer maxCrownWidth,
             @RequestParam(required = false) Integer minVerticalDrop,
             @RequestParam(required = false) Integer maxVerticalDrop,
-            @RequestParam(required = false) String relativeSize,
+            @RequestParam(required = false) List<String> relativeSize,
+            @RequestParam(required = false) String activity,
             @RequestParam(required = false) Boolean hasCaught,
             @RequestParam(required = false) Boolean hasPartially,
             @RequestParam(required = false) Boolean hasFully,
@@ -119,7 +121,7 @@ public class AvalancheController {
                 startDate, endDate, minAltitude, maxAltitude, minSlope,
                 minTrackLength, maxTrackLength, minCrownDepth, maxCrownDepth,
                 minCrownWidth, maxCrownWidth, minVerticalDrop, maxVerticalDrop,
-                relativeSize, hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
+                relativeSize, activity, hasCaught, hasPartially, hasFully, hasInjured, hasKilled, hasMaterial,
                 status);
         
         byte[] exportData = exportService.export(data, format, AvalancheDTO.class);
