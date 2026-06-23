@@ -21,7 +21,7 @@ const RapoarteRiscuriPage = () => {
         fetch('/api/meteo')
             .then(r => { if (!r.ok) throw new Error(); return r.text(); })
             .then(html => {
-                if (html.includes('Eroare') || html.includes('Nu s-a putut')) setMeteoError(true);
+                if (html.includes('Eroare') || html.includes('Nu s-a putut') || html.includes('pozitive°C') || html.includes('pozitive\u00b0C')) setMeteoError(true);
                 else setMeteoHtml(html);
             })
             .catch(() => setMeteoError(true))
@@ -236,7 +236,7 @@ const RapoarteRiscuriPage = () => {
                 </div>
             ) : (
                 <div>
-                    <div style={{ background: '#fff', borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.3)', marginBottom: '2.5rem' }} dangerouslySetInnerHTML={{ __html: meteoHtml }} />
+                    <div style={{ borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.3)', marginBottom: '2.5rem' }} dangerouslySetInnerHTML={{ __html: meteoHtml }} />
                     {availableMonths.length > 0 && (
                         <div>
                             <h2 style={{ color: '#e2e8f0', fontSize: '1.2rem', fontWeight: 600, margin: '0 0 0.3rem', border: 'none', padding: 0 }}>
