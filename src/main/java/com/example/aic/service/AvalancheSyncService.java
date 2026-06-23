@@ -23,18 +23,21 @@ public class AvalancheSyncService {
     private final AvalancheTypeRepository avalancheTypeRepository;
     private final AvalancheCauseRepository avalancheCauseRepository;
     private final OrientationRepository orientationRepository;
+    private final AvalancheImageRepository avalancheImageRepository;
 
     public AvalancheSyncService(
             AvalancheRepository avalancheRepository,
             MassifRepository massifRepository,
             AvalancheTypeRepository avalancheTypeRepository,
             AvalancheCauseRepository avalancheCauseRepository,
-            OrientationRepository orientationRepository) {
+            OrientationRepository orientationRepository,
+            AvalancheImageRepository avalancheImageRepository) {
         this.avalancheRepository = avalancheRepository;
         this.massifRepository = massifRepository;
         this.avalancheTypeRepository = avalancheTypeRepository;
         this.avalancheCauseRepository = avalancheCauseRepository;
         this.orientationRepository = orientationRepository;
+        this.avalancheImageRepository = avalancheImageRepository;
     }
 
     public SyncReport syncAll() {
@@ -234,11 +237,80 @@ public class AvalancheSyncService {
             changed = true;
         }
 
+        // Sincronizare Imagini
+        if (scraped.imageUrls != null && !scraped.imageUrls.isEmpty()) {
+            if (entity.getImages() != null) {
+                for (AvalancheImage oldImg : new ArrayList<>(entity.getImages())) {
+                    deleteImageFile(oldImg.getImageUrl());
+                    avalancheImageRepository.delete(oldImg);
+                }
+                entity.getImages().clear();
+            } else {
+                entity.setImages(new ArrayList<>());
+            }
+
+            int count = 0;
+            for (String imgUrl : scraped.imageUrls) {
+                if (count >= 4) break;
+                String localUrl = downloadAndStoreImage(imgUrl);
+                if (localUrl != null) {
+                    AvalancheImage newImg = new AvalancheImage();
+                    newImg.setAvalanche(entity);
+                    newImg.setImageUrl(localUrl);
+                    entity.getImages().add(newImg);
+                    count++;
+                }
+            }
+            changed = true;
+        }
+
         if (changed) {
             avalancheRepository.save(entity);
         }
 
         return changed;
+    }
+
+    private String downloadAndStoreImage(String imgUrl) {
+        try {
+            byte[] imageBytes = Jsoup.connect(imgUrl)
+                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+                    .ignoreContentType(true)
+                    .execute()
+                    .bodyAsBytes();
+
+            String originalName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+            String fileExtension = "";
+            if (originalName.contains(".")) {
+                fileExtension = originalName.substring(originalName.lastIndexOf("."));
+            }
+            if (fileExtension.isEmpty() || fileExtension.length() > 5) {
+                fileExtension = ".jpg";
+            }
+
+            String fileName = UUID.randomUUID().toString() + fileExtension;
+            java.nio.file.Path targetFolder = java.nio.file.Paths.get("uploads").resolve("avalanches").toAbsolutePath().normalize();
+            java.nio.file.Files.createDirectories(targetFolder);
+            java.nio.file.Path targetLocation = targetFolder.resolve(fileName);
+            
+            java.nio.file.Files.write(targetLocation, imageBytes);
+            return "/uploads/avalanches/" + fileName;
+        } catch (Exception e) {
+            log.error("Failed to download and store image from {}: {}", imgUrl, e.getMessage());
+            return null;
+        }
+    }
+
+    private void deleteImageFile(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty())
+            return;
+        try {
+            String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+            java.nio.file.Path filePath = java.nio.file.Paths.get("uploads").resolve("avalanches").resolve(fileName).normalize();
+            java.nio.file.Files.deleteIfExists(filePath);
+        } catch (Exception ex) {
+            log.error("Failed to delete file: {}", fileUrl, ex);
+        }
     }
 
     private Massif findMassif(String name) {
@@ -345,11 +417,11 @@ public class AvalancheSyncService {
         String fullText = doc.body().text().replace('\u00A0', ' ');
         ScrapedData data = new ScrapedData();
 
-        data.massifName = extractAfter(fullText, "Masiv :");
-        data.zoneDescription = extractAfter(fullText, "Zona din masiv :");
-        data.activity = extractAfter(fullText, "Activitate :");
-        data.safetyEquipment = extractAfter(fullText, "Echipament de protectie:");
-        data.avalancheType = extractAfter(fullText, "Tipul avalansei :");
+        data.massifName = extractWithRegex(fullText, "(?i)Masiv(?:\\s*muntos)?\\s*:\\s*([^\\*]+)");
+        data.zoneDescription = extractWithRegex(fullText, "(?i)Zona\\s*din\\s*masiv\\s*:\\s*([^\\*]+)");
+        data.activity = extractWithRegex(fullText, "(?i)Activitate\\s*:\\s*([^\\*]+)");
+        data.safetyEquipment = extractWithRegex(fullText, "(?i)Echipament\\s*de\\s*protectie\\s*:\\s*([^\\*]+)");
+        data.avalancheType = extractWithRegex(fullText, "(?i)Tipul\\s*avalansei\\s*:\\s*([^\\*]+)");
 
         java.util.regex.Matcher m = java.util.regex.Pattern
                 .compile("(?i)factor(?:ul)?\\s*de\\s*declan[sș]are(?:\\s*al\\s*avalan[sș]ei)?\\s*:\\s*([^\r\n\\*]*)")
@@ -369,45 +441,71 @@ public class AvalancheSyncService {
                     fullText.substring(0, Math.min(500, fullText.length())));
         }
 
-        data.eventTime = extractAfter(fullText, "Ora :");
-        data.orientation = extractAfter(fullText, "Orientarea pantei :");
+        data.eventTime = extractWithRegex(fullText, "(?i)Ora\\s*:\\s*([^\\*]+)");
+        data.orientation = extractWithRegex(fullText, "(?i)Orientarea\\s*pantei\\s*:\\s*([^\\*]+)");
 
-        data.altitude        = parseAverageInt(extractAfter(fullText, "Altitudine :"));
-        data.slopeAngle      = parseAverageInt(extractAfter(fullText, "Inclinatia pantei :"));
-        data.crownWidth      = parseAverageInt(extractAfter(fullText, "Latimea coroanei :"));
-        data.accumulationWidth = parseAverageInt(extractAfter(fullText, "Largime zona de acumulare:"));
-        data.verticalDrop    = parseAverageInt(extractAfter(fullText, "Diferenta de nivel de rulare :"));
+        data.altitude        = parseAverageInt(extractWithRegex(fullText, "(?i)Altitudine\\s*:\\s*([^\\*]+)"));
+        data.slopeAngle      = parseAverageInt(extractWithRegex(fullText, "(?i)Inclinatia\\s*pantei\\s*:\\s*([^\\*]+)"));
+        data.crownWidth      = parseAverageInt(extractWithRegex(fullText, "(?i)Latimea\\s*coroanei\\s*:\\s*([^\\*]+)"));
+        data.accumulationWidth = parseAverageInt(extractWithRegex(fullText, "(?i)(?:Largime|Latime)\\s*zona\\s*de\\s*acumulare\\s*:\\s*([^\\*]+)"));
+        data.verticalDrop    = parseAverageInt(extractWithRegex(fullText, "(?i)Diferenta\\s*de\\s*nivel\\s*de\\s*rulare\\s*:\\s*([^\\*]+)"));
 
-        String trackRaw = extractAfter(fullText, "Relativ la urma :");
+        String trackRaw = extractWithRegex(fullText, "(?i)(?:Marimea\\s*avalansei\\s*[^:]*?\\s*)?Relativ\\s*la\\s*urma\\s*:\\s*([^\\*]+)");
         if (trackRaw != null) {
             data.trackLength = parseAverageInt(trackRaw);
             data.relativeSize = trackRaw.trim();
         }
 
-        String crownDepthRaw = extractAfter(fullText, "Adancimea coroanei(placii) :");
+        String crownDepthRaw = extractWithRegex(fullText, "(?i)Adancimea\\s*coroanei(?:\\s*\\(placii\\))?\\s*:\\s*([^\\*]+)");
         if (crownDepthRaw != null) {
             data.crownDepthText = crownDepthRaw.trim();
             data.crownDepth = parseAverageInt(crownDepthRaw);
         }
 
-        String declansareRaw = extractAfter(fullText, "Coordonate GPS zona de declansare:");
-        if (declansareRaw == null)
-            declansareRaw = extractAfter(fullText, "Coordonate GPS zona declansare:");
+        String declansareRaw = extractWithRegex(fullText, "(?i)Coordonate\\s*GPS\\s*zona\\s*(?:de\\s*)?declansare\\s*:\\s*([^\\*]+)");
         parseCoordinates(declansareRaw, data, true);
 
-        String acumulareRaw = extractAfter(fullText, "Coordonate GPS zona de acumulare:");
-        if (acumulareRaw == null)
-            acumulareRaw = extractAfter(fullText, "Coordonate GPS zona acumulare:");
+        String acumulareRaw = extractWithRegex(fullText, "(?i)Coordonate\\s*GPS\\s*zona\\s*(?:de\\s*)?acumulare\\s*:\\s*([^\\*]+)");
         parseCoordinates(acumulareRaw, data, false);
 
-        data.personsCaught = extractInt(fullText, "Numar de persoane surprinse :", null);
-        data.personsPartially = extractInt(fullText, "Numar de persoane acoperite partial :", null);
-        data.personsFully = extractInt(fullText, "Numar de persoane acoperite total :", null);
-        data.personsInjured = extractInt(fullText, "Numar de persoane accidentate :", null);
-        data.personsKilled = extractInt(fullText, "Numar de persoane decedate :", null);
-        data.materialDamage = extractInt(fullText, "Pagube materiale:", null);
+        data.personsCaught = extractIntWithRegex(fullText, "(?i)Numar\\s*de\\s*persoane\\s*surprinse\\s*:\\s*([^\\*]+)");
+        data.personsPartially = extractIntWithRegex(fullText, "(?i)Numar\\s*de\\s*persoane\\s*acoperite\\s*partial\\s*:\\s*([^\\*]+)");
+        data.personsFully = extractIntWithRegex(fullText, "(?i)Numar\\s*de\\s*persoane\\s*acoperite\\s*total\\s*:\\s*([^\\*]+)");
+        data.personsInjured = extractIntWithRegex(fullText, "(?i)Numar\\s*de\\s*persoane\\s*accidentate\\s*:\\s*([^\\*]+)");
+        data.personsKilled = extractIntWithRegex(fullText, "(?i)Numar\\s*de\\s*persoane\\s*decedate\\s*:\\s*([^\\*]+)");
+        data.materialDamage = extractIntWithRegex(fullText, "(?i)Pagube\\s*materiale\\s*:\\s*([^\\*]+)");
+
+        // Extract image URLs
+        data.imageUrls = new ArrayList<>();
+        for (org.jsoup.nodes.Element img : doc.select("img")) {
+            String src = img.absUrl("src");
+            if (src == null || src.isEmpty()) {
+                src = img.attr("src");
+            }
+            if (src != null && src.contains("wp-content/uploads") 
+                    && !src.contains("logo") && !src.contains("avatar") 
+                    && !src.contains("icon") && !src.contains("badge")) {
+                if (!data.imageUrls.contains(src)) {
+                    data.imageUrls.add(src);
+                }
+            }
+        }
 
         return data;
+    }
+
+    private String extractWithRegex(String text, String regexPattern) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(regexPattern);
+        java.util.regex.Matcher m = p.matcher(text);
+        if (m.find()) {
+            return m.group(1).trim();
+        }
+        return null;
+    }
+
+    private Integer extractIntWithRegex(String text, String regexPattern) {
+        String raw = extractWithRegex(text, regexPattern);
+        return extractIntFromText(raw);
     }
 
     private void parseCoordinates(String raw, ScrapedData data, boolean isDeclansare) {
@@ -499,6 +597,7 @@ public class AvalancheSyncService {
         String relativeSize;
         Integer personsCaught, personsPartially, personsFully;
         Integer personsInjured, personsKilled, materialDamage;
+        List<String> imageUrls;
     }
 
     public static class SyncReport {

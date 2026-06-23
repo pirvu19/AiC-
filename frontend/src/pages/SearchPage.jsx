@@ -147,7 +147,8 @@ const SearchPage = () => {
         maxCrownWidth: 500,
         minVerticalDrop: 0,
         maxVerticalDrop: 1500,
-        relativeSize: '',
+        relativeSize: [],
+        activity: '',
         hasCaught: false,
         hasPartially: false,
         hasFully: false,
@@ -239,7 +240,8 @@ const SearchPage = () => {
             maxCrownWidth: 500,
             minVerticalDrop: 0,
             maxVerticalDrop: 1500,
-            relativeSize: '',
+            relativeSize: [],
+            activity: '',
             hasCaught: false,
             hasPartially: false,
             hasFully: false,
@@ -295,7 +297,8 @@ const SearchPage = () => {
         try {
             const cleanParams = {
                 page: currentPage,
-                size: pageSize
+                size: pageSize,
+                sort: 'date,desc'
             };
 
             Object.entries(filters).forEach(([key, value]) => {
@@ -352,7 +355,9 @@ const SearchPage = () => {
         });
 
         try {
-            const cleanParams = {};
+            const cleanParams = {
+                sort: 'date,desc'
+            };
             Object.entries(filters).forEach(([key, value]) => {
                 if (Array.isArray(value)) {
                     if (value.length > 0) cleanParams[key] = value;
@@ -432,7 +437,8 @@ const SearchPage = () => {
         if (filters.typeId.length > 0) count++;
         if (filters.orientationId.length > 0) count++;
         if (filters.startDate || filters.endDate) count++;
-        if (filters.relativeSize) count++;
+        if (filters.relativeSize.length > 0) count++;
+        if (filters.activity) count++;
         if (filters.windDirection.length > 0) count++;
         if (filters.visibility.length > 0) count++;
         if (filters.hasCaught || filters.hasPartially || filters.hasFully || filters.hasInjured || filters.hasKilled || filters.hasMaterial) count++;
@@ -551,6 +557,55 @@ const SearchPage = () => {
                                         <X size={16} />
                                     </button>
                                 )}
+                            </div>
+                        )}
+
+                        {/* ── Activity (avalanches only) ── */}
+                        {view === 'avalanches' && (
+                            <div className="search-bar-wrapper" style={{ marginTop: '12px' }}>
+                                <Activity className="search-bar-icon" size={20} />
+                                <input
+                                    name="activity"
+                                    value={filters.activity}
+                                    onChange={(e) => handleFilterChange('activity', e.target.value)}
+                                    placeholder="Caută după activitate (ex: schi, drumeție...)"
+                                    className="search-bar-input"
+                                />
+                                {filters.activity && (
+                                    <button type="button" onClick={() => handleFilterChange('activity', '')} className="search-bar-clear">
+                                        <X size={16} />
+                                    </button>
+                                )}
+                            </div>
+                        )}
+
+                        {/* ── Mărime Avalanșă (avalanches only) ── */}
+                        {view === 'avalanches' && (
+                            <div style={{ marginTop: '20px', marginBottom: '10px' }}>
+                                <label className="search-filter-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Mountain size={16} style={{ color: 'var(--primary)', opacity: 0.8 }} />
+                                    <span>Mărime Avalanșă</span>
+                                </label>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '8px' }}>
+                                    {['mica', 'medie', 'mare'].map(sz => {
+                                        const isActive = filters.relativeSize.includes(sz);
+                                        return (
+                                            <button
+                                                key={sz}
+                                                type="button"
+                                                onClick={() => {
+                                                    const newVal = isActive
+                                                        ? filters.relativeSize.filter(s => s !== sz)
+                                                        : [...filters.relativeSize, sz];
+                                                    handleFilterChange('relativeSize', newVal);
+                                                }}
+                                                className={`search-size-btn ${isActive ? 'active' : ''}`}
+                                            >
+                                                {sz === 'mica' && '🔹'} {sz === 'medie' && '🔶'} {sz === 'mare' && '🔴'} {sz === 'mica' ? 'Mică' : sz === 'medie' ? 'Medie' : 'Mare'}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         )}
 
@@ -698,24 +753,6 @@ const SearchPage = () => {
 
                         {/* ── Technical Details / Sliders ── */}
                         <FilterSection title={view === 'avalanches' ? 'Parametri Tehnici' : 'Parametri Condiții'} icon={SlidersHorizontal} defaultOpen={false}>
-                            {view === 'avalanches' && (
-                                <div style={{ marginBottom: '24px' }}>
-                                    <label className="search-filter-label">Mărime Avalanșă</label>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                                        {['mica', 'medie', 'mare'].map(sz => (
-                                            <button
-                                                key={sz}
-                                                type="button"
-                                                onClick={() => handleFilterChange('relativeSize', filters.relativeSize === sz ? '' : sz)}
-                                                className={`search-size-btn ${filters.relativeSize === sz ? 'active' : ''}`}
-                                            >
-                                                {sz === 'mica' && '🔹'} {sz === 'medie' && '🔶'} {sz === 'mare' && '🔴'} {sz.charAt(0).toUpperCase() + sz.slice(1)}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
                                 <RangeSlider 
                                     label="Altitudine" min={0} max={3000} step={50} minVal={filters.minAltitude} maxVal={filters.maxAltitude} suffix="m"

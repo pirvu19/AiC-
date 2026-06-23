@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import metadataService from '../services/metadataService';
 import avalancheService from '../services/avalancheService';
-import { Save, ChevronRight, ChevronLeft, Map, Info, Users, Activity, LocateFixed, Contact } from 'lucide-react';
+import { Save, ChevronRight, ChevronLeft, Map, Info, Users, Activity, LocateFixed, Contact, Check, Upload, X, Plus, Minus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AvalancheFormPage = () => {
     const [step, setStep] = useState(1);
     const [metadata, setMetadata] = useState({
         massifs: [],
+        regions: [],
         types: [],
         causes: [],
         orientations: []
@@ -16,6 +17,10 @@ const AvalancheFormPage = () => {
 
     const { user } = useAuth();
     const [images, setImages] = useState([]);
+    const fileInputRef = useRef(null);
+
+    const [selectedRegionId, setSelectedRegionId] = useState('');
+    const [showCustomActivity, setShowCustomActivity] = useState(false);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -65,13 +70,14 @@ const AvalancheFormPage = () => {
 
     useEffect(() => {
         const loadMetadata = async () => {
-            const [massifs, types, causes, orientations] = await Promise.all([
+            const [massifs, regions, types, causes, orientations] = await Promise.all([
                 metadataService.getMassifs(),
+                metadataService.getRegions(),
                 metadataService.getTypes(),
                 metadataService.getCauses(),
                 metadataService.getOrientations()
             ]);
-            setMetadata({ massifs, types, causes, orientations });
+            setMetadata({ massifs, regions, types, causes, orientations });
         };
         loadMetadata();
     }, []);
@@ -95,12 +101,40 @@ const AvalancheFormPage = () => {
 
     const handleImageChange = (e) => {
         const selectedFiles = Array.from(e.target.files);
-        if (selectedFiles.length > 4) {
-            alert('Poți selecta maxim 4 imagini.');
-            // Only take the first 4
-            setImages(selectedFiles.slice(0, 4));
+        setImages(prev => {
+            const combined = [...prev, ...selectedFiles];
+            if (combined.length > 4) {
+                alert('Poți selecta maxim 4 imagini.');
+                return combined.slice(0, 4);
+            }
+            return combined;
+        });
+    };
+
+    const removeImage = (indexToRemove) => {
+        setImages(prev => prev.filter((_, idx) => idx !== indexToRemove));
+    };
+
+    const triggerFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const handleRegionChange = (e) => {
+        const regId = e.target.value;
+        setSelectedRegionId(regId);
+        setFormData(prev => ({ ...prev, massifId: '' }));
+    };
+
+    const handleActivityChange = (e) => {
+        const val = e.target.value;
+        if (val === 'Altele') {
+            setShowCustomActivity(true);
+            setFormData(prev => ({ ...prev, activity: '' }));
         } else {
-            setImages(selectedFiles);
+            setShowCustomActivity(false);
+            setFormData(prev => ({ ...prev, activity: val }));
         }
     };
 
@@ -116,7 +150,7 @@ const AvalancheFormPage = () => {
 
     const nextStep = () => {
         if (step === 1) {
-            if (!formData.title || !formData.date || !formData.massifId) {
+            if (!formData.title || !formData.date || !formData.massifId || !formData.size) {
                 alert('Te rugăm să completezi toate câmpurile obligatorii.');
                 return;
             }
@@ -151,79 +185,260 @@ const AvalancheFormPage = () => {
         );
     };
 
-    return (
-        <div className="container">
-            <div className="flex justify-between items-center mb-10">
-                <div>
-                    <h1 className="text-3xl font-bold">Eveniment Nou</h1>
-                    <p className="text-text-muted">Pasul {step} din 4</p>
+    const steps = [
+        { number: 1, label: 'Generale', icon: Info },
+        { number: 2, label: 'Localizare', icon: Map },
+        { number: 3, label: 'Date Tehnice', icon: Activity },
+        { number: 4, label: 'Impact & Victime', icon: Users }
+    ];
+
+    const renderCounter = (label, section, field) => {
+        const value = formData[section][field] || 0;
+        
+        const handleIncrement = () => {
+            setFormData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: (prev[section][field] || 0) + 1
+                }
+            }));
+        };
+        
+        const handleDecrement = () => {
+            setFormData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: Math.max(0, (prev[section][field] || 0) - 1)
+                }
+            }));
+        };
+        
+        return (
+            <div className="counter-card">
+                <label>{label}</label>
+                <div className="counter-control">
+                    <button
+                        type="button"
+                        className="counter-btn"
+                        onClick={handleDecrement}
+                        disabled={value === 0}
+                    >
+                        <Minus size={16} />
+                    </button>
+                    <span className={`counter-value ${value > 0 ? 'has-value' : ''}`}>{value}</span>
+                    <button
+                        type="button"
+                        className="counter-btn"
+                        onClick={handleIncrement}
+                    >
+                        <Plus size={16} />
+                    </button>
                 </div>
-                <div className="flex gap-2">
-                    {[1, 2, 3, 4].map((s) => (
-                        <div
-                            key={s}
-                            className={`h-2 w-12 rounded-full transition-all ${s === step ? 'bg-primary w-20' : 'bg-glass-border'}`}
+            </div>
+        );
+    };
+
+    return (
+        <div className="container py-6">
+            <div className="mb-10 text-center">
+                <h1 className="text-4xl font-black mb-2 text-white">Raportează un <span className="text-primary italic">Eveniment Nou</span></h1>
+                <p className="text-text-muted text-sm mb-8">Introdu datele cât mai precis pentru a ajuta comunitatea montană</p>
+                
+                <div className="stepper-container">
+                    <div className="stepper-line">
+                        <div 
+                            className="stepper-line-progress" 
+                            style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
                         />
-                    ))}
+                    </div>
+                    {steps.map((s) => {
+                        const StepIcon = s.icon;
+                        const isActive = s.number === step;
+                        const isCompleted = s.number < step;
+                        
+                        return (
+                            <div 
+                                key={s.number} 
+                                className={`stepper-step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                                onClick={() => {
+                                    if (s.number < step) {
+                                        setStep(s.number);
+                                    }
+                                }}
+                            >
+                                <div className={`stepper-circle ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}>
+                                    {isCompleted ? <Check size={18} /> : <StepIcon size={18} />}
+                                </div>
+                                <div className="stepper-label">{s.label}</div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 
             <form
                 onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                className="space-y-8 glass p-8 rounded-2xl"
+                className="space-y-8 glass p-8 rounded-2xl shadow-2xl border border-glass-border"
             >
                 {step === 1 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="space-y-6 animate-in fade-in duration-300">
                         <div className="flex items-center gap-2 text-xl font-bold text-primary mb-4">
                             <Info size={24} /> <h2>Informații Generale</h2>
                         </div>
 
                         <div className="space-y-2">
-                            <label>Titlu Eveniment</label>
-                            <input name="title" className="w-full" value={formData.title} onChange={handleChange} required placeholder="Ex: Avalanșă Bâlea Lac" />
+                            <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Titlu Eveniment <span className="text-accent-red">*</span></label>
+                            <input name="title" className="w-full font-medium" value={formData.title} onChange={handleChange} required placeholder="Ex: Avalanșă Bâlea Lac" />
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label>Data</label>
-                                <input name="date" type="date" className="w-full" value={formData.date} onChange={handleChange} required />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Data <span className="text-accent-red">*</span></label>
+                                <input name="date" type="date" className="w-full font-medium" value={formData.date} onChange={handleChange} required />
                             </div>
                             <div className="space-y-2">
-                                <label>Masiv Muntos</label>
-                                <select name="massifId" className="w-full" value={formData.massifId} onChange={handleChange} required>
-                                    <option value="">Alege masivul...</option>
-                                    {metadata.massifs.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Ora Evenimentului</label>
+                                <input name="eventTime" type="time" className="w-full font-medium text-white" value={formData.eventTime} onChange={handleChange} />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Regiune <span className="text-accent-red">*</span></label>
+                                <select 
+                                    className="w-full font-semibold text-white" 
+                                    value={selectedRegionId} 
+                                    onChange={handleRegionChange} 
+                                    required
+                                >
+                                    <option value="" className="bg-bg-dark">Alege regiunea...</option>
+                                    {metadata.regions.map(r => <option key={r.id} value={r.id} className="bg-bg-dark">{r.name}</option>)}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Masiv Muntos <span className="text-accent-red">*</span></label>
+                                <select 
+                                    name="massifId" 
+                                    className="w-full font-semibold text-white" 
+                                    value={formData.massifId} 
+                                    onChange={handleChange} 
+                                    required
+                                    disabled={!selectedRegionId}
+                                >
+                                    <option value="" className="bg-bg-dark">Alege masivul...</option>
+                                    {metadata.massifs
+                                        .filter(m => !selectedRegionId || m.regionId == selectedRegionId || m.region?.id == selectedRegionId)
+                                        .map(m => <option key={m.id} value={m.id} className="bg-bg-dark">{m.name}</option>)}
                                 </select>
                             </div>
                         </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Mărime Avalanșă <span className="text-accent-red">*</span></label>
+                                <div className="flex gap-2">
+                                    {['mica', 'medie', 'mare'].map(sz => (
+                                        <button
+                                            key={sz}
+                                            type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, size: sz }))}
+                                            className={`flex-1 py-2.5 rounded-xl font-bold text-sm border transition-all ${
+                                                formData.size === sz
+                                                    ? 'bg-primary/20 border-primary text-white shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+                                                    : 'bg-glass-bg border-glass-border text-text-muted hover:border-white/20 hover:text-white'
+                                            }`}
+                                        >
+                                            {sz === 'mica' ? 'Mică' : sz === 'medie' ? 'Medie' : 'Mare'}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Activitate desfășurată</label>
+                                <select 
+                                    className="w-full font-semibold text-white" 
+                                    value={showCustomActivity ? 'Altele' : (['Schi de tură / Splitboard', 'Alpinism / Escaladă', 'Drumeție', 'Snowmobil', 'Lucrări utilitare / Monitorizare'].includes(formData.activity) ? formData.activity : (formData.activity ? 'Altele' : ''))}
+                                    onChange={handleActivityChange}
+                                >
+                                    <option value="" className="bg-bg-dark">Alege activitatea...</option>
+                                    <option value="Schi de tură / Splitboard" className="bg-bg-dark">Schi de tură / Splitboard</option>
+                                    <option value="Alpinism / Escaladă" className="bg-bg-dark">Alpinism / Escaladă</option>
+                                    <option value="Drumeție" className="bg-bg-dark">Drumeție</option>
+                                    <option value="Snowmobil" className="bg-bg-dark">Snowmobil</option>
+                                    <option value="Lucrări utilitare / Monitorizare" className="bg-bg-dark">Lucrări utilitare / Monitorizare</option>
+                                    <option value="Altele" className="bg-bg-dark">Alta activitate (scrie manual)...</option>
+                                </select>
+                                {showCustomActivity && (
+                                    <input 
+                                        name="activity" 
+                                        className="w-full mt-2 font-medium animate-in slide-in-from-top-2 duration-200" 
+                                        placeholder="Scrie activitatea desfășurată..." 
+                                        value={formData.activity} 
+                                        onChange={handleChange}
+                                    />
+                                )}
+                            </div>
+                        </div>
+
                         <div className="space-y-2">
-                            <label>Imagini (Țineți apăsat CTRL pt. a alege max. 4)</label>
-                            <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-button-text hover:file:bg-primary/90 text-text-muted cursor-pointer"
-                            />
+                            <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Imagini Eveniment (Maxim 4 imagini)</label>
+                            <div 
+                                className="dropzone"
+                                onClick={triggerFileInput}
+                            >
+                                <div className="dropzone-icon-wrap">
+                                    <Upload size={24} />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-white text-sm">Faceți clic pentru a selecta imagini</p>
+                                    <p className="text-text-muted text-xs mt-1">Sunt acceptate formatele PNG, JPG sau JPEG (Max. 4)</p>
+                                </div>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    className="hidden"
+                                />
+                            </div>
+                            
                             {images.length > 0 && (
-                                <p className="text-sm text-theme-secondary mt-2">
-                                    {images.length} imagine(i) selectată(e).
-                                </p>
+                                <div className="image-preview-grid">
+                                    {images.map((img, index) => (
+                                        <div key={index} className="image-preview-card">
+                                            <img src={URL.createObjectURL(img)} alt={`Preview ${index}`} />
+                                            <button
+                                                type="button"
+                                                className="image-preview-delete"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeImage(index);
+                                                }}
+                                                title="Elimină imaginea"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
 
                         {!user && (
                             <div className="pt-6 border-t border-glass-border animate-in fade-in duration-500 space-y-6">
-                                <div className="flex items-center gap-2 text-xl font-bold text-accent-blue">
+                                <div className="flex items-center gap-2 text-xl font-bold text-primary">
                                     <Contact size={24} /> <h2>Date Contact Vizitator</h2>
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label>Nume <span className="text-red-500">*</span></label>
+                                        <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Nume <span className="text-accent-red">*</span></label>
                                         <input
                                             name="lastName"
-                                            className="w-full"
+                                            className="w-full font-medium"
                                             value={formData.guestContactInfo.lastName}
                                             onChange={(e) => handleChange(e, 'guestContactInfo')}
                                             placeholder="Numele dumneavoastră"
@@ -231,10 +446,10 @@ const AvalancheFormPage = () => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label>Prenume <span className="text-red-500">*</span></label>
+                                        <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Prenume <span className="text-accent-red">*</span></label>
                                         <input
                                             name="firstName"
-                                            className="w-full"
+                                            className="w-full font-medium"
                                             value={formData.guestContactInfo.firstName}
                                             onChange={(e) => handleChange(e, 'guestContactInfo')}
                                             placeholder="Prenumele dumneavoastră"
@@ -244,11 +459,11 @@ const AvalancheFormPage = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label>Email <span className="text-red-500">*</span></label>
+                                        <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Email <span className="text-accent-red">*</span></label>
                                         <input
                                             name="email"
                                             type="email"
-                                            className="w-full"
+                                            className="w-full font-medium"
                                             value={formData.guestContactInfo.email}
                                             onChange={(e) => handleChange(e, 'guestContactInfo')}
                                             placeholder="adresa@email.com"
@@ -256,10 +471,10 @@ const AvalancheFormPage = () => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label>Telefon <span className="text-red-500">*</span></label>
+                                        <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Telefon <span className="text-accent-red">*</span></label>
                                         <input
                                             name="phone"
-                                            className="w-full"
+                                            className="w-full font-medium"
                                             value={formData.guestContactInfo.phone}
                                             onChange={(e) => handleChange(e, 'guestContactInfo')}
                                             placeholder="07xxxxxxxx"
@@ -273,7 +488,7 @@ const AvalancheFormPage = () => {
                 )}
 
                 {step === 2 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="space-y-6 animate-in fade-in duration-300">
                         <div className="flex justify-between items-center mb-4">
                             <div className="flex items-center gap-2 text-xl font-bold text-primary">
                                 <Map size={24} /> <h2>Localizare și Detalii</h2>
@@ -281,185 +496,167 @@ const AvalancheFormPage = () => {
                             <button
                                 type="button"
                                 onClick={handleGetLocation}
-                                className="flex items-center gap-2 text-sm bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20 transition-colors px-3 py-1.5 rounded-lg font-medium"
+                                className="flex items-center gap-2 text-sm bg-primary/10 text-primary hover:bg-primary/20 transition-all px-4 py-2 rounded-xl font-bold border border-primary/20 glow-on-hover"
                             >
-                                <LocateFixed size={16} /> Folosește Locația Mea
+                                <LocateFixed size={16} className="animate-pulse" /> Folosește Locația Mea
                             </button>
                         </div>
 
+                        <div className="coords-panel space-y-4">
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Latitudine</label>
+                                    <input name="latitude" type="number" step="any" className="w-full font-mono" value={formData.latitude} onChange={handleChange} />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Longitudine</label>
+                                    <input name="longitude" type="number" step="any" className="w-full font-mono" value={formData.longitude} onChange={handleChange} />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Zonă / Vale</label>
+                            <input name="zone" className="w-full font-medium" value={formData.zone} onChange={handleChange} placeholder="Ex: Căldarea Bâlii" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Echipament de Protecție (DVA, Sondă, Lopată, etc.)</label>
+                            <input name="safetyEquipment" className="w-full font-medium" value={formData.safetyEquipment} onChange={handleChange} placeholder="Ex: DVA/Sonda/Lopata sau Fără" />
+                        </div>
+
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label>Latitudine</label>
-                                <input name="latitude" type="number" step="any" className="w-full" value={formData.latitude} onChange={handleChange} />
-                            </div>
-                            <div className="space-y-2">
-                                <label>Longitudine</label>
-                                <input name="longitude" type="number" step="any" className="w-full" value={formData.longitude} onChange={handleChange} />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label>Zonă / Vale</label>
-                            <input name="zone" className="w-full" value={formData.zone} onChange={handleChange} placeholder="Ex: Căldarea Bâlii" />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label>Echipament de Protecție (DVA, Sondă, Lopată, etc.)</label>
-                            <input name="safetyEquipment" className="w-full" value={formData.safetyEquipment} onChange={handleChange} placeholder="Ex: DVA/Sonda/Lopata sau Fără" />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label>Tip Avalanșă</label>
-                                <select name="typeId" className="w-full" value={formData.typeId} onChange={handleChange}>
-                                    <option value="">Alege tipul...</option>
-                                    {metadata.types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Tip Avalanșă</label>
+                                <select name="typeId" className="w-full font-semibold text-white" value={formData.typeId} onChange={handleChange}>
+                                    <option value="" className="bg-bg-dark">Alege tipul...</option>
+                                    {metadata.types.map(t => <option key={t.id} value={t.id} className="bg-bg-dark">{t.name}</option>)}
                                 </select>
                             </div>
                             <div className="space-y-2">
-                                <label>Cauză Probabilă</label>
-                                <select name="causeId" className="w-full" value={formData.causeId} onChange={handleChange}>
-                                    <option value="">Alege cauza...</option>
-                                    {metadata.causes.map(c => <option key={c.id} value={c.id}>{c.description}</option>)}
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Cauză Probabilă</label>
+                                <select name="causeId" className="w-full font-semibold text-white" value={formData.causeId} onChange={handleChange}>
+                                    <option value="" className="bg-bg-dark">Alege cauza...</option>
+                                    {metadata.causes.map(c => <option key={c.id} value={c.id} className="bg-bg-dark">{c.description}</option>)}
                                 </select>
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <div className="space-y-2">
-                                <label>Orientare Pantă</label>
-                                <select name="orientationId" className="w-full" value={formData.orientationId} onChange={handleChange}>
-                                    <option value="">Alege orientarea...</option>
-                                    {metadata.orientations
-                                        .filter(o => ['N', 'V', 'S', 'E', 'NV', 'SE', 'NE', 'SV'].includes(o.direction))
-                                        .map(o => <option key={o.id} value={o.id}>{o.direction}</option>)}
-                                </select>
-                            </div>
+                            <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Orientare Pantă</label>
+                            <select name="orientationId" className="w-full font-semibold text-white" value={formData.orientationId} onChange={handleChange}>
+                                <option value="" className="bg-bg-dark">Alege orientarea...</option>
+                                {metadata.orientations
+                                    .filter(o => ['N', 'V', 'S', 'E', 'NV', 'SE', 'NE', 'SV'].includes(o.direction))
+                                    .map(o => <option key={o.id} value={o.id} className="bg-bg-dark">{o.direction}</option>)}
+                            </select>
                         </div>
                     </div>
                 )}
 
                 {step === 3 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="space-y-6 animate-in fade-in duration-300">
                         <div className="flex items-center gap-2 text-xl font-bold text-primary mb-4">
                             <Activity size={24} /> <h2>Detalii Tehnice</h2>
                         </div>
 
                         <div className="grid grid-cols-3 gap-6">
                             <div className="space-y-2">
-                                <label>Altitudine (m)</label>
-                                <input name="altitude" type="number" className="w-full" value={formData.technicalDetails.altitude} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Altitudine (m)</label>
+                                <input name="altitude" type="number" className="w-full font-medium" value={formData.technicalDetails.altitude || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
-                                <label>Înclinație (°)</label>
-                                <input name="slopeInterpolation" type="number" className="w-full" value={formData.technicalDetails.slopeInterpolation} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Înclinație (°)</label>
+                                <input name="slopeInterpolation" type="number" className="w-full font-medium" value={formData.technicalDetails.slopeInterpolation || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
-                                <label>Lungime (m)</label>
-                                <input name="trackLength" type="number" className="w-full" value={formData.technicalDetails.trackLength} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Lungime (m)</label>
+                                <input name="trackLength" type="number" className="w-full font-medium" value={formData.technicalDetails.trackLength || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-6">
                             <div className="space-y-2">
-                                <label>Gr. Coroană (cm)</label>
-                                <input name="crownDepth" type="number" className="w-full" value={formData.technicalDetails.crownDepth} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Gr. Coroană (cm)</label>
+                                <input name="crownDepth" type="number" className="w-full font-medium" value={formData.technicalDetails.crownDepth || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
-                                <label>Lățime Coroană (m)</label>
-                                <input name="crownWidth" type="number" className="w-full" value={formData.technicalDetails.crownWidth} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Lățime Coroană (m)</label>
+                                <input name="crownWidth" type="number" className="w-full font-medium" value={formData.technicalDetails.crownWidth || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
-                                <label>Cădere Vert. (m)</label>
-                                <input name="verticalDrop" type="number" className="w-full" value={formData.technicalDetails.verticalDrop} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Cădere Vert. (m)</label>
+                                <input name="verticalDrop" type="number" className="w-full font-medium" value={formData.technicalDetails.verticalDrop || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label>Arie Acumulare (m²)</label>
-                                <input name="accumulationArea" type="number" className="w-full" value={formData.technicalDetails.accumulationArea} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Arie Acumulare (m²)</label>
+                                <input name="accumulationArea" type="number" className="w-full font-medium" value={formData.technicalDetails.accumulationArea || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
-                                <label>Mărime Relativă (1-5)</label>
-                                <input name="relativeSize" className="w-full" value={formData.technicalDetails.relativeSize} onChange={(e) => handleChange(e, 'technicalDetails')} placeholder="Ex: 3" />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Mărime Relativă (1-5)</label>
+                                <input name="relativeSize" className="w-full font-medium" value={formData.technicalDetails.relativeSize} onChange={(e) => handleChange(e, 'technicalDetails')} placeholder="Ex: 3" />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-6">
                             <div className="space-y-2">
-                                <label>Lat Acumulare</label>
-                                <input name="accumLat" type="number" step="any" className="w-full" value={formData.technicalDetails.accumLat} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Lat Acumulare</label>
+                                <input name="accumLat" type="number" step="any" className="w-full font-mono" value={formData.technicalDetails.accumLat || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
-                                <label>Lng Acumulare</label>
-                                <input name="accumLng" type="number" step="any" className="w-full" value={formData.technicalDetails.accumLng} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Lng Acumulare</label>
+                                <input name="accumLng" type="number" step="any" className="w-full font-mono" value={formData.technicalDetails.accumLng || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                             <div className="space-y-2">
-                                <label>Cădere Runout (m)</label>
-                                <input name="runoutVerticalDrop" type="number" className="w-full" value={formData.technicalDetails.runoutVerticalDrop} onChange={(e) => handleChange(e, 'technicalDetails')} />
+                                <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Cădere Runout (m)</label>
+                                <input name="runoutVerticalDrop" type="number" className="w-full font-medium" value={formData.technicalDetails.runoutVerticalDrop || ''} onChange={(e) => handleChange(e, 'technicalDetails')} />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label>Descriere Coroană</label>
-                            <textarea name="crownDepthText" className="w-full" rows="2" value={formData.technicalDetails.crownDepthText} onChange={(e) => handleChange(e, 'technicalDetails')} placeholder="Detalii despre stratul de zăpadă..." />
+                            <label className="text-xs font-extrabold uppercase tracking-wider text-text-muted">Descriere Coroană</label>
+                            <textarea name="crownDepthText" className="w-full font-medium" rows="2" value={formData.technicalDetails.crownDepthText} onChange={(e) => handleChange(e, 'technicalDetails')} placeholder="Detalii despre stratul de zăpadă..." />
                         </div>
                     </div>
                 )}
 
                 {step === 4 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="space-y-6 animate-in fade-in duration-300">
                         <div className="flex items-center gap-2 text-xl font-bold text-primary mb-4">
                             <Users size={24} /> <h2>Victime și Pagube</h2>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 text-center">
-                            <div className="card bg-glass-bg border-glass-border p-4">
-                                <label className="block text-xs uppercase mb-2">Prinși</label>
-                                <input name="personsCaught" type="number" className="w-full text-center" value={formData.damagesAndVictims.personsCaught} onChange={(e) => handleChange(e, 'damagesAndVictims')} />
-                            </div>
-                            <div className="card bg-glass-bg border-glass-border p-4">
-                                <label className="block text-xs uppercase mb-2">Parțial Acop.</label>
-                                <input name="personsPartially" type="number" className="w-full text-center" value={formData.damagesAndVictims.personsPartially} onChange={(e) => handleChange(e, 'damagesAndVictims')} />
-                            </div>
-                            <div className="card bg-glass-bg border-glass-border p-4">
-                                <label className="block text-xs uppercase mb-2">Total Acop.</label>
-                                <input name="personsFully" type="number" className="w-full text-center" value={formData.damagesAndVictims.personsFully} onChange={(e) => handleChange(e, 'damagesAndVictims')} />
-                            </div>
+                        <div className="grid grid-cols-3 gap-4">
+                            {renderCounter('Persoane Surprinse', 'damagesAndVictims', 'personsCaught')}
+                            {renderCounter('Acoperite Parțial', 'damagesAndVictims', 'personsPartially')}
+                            {renderCounter('Acoperite Total', 'damagesAndVictims', 'personsFully')}
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 text-center">
-                            <div className="card bg-glass-bg border-glass-border p-4">
-                                <label className="block text-xs uppercase mb-2">Răniți</label>
-                                <input name="personsInjured" type="number" className="w-full text-center" value={formData.damagesAndVictims.personsInjured} onChange={(e) => handleChange(e, 'damagesAndVictims')} />
-                            </div>
-                            <div className="card bg-glass-bg border-glass-border p-4">
-                                <label className="block text-xs uppercase mb-2">Decedați</label>
-                                <input name="personsKilled" type="number" className="w-full text-center" value={formData.damagesAndVictims.personsKilled} onChange={(e) => handleChange(e, 'damagesAndVictims')} />
-                            </div>
-                            <div className="card bg-glass-bg border-glass-border p-4">
-                                <label className="block text-xs uppercase mb-2">Pagube Mat.</label>
-                                <input name="materialDamage" type="number" className="w-full text-center" value={formData.damagesAndVictims.materialDamage} onChange={(e) => handleChange(e, 'damagesAndVictims')} />
-                            </div>
+                        <div className="grid grid-cols-3 gap-4">
+                            {renderCounter('Persoane Rănite', 'damagesAndVictims', 'personsInjured')}
+                            {renderCounter('Persoane Decedate', 'damagesAndVictims', 'personsKilled')}
+                            {renderCounter('Pagube Materiale', 'damagesAndVictims', 'materialDamage')}
                         </div>
                     </div>
                 )}
 
                 <div className="flex justify-between pt-8 border-t border-glass-border">
                     {step > 1 ? (
-                        <button type="button" onClick={prevStep} className="flex items-center gap-2 px-6 py-2 hover:bg-glass-bg rounded-lg transition-colors">
-                            <ChevronLeft size={20} /> Înapoi
+                        <button type="button" onClick={prevStep} className="btn-secondary">
+                            <ChevronLeft size={18} /> Înapoi
                         </button>
                     ) : <div></div>}
 
                     {step < 4 ? (
-                        <button type="button" onClick={nextStep} className="btn-primary flex items-center gap-2">
-                            Înainte <ChevronRight size={20} />
+                        <button type="button" onClick={nextStep} className="btn-primary flex items-center gap-2 font-bold px-6 py-2.5 rounded-xl">
+                            Înainte <ChevronRight size={18} />
                         </button>
                     ) : (
-                        <button type="button" onClick={handleFinalSubmit} className="btn-primary bg-accent-green hover:bg-accent-green/80 flex items-center gap-2">
-                            <Save size={20} /> Trimite Evenimentul
+                        <button type="button" onClick={handleFinalSubmit} className="btn-primary bg-accent-green hover:bg-accent-green/80 flex items-center gap-2 font-bold px-6 py-2.5 rounded-xl text-white">
+                            <Save size={18} /> Trimite Evenimentul
                         </button>
                     )}
                 </div>

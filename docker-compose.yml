@@ -39,7 +39,8 @@ services:
       SPRING_MAIL_PORT: 587
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-your_email@gmail.com}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-YOUR_EMAIL_APP_PASSWORD_HERE}
-
+      # SPRING_MAIL_USERNAME: delia.ioana.halmaciu@gmail.com
+      # SPRING_MAIL_PASSWORD: ferloiepzcczkpmx
     depends_on:
       - rabbitmq
 
