@@ -271,6 +271,14 @@ if __name__ == "__main__":
         # 1. Extragem datele calendaristice din text folosind Regex (fără AI)
         date_gasite = re.findall(r'(\d{2}\.\d{2}\.\d{4})', text_sursa)
 
+        # Dacă PDF-ul nu conține o perioadă de valabilitate (ex: sezon de vară,
+        # PDF de încheiere sezon, sau PDF indisponibil), ieșim fără path_complet.
+        # Backened-ul va detecta lipsa path-ului și va returna eroare → frontend
+        # va afișa "Informații indisponibile" și arhiva rapoartelor istorice.
+        if len(date_gasite) < 2:
+            print("SEZON_INACTIV: Nu s-a gasit o perioada de valabilitate in PDF. Buletinul nu este activ.")
+            sys.exit(0)
+
         if len(date_gasite) >= 2:
             # 2. Construim numele fișierului exact după formatul tău
             perioada_fisier = f"{date_gasite[0]}-{date_gasite[1]}"
