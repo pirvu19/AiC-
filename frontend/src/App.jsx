@@ -24,6 +24,7 @@ import TerrainStatsPage from './pages/TerrainStatsPage';
 import TypologyStatsPage from './pages/TypologyStatsPage';
 import MetadataManagement from './pages/MetadataManagement';
 import Map3DPage from './pages/Map3DPage';
+import RapoarteRiscuriPage from './pages/RapoarteRiscuriPage';
 import { useAuth } from './context/AuthContext';
 import { useEffect } from 'react';
 import { connectWebSocket } from './services/websocketService';
@@ -116,6 +117,7 @@ function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/meteo" element={<MeteoPage />} />
             <Route path="/meteo-ro" element={<MeteoRoPage />} />
+            <Route path="/rapoarte-risc" element={<RapoarteRiscuriPage />} />
             <Route path="/statistici" element={<AvalancheRiskChartPage />} />
             <Route path="/statistici/bilant-uman" element={<HumanImpactStatsPage />} />
             <Route path="/statistici/analiza-teren" element={<TerrainStatsPage />} />

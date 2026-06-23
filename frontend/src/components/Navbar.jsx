@@ -87,20 +87,20 @@ const Navbar = () => {
                                                 padding: '0.5rem',
                                                 zIndex: 1000,
                                             }}>
-                                                <a href="/api/meteo" target="_blank" rel="noreferrer"
+                                                <Link to="/rapoarte-risc"
                                                     onClick={() => setShowMeteoDropdown(false)}
                                                     style={{
                                                         display: 'flex', alignItems: 'center', gap: '0.65rem',
                                                         padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
                                                         fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
-                                                        transition: 'background 0.15s', textDecoration: 'none',
+                                                        transition: 'background 0.15s',
                                                     }}
                                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                                 >
                                                     <Cloud size={16} style={{ color: 'var(--primary)' }} />
                                                     Risc Avalanșe (PDF)
-                                                </a>
+                                                </Link>
                                                 <Link to="/meteo"
                                                     onClick={() => setShowMeteoDropdown(false)}
                                                     style={{
@@ -134,10 +134,10 @@ const Navbar = () => {
                                     </div>
                                 ) : (
                                     <>
-                                        <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                                        <Link to="/rapoarte-risc" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                             <Cloud size={18} />
                                             <span>Risc Avalanșe (PDF)</span>
-                                        </a>
+                                        </Link>
 
                                         <Link to="/meteo" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                             <Cloud size={18} />
@@ -510,10 +510,10 @@ const Navbar = () => {
                     <div className="container py-6 flex flex-col gap-4">
                         {!isRestrictedAdmin && (
                             <>
-                                <a href="/api/meteo" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                <Link to="/rapoarte-risc" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                     <Cloud size={18} className="text-primary" />
                                     <span>Risc Avalanșe (PDF)</span>
-                                </a>
+                                </Link>
                                 <Link to="/meteo" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                     <Cloud size={18} className="text-primary" />
                                     <span>Prognoză Montană</span>

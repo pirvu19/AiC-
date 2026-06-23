@@ -46,7 +46,8 @@ public class MeteoController {
                 return ResponseEntity.ok(htmlContent);
             } else {
                 return ResponseEntity.internalServerError().body(
-                        "<h1>Eroare: Nu s-a putut genera sau gasi raportul meteo.</h1><pre>" + pythonLog.toString() + "</pre>");
+                        "<h1>Eroare: Nu s-a putut genera sau gasi raportul meteo.</h1><pre>" + pythonLog.toString()
+                                + "</pre>");
             }
 
         } catch (Exception e) {
@@ -140,7 +141,7 @@ public class MeteoController {
     public ResponseEntity<String> getMeteoRo() {
         try {
             String path = "extragereMeteoAutomatizata/date_meteo_ro.json";
-            
+
             String pythonCmd = System.getProperty("os.name").toLowerCase().contains("win") ? "python"
                     : "/opt/venv/bin/python3";
             ProcessBuilder pb = new ProcessBuilder(pythonCmd, "-u", "fetch_meteo_ro.py");
@@ -153,7 +154,7 @@ public class MeteoController {
                 return ResponseEntity.ok(content);
             }
             return ResponseEntity.notFound().build();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("{\"error\": \"" + e.getMessage() + "\"}");
