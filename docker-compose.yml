@@ -41,6 +41,7 @@ services:
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-YOUR_EMAIL_APP_PASSWORD_HERE}
       # SPRING_MAIL_USERNAME: delia.ioana.halmaciu@gmail.com
       # SPRING_MAIL_PASSWORD: ferloiepzcczkpmx
+      APP_FRONTEND_URL: https://mirciulica007.go.ro:40802
     depends_on:
       - rabbitmq
 
