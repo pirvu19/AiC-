@@ -33,7 +33,13 @@ public class EmailService {
     @org.springframework.beans.factory.annotation.Value("${app.frontend.url}")
     private String frontendUrl;
 
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        System.out.println("[AIC-DEBUG] EmailService initialized. frontendUrl = " + frontendUrl);
+    }
+
     public void sendPasswordResetEmail(String to, String token) {
+        System.out.println("[AIC-DEBUG] sendPasswordResetEmail called. Destination: " + to + ", frontendUrl = " + frontendUrl);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(to);
