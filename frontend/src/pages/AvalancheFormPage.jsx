@@ -162,6 +162,25 @@ const AvalancheFormPage = () => {
                 }
             }
         }
+        if (step === 2) {
+            const lat = parseFloat(formData.latitude);
+            const lng = parseFloat(formData.longitude);
+            if (formData.latitude !== '' && !isNaN(lat) && (lat < 43.5 || lat > 48.3)) {
+                alert('Coordonată în afara teritoriului: Latitudinea trebuie să fie între 43.5° și 48.3° (România).');
+                return;
+            }
+            if (formData.longitude !== '' && !isNaN(lng) && (lng < 20.2 || lng > 30.0)) {
+                alert('Coordonată în afara teritoriului: Longitudinea trebuie să fie între 20.2° și 30.0° (România).');
+                return;
+            }
+        }
+        if (step === 3) {
+            const alt = parseInt(formData.technicalDetails.altitude, 10);
+            if (formData.technicalDetails.altitude !== '' && !isNaN(alt) && (alt < 0 || alt > 2544)) {
+                alert('Altitudinea depășește maximul din România: Altitudinea trebuie să fie între 0 și 2544 m.');
+                return;
+            }
+        }
         setStep(step + 1);
     };
     const prevStep = () => setStep(step - 1);
