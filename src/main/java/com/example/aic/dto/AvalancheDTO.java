@@ -20,6 +20,9 @@ public class AvalancheDTO {
     private Integer causeId;
     private String status;
     private String massifName;
+    private String typeName;
+    private String causeName;
+    private String orientationName;
     private Integer visitorId;
     private String eventTime;
     private String activity;

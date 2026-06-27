@@ -45,6 +45,7 @@ const ProtectedRoute = ({ children, roleRequired }) => {
   if (roleRequired === 'USER_ADMIN_OR_DATA_ENGINEER' && !isUserAdmin && !isDataEngineer) return <Navigate to="/" />;
   if (roleRequired === 'ADMIN_OR_DATA_ENGINEER' && !isAdmin && !isDataEngineer) return <Navigate to="/" />;
   if (roleRequired === 'USER_ADMIN' && !isUserAdmin) return <Navigate to="/" />;
+  if (roleRequired === 'NOT_RESTRICTED_ADMIN' && isUserAdmin && !isAdmin) return <Navigate to="/admin/users" />;
 
   return children;
 };
@@ -85,7 +86,9 @@ function App() {
       <Navbar />
 
       {isMap3D ? (
-        <Map3DPage />
+        <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+          <Map3DPage />
+        </ProtectedRoute>
       ) : (
         <main className="container pb-20">
           <Routes>
@@ -94,41 +97,93 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/add" element={<AddReportSelectionPage />} />
-            <Route path="/add-avalanche" element={<AvalancheFormPage />} />
-            <Route path="/add-conditions" element={<ConditionsFormPage />} />
+            <Route path="/add" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <AddReportSelectionPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/add-avalanche" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <AvalancheFormPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/add-conditions" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <ConditionsFormPage />
+              </ProtectedRoute>
+            } />
             <Route path="/validation" element={
-              <ProtectedRoute roleRequired="EXPERT_OR_REVIEWER">
+              <ProtectedRoute roleRequired="EXPERT">
                 <ValidationPanel />
               </ProtectedRoute>
             } />
-            <Route path="/avalanche/:id" element={<AvalancheDetailsPage />} />
+            <Route path="/avalanche/:id" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <AvalancheDetailsPage />
+              </ProtectedRoute>
+            } />
             <Route path="/avalanche/edit/:id" element={
               <ProtectedRoute roleRequired="ADMIN_OR_EXPERT_OR_REVIEWER">
                 <AvalancheEditPage />
               </ProtectedRoute>
             } />
-            <Route path="/conditions/:id" element={<ConditionsDetailsPage />} />
+            <Route path="/conditions/:id" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <ConditionsDetailsPage />
+              </ProtectedRoute>
+            } />
             <Route path="/conditions/edit/:id" element={
               <ProtectedRoute roleRequired="ADMIN_OR_EXPERT_OR_REVIEWER">
                 <ConditionsEditPage />
               </ProtectedRoute>
             } />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/meteo" element={<MeteoPage />} />
-            <Route path="/meteo-ro" element={<MeteoRoPage />} />
-            <Route path="/rapoarte-risc" element={<RapoarteRiscuriPage />} />
-            <Route path="/statistici" element={<AvalancheRiskChartPage />} />
-            <Route path="/statistici/bilant-uman" element={<HumanImpactStatsPage />} />
-            <Route path="/statistici/analiza-teren" element={<TerrainStatsPage />} />
-            <Route path="/statistici/cauze-tipologii" element={<TypologyStatsPage />} />
+            <Route path="/search" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <SearchPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/meteo" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <MeteoPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/meteo-ro" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <MeteoRoPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/rapoarte-risc" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <RapoarteRiscuriPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/statistici" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <AvalancheRiskChartPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/statistici/bilant-uman" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <HumanImpactStatsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/statistici/analiza-teren" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <TerrainStatsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/statistici/cauze-tipologii" element={
+              <ProtectedRoute roleRequired="NOT_RESTRICTED_ADMIN">
+                <TypologyStatsPage />
+              </ProtectedRoute>
+            } />
             <Route path="/admin/users" element={
-              <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
+              <ProtectedRoute roleRequired="USER_ADMIN">
                 <UserManagementPanel />
               </ProtectedRoute>
             } />
             <Route path="/admin/requests" element={
-              <ProtectedRoute roleRequired="USER_ADMIN_OR_DATA_ENGINEER">
+              <ProtectedRoute roleRequired="USER_ADMIN">
                 <AccountRequestsPanel />
               </ProtectedRoute>
             } />

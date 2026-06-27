@@ -102,13 +102,13 @@ public class ConditionsController {
     }
 
     @GetMapping("/pending")
-    @PreAuthorize("hasRole('EXPERT') or hasRole('REVIEWER') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EXPERT')")
     public ResponseEntity<org.springframework.data.domain.Page<ConditionsDTO>> getPending(org.springframework.data.domain.Pageable pageable) {
         return ResponseEntity.ok(conditionsService.getPendingConditions(pageable));
     }
 
     @PostMapping("/{id}/validate")
-    @PreAuthorize("hasRole('EXPERT') or hasRole('REVIEWER') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EXPERT')")
     public ResponseEntity<Void> validate(@PathVariable Integer id) {
         conditionsService.validate(id);
         return ResponseEntity.ok().build();

@@ -140,7 +140,7 @@ const ConditionsDetailsPage = () => {
                                     <Trash2 size={18} /> <span>Șterge</span>
                                 </button>
                             )}
-                            {conditions.status === 'PENDING' && (isAdmin || isExpert || isReviewer) && (
+                            {conditions.status === 'PENDING' && (isAdmin || isExpert) && (
                                 <button
                                     onClick={handleValidate}
                                     className="btn-premium bg-accent-green hover:bg-green-600 flex items-center gap-2 py-2 px-4 shadow-lg text-white"

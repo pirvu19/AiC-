@@ -230,12 +230,18 @@ public class AvalancheService {
             dto.setMassifId(avalanche.getMassif().getId());
             dto.setMassifName(avalanche.getMassif().getName());
         }
-        if (avalanche.getType() != null)
+        if (avalanche.getType() != null) {
             dto.setTypeId(avalanche.getType().getId());
-        if (avalanche.getCause() != null)
+            dto.setTypeName(avalanche.getType().getName());
+        }
+        if (avalanche.getCause() != null) {
             dto.setCauseId(avalanche.getCause().getId());
-        if (avalanche.getOrientation() != null)
+            dto.setCauseName(avalanche.getCause().getDescription());
+        }
+        if (avalanche.getOrientation() != null) {
             dto.setOrientationId(avalanche.getOrientation().getId());
+            dto.setOrientationName(avalanche.getOrientation().getDirection());
+        }
         if (avalanche.getVisitor() != null)
             dto.setVisitorId(avalanche.getVisitor().getId());
 

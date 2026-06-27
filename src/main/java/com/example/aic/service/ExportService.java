@@ -18,15 +18,37 @@ public class ExportService {
     private final XmlMapper xmlMapper;
     private final CsvMapper csvMapper;
 
-    // MixIn to ignore nested objects in CSV
-    abstract static class AvalancheCsvMixIn {
-        @JsonIgnore abstract Object getTechnicalDetails();
-        @JsonIgnore abstract Object getDamagesAndVictims();
+    // MixIn to ignore unwanted fields globally during export
+    abstract static class AvalancheExportMixIn {
+        @JsonIgnore abstract Integer getId();
+        @JsonIgnore abstract String getLink();
+        @JsonIgnore abstract Integer getMassifId();
+        @JsonIgnore abstract Integer getTypeId();
+        @JsonIgnore abstract Integer getCauseId();
+        @JsonIgnore abstract Integer getOrientationId();
+        @JsonIgnore abstract String getStatus();
+        @JsonIgnore abstract Integer getVisitorId();
         @JsonIgnore abstract Object getGuestContactInfo();
     }
 
-    abstract static class ConditionsCsvMixIn {
+    // MixIn to ignore nested objects in CSV (inherits global ignores)
+    abstract static class AvalancheCsvMixIn extends AvalancheExportMixIn {
+        @JsonIgnore abstract Object getTechnicalDetails();
+        @JsonIgnore abstract Object getDamagesAndVictims();
+    }
+
+    // MixIn to ignore unwanted fields globally for Conditions during export
+    abstract static class ConditionsExportMixIn {
+        @JsonIgnore abstract Integer getId();
+        @JsonIgnore abstract String getStatus();
+        @JsonIgnore abstract Integer getRegionId();
+        @JsonIgnore abstract Integer getMassifId();
+        @JsonIgnore abstract Integer getVisitorId();
         @JsonIgnore abstract Object getGuestContactInfo();
+        @JsonIgnore abstract Object getCreatedAt();
+    }
+
+    abstract static class ConditionsCsvMixIn extends ConditionsExportMixIn {
     }
 
     public ExportService() {
@@ -45,6 +67,12 @@ public class ExportService {
         // Important: Use a feature that allows writing nested objects as strings or ignoring them in CSV
         this.csvMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS);
         
+        // Apply global export mixins to JSON and XML
+        this.jsonMapper.addMixIn(com.example.aic.dto.AvalancheDTO.class, AvalancheExportMixIn.class);
+        this.jsonMapper.addMixIn(com.example.aic.dto.ConditionsDTO.class, ConditionsExportMixIn.class);
+        this.xmlMapper.addMixIn(com.example.aic.dto.AvalancheDTO.class, AvalancheExportMixIn.class);
+        this.xmlMapper.addMixIn(com.example.aic.dto.ConditionsDTO.class, ConditionsExportMixIn.class);
+
         // Add MixIns only for CSV
         this.csvMapper.addMixIn(com.example.aic.dto.AvalancheDTO.class, AvalancheCsvMixIn.class);
         this.csvMapper.addMixIn(com.example.aic.dto.ConditionsDTO.class, ConditionsCsvMixIn.class);

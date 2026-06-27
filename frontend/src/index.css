@@ -51,7 +51,7 @@ textarea {
   font-family: inherit;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  color: white;
+  color: var(--text-main);
   padding: 0.8rem 1.2rem;
   border-radius: 0.75rem;
   outline: none;
@@ -714,9 +714,9 @@ input[type="range"].thumb::-moz-range-thumb {
   background: var(--accent-red) !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SEARCH PAGE — Premium Redesign
-   ═══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SEARCH PAGE â€” Premium Redesign
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .search-page-root {
   min-height: 100vh;
@@ -724,7 +724,7 @@ input[type="range"].thumb::-moz-range-thumb {
   overflow: hidden;
 }
 
-/* ─── Decorative Background Orbs ─── */
+/* â”€â”€â”€ Decorative Background Orbs â”€â”€â”€ */
 .search-page-bg-decor {
   position: fixed;
   inset: 0;
@@ -765,7 +765,7 @@ input[type="range"].thumb::-moz-range-thumb {
   75% { transform: translate(15px, 30px) scale(1.02); }
 }
 
-/* ─── Header ─── */
+/* â”€â”€â”€ Header â”€â”€â”€ */
 .search-page-header {
   text-align: center;
   padding: 3rem 0 1.5rem;
@@ -807,7 +807,7 @@ input[type="range"].thumb::-moz-range-thumb {
   margin: 0 auto;
 }
 
-/* ─── View Toggle ─── */
+/* â”€â”€â”€ View Toggle â”€â”€â”€ */
 .search-view-toggle-wrap {
   display: flex;
   justify-content: center;
@@ -847,7 +847,7 @@ input[type="range"].thumb::-moz-range-thumb {
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
-/* ─── Page Size Pill ─── */
+/* â”€â”€â”€ Page Size Pill â”€â”€â”€ */
 .search-page-size-pill {
   display: flex;
   align-items: center;
@@ -882,7 +882,7 @@ input[type="range"].thumb::-moz-range-thumb {
   color: var(--accent-red);
 }
 
-/* ─── Filter Panel ─── */
+/* â”€â”€â”€ Filter Panel â”€â”€â”€ */
 .search-filter-panel {
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(24px) saturate(180%);
@@ -898,7 +898,7 @@ input[type="range"].thumb::-moz-range-thumb {
   .search-filter-panel { padding: 2.5rem; }
 }
 
-/* ─── Search Bar ─── */
+/* â”€â”€â”€ Search Bar â”€â”€â”€ */
 .search-bar-wrapper {
   position: relative;
   display: flex;
@@ -958,14 +958,14 @@ input[type="range"].thumb::-moz-range-thumb {
   color: var(--accent-red);
 }
 
-/* ─── Filter Divider ─── */
+/* â”€â”€â”€ Filter Divider â”€â”€â”€ */
 .search-filter-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 20%, rgba(59,130,246,0.15) 50%, rgba(255,255,255,0.08) 80%, transparent);
   margin: 1.5rem 0;
 }
 
-/* ─── Filter Section (collapsible) ─── */
+/* â”€â”€â”€ Filter Section (collapsible) â”€â”€â”€ */
 .search-filter-section {
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 1rem;
@@ -1026,7 +1026,7 @@ input[type="range"].thumb::-moz-range-thumb {
   margin-bottom: 10px;
 }
 
-/* ─── Chip Buttons (region, date preset) ─── */
+/* â”€â”€â”€ Chip Buttons (region, date preset) â”€â”€â”€ */
 .search-chip-btn {
   padding: 10px 18px;
   border-radius: 0.75rem;
@@ -1054,7 +1054,7 @@ input[type="range"].thumb::-moz-range-thumb {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
-/* ─── Date Input ─── */
+/* â”€â”€â”€ Date Input â”€â”€â”€ */
 .search-date-input {
   flex: 1;
   padding: 12px 16px !important;
@@ -1071,7 +1071,7 @@ input[type="range"].thumb::-moz-range-thumb {
   background: rgba(255, 255, 255, 0.07) !important;
 }
 
-/* ─── Avalanche Size Buttons ─── */
+/* â”€â”€â”€ Avalanche Size Buttons â”€â”€â”€ */
 .search-size-btn {
   flex: 1;
   min-width: 120px;
@@ -1102,7 +1102,7 @@ input[type="range"].thumb::-moz-range-thumb {
   transform: scale(1.03);
 }
 
-/* ─── Slider Wrapper Card (matches RangeSlider style) ─── */
+/* â”€â”€â”€ Slider Wrapper Card (matches RangeSlider style) â”€â”€â”€ */
 .search-slider-card {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 1rem;
@@ -1133,7 +1133,7 @@ input[type="range"].thumb::-moz-range-thumb {
   border: 1px solid rgba(59, 130, 246, 0.15);
 }
 
-/* ─── Damage Toggle Buttons ─── */
+/* â”€â”€â”€ Damage Toggle Buttons â”€â”€â”€ */
 .search-damage-btn {
   display: flex;
   align-items: center;
@@ -1158,7 +1158,7 @@ input[type="range"].thumb::-moz-range-thumb {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* ─── Action Buttons ─── */
+/* â”€â”€â”€ Action Buttons â”€â”€â”€ */
 .search-actions-bar {
   display: flex;
   flex-wrap: wrap;
@@ -1254,7 +1254,7 @@ input[type="range"].thumb::-moz-range-thumb {
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
-/* ─── Export Panel ─── */
+/* â”€â”€â”€ Export Panel â”€â”€â”€ */
 .search-export-panel {
   padding-top: 1.5rem;
   margin-top: 0.5rem;
@@ -1305,7 +1305,7 @@ input[type="range"].thumb::-moz-range-thumb {
   transform: none;
 }
 
-/* ─── Results Section ─── */
+/* â”€â”€â”€ Results Section â”€â”€â”€ */
 .search-results-header {
   display: flex;
   flex-wrap: wrap;
@@ -1333,7 +1333,7 @@ input[type="range"].thumb::-moz-range-thumb {
   align-items: baseline;
 }
 
-/* ─── Layout Toggle ─── */
+/* â”€â”€â”€ Layout Toggle â”€â”€â”€ */
 .search-layout-toggle {
   display: flex;
   gap: 4px;
@@ -1366,7 +1366,7 @@ input[type="range"].thumb::-moz-range-thumb {
   box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
 }
 
-/* ─── Results Grid ─── */
+/* â”€â”€â”€ Results Grid â”€â”€â”€ */
 .search-results-grid {
   display: grid;
   gap: 16px;
@@ -1392,7 +1392,7 @@ input[type="range"].thumb::-moz-range-thumb {
   }
 }
 
-/* ─── Result Card ─── */
+/* â”€â”€â”€ Result Card â”€â”€â”€ */
 .search-result-card {
   position: relative;
   background: rgba(15, 23, 42, 0.5);
@@ -1552,7 +1552,7 @@ input[type="range"].thumb::-moz-range-thumb {
   color: white;
 }
 
-/* ─── Card Footer ─── */
+/* â”€â”€â”€ Card Footer â”€â”€â”€ */
 .search-card-footer {
   display: flex;
   align-items: center;
@@ -1603,7 +1603,7 @@ input[type="range"].thumb::-moz-range-thumb {
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* ─── Skeleton Loading ─── */
+/* â”€â”€â”€ Skeleton Loading â”€â”€â”€ */
 .search-skeleton-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -1624,7 +1624,7 @@ input[type="range"].thumb::-moz-range-thumb {
   100% { background-position: -200% 0; }
 }
 
-/* ─── Empty State ─── */
+/* â”€â”€â”€ Empty State â”€â”€â”€ */
 .search-empty-state {
   text-align: center;
   padding: 5rem 2rem;
@@ -1652,7 +1652,7 @@ input[type="range"].thumb::-moz-range-thumb {
   margin: 0 auto;
 }
 
-/* ─── Pagination ─── */
+/* â”€â”€â”€ Pagination â”€â”€â”€ */
 .search-pagination {
   display: flex;
   flex-wrap: wrap;
@@ -1738,9 +1738,9 @@ input[type="range"].thumb::-moz-range-thumb {
   box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   NAVBAR NOTIFICATIONS — Premium Redesign
-   ═══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   NAVBAR NOTIFICATIONS â€” Premium Redesign
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .notification-badge {
   position: absolute;
@@ -2434,9 +2434,9 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   DETAILS PAGES — Premium Redesign
-   ───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   DETAILS PAGES â€” Premium Redesign
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .details-page-root {
   min-height: 100vh;
   position: relative;
@@ -2838,5 +2838,1251 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   text-align: center;
 }
 
+/* ==========================================
+   LIGHT MODE â€” Premium Blue Aesthetics
+   ========================================== */
 
+/* â”€â”€â”€ CSS Variable Overrides â”€â”€â”€ */
+:root.light-mode {
+  --bg-dark: #dbeafe; /* Rich sky blue background */
+  --bg-card: #ffffffee;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border: rgba(37, 99, 235, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(37, 99, 235, 0.1);
+  --shadow: 0 20px 40px -15px rgba(37, 99, 235, 0.12);
+}
 
+/* â”€â”€â”€ Body & Decorative Background â”€â”€â”€ */
+.light-mode body {
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 40%, #e0f2fe 70%, #dbeafe 100%) !important;
+  color: var(--text-main) !important;
+}
+
+/* Premium floating orbs in light mode */
+.light-mode body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(147, 197, 253, 0.35) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: searchOrbFloat 25s ease-in-out infinite;
+}
+
+.light-mode body::after {
+  content: '';
+  position: fixed;
+  bottom: -150px;
+  right: -150px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: searchOrbFloat 30s ease-in-out infinite reverse;
+}
+
+/* â”€â”€â”€ Background Orbs â€” reduce opacity in light mode â”€â”€â”€ */
+.light-mode .search-bg-orb {
+  opacity: 0.06 !important;
+}
+
+/* â”€â”€â”€ Navbar â”€â”€â”€ */
+.light-mode nav,
+.light-mode header.sticky,
+.light-mode .navbar {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 4px 24px -4px rgba(37, 99, 235, 0.08) !important;
+}
+
+/* Navbar links/buttons text */
+.light-mode nav a,
+.light-mode nav button,
+.light-mode nav span {
+  color: var(--text-main) !important;
+}
+
+/* Theme toggle icon */
+.light-mode nav button svg.text-white,
+.light-mode .text-white svg {
+  color: var(--text-main) !important;
+}
+
+/* â”€â”€â”€ Dropdowns â”€â”€â”€ */
+.light-mode .navbar-dropdown {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border: 1px solid rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 20px 50px -10px rgba(37, 99, 235, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-mode .navbar-dropdown a {
+  color: var(--text-main) !important;
+}
+
+.light-mode .navbar-dropdown a:hover {
+  background: rgba(37, 99, 235, 0.05) !important;
+}
+
+.light-mode .navbar-mobile-menu {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .navbar-mobile-menu a,
+.light-mode .navbar-mobile-menu span,
+.light-mode .navbar-mobile-menu button {
+  color: var(--text-main) !important;
+}
+
+.light-mode .navbar-mobile-menu a:hover,
+.light-mode .navbar-mobile-menu button:hover {
+  background: rgba(37, 99, 235, 0.05) !important;
+}
+
+.light-mode .navbar-notifications-dropdown {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 30px 90px rgba(37, 99, 235, 0.12), 0 0 50px rgba(59, 130, 246, 0.04) !important;
+}
+
+/* â”€â”€â”€ Notification Badge â”€â”€â”€ */
+.light-mode .notification-badge {
+  border-color: #f1f5f9 !important;
+}
+
+/* â”€â”€â”€ Notification Items â”€â”€â”€ */
+.light-mode .notifications-header {
+  background: rgba(239, 246, 255, 0.5) !important;
+  border-bottom-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .notifications-header-title { color: var(--text-main) !important; }
+
+.light-mode .notifications-action-btn {
+  background: rgba(37, 99, 235, 0.04) !important;
+  border-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .notifications-action-btn:hover {
+  background: rgba(37, 99, 235, 0.08) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .notification-item {
+  border-bottom-color: rgba(37, 99, 235, 0.06) !important;
+}
+
+.light-mode .notification-item.unread {
+  background: rgba(59, 130, 246, 0.05) !important;
+}
+
+.light-mode .notification-item:hover {
+  background: rgba(37, 99, 235, 0.03) !important;
+}
+
+.light-mode .notification-item.unread .notification-item-message {
+  color: var(--text-main) !important;
+  font-weight: 600 !important;
+}
+
+.light-mode .notification-item.read .notification-item-message {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .notification-item-time {
+  background: rgba(37, 99, 235, 0.03) !important;
+  border-color: rgba(37, 99, 235, 0.06) !important;
+  color: var(--text-muted) !important;
+}
+
+/* â”€â”€â”€ Glass Cards â”€â”€â”€ */
+.light-mode .glass {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 8px 32px -8px rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .glass-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(37, 99, 235, 0.08) !important;
+  box-shadow: 0 8px 24px -6px rgba(37, 99, 235, 0.06) !important;
+}
+
+.light-mode .glass-card:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 20px 40px -15px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* â”€â”€â”€ Card on Home Page â”€â”€â”€ */
+.light-mode .card.glass {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 10px 30px -8px rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .card.glass:hover {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 20px 40px -12px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* â”€â”€â”€ Inputs, Selects, Textareas â”€â”€â”€ */
+.light-mode input,
+.light-mode textarea {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: rgba(71, 85, 105, 0.55) !important;
+}
+
+.light-mode input:focus,
+.light-mode textarea:focus {
+  background: #ffffff !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+  color: var(--text-main) !important;
+}
+
+/* Selects â€” critical for fixing the dark select boxes */
+.light-mode select {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(37, 99, 235, 0.15) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode select:focus {
+  background: #ffffff !important;
+  border-color: var(--primary) !important;
+  color: var(--text-main) !important;
+}
+
+/* ALL option elements - fixes the dark dropdown list */
+.light-mode option,
+.light-mode .bg-bg-dark {
+  background: #ffffff !important;
+  color: var(--text-main) !important;
+}
+
+/* Date/time picker icons should be dark in light mode */
+.light-mode input[type="date"]::-webkit-calendar-picker-indicator,
+.light-mode input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0) brightness(0.4) !important;
+  opacity: 0.7 !important;
+  cursor: pointer;
+}
+
+/* â”€â”€â”€ Global Text Overrides â”€â”€â”€ */
+.light-mode h1,
+.light-mode h2,
+.light-mode h3,
+.light-mode h4,
+.light-mode h5,
+.light-mode h6,
+.light-mode strong,
+.light-mode th,
+.light-mode label,
+.light-mode p {
+  color: var(--text-main) !important;
+}
+
+/* Text utilities */
+.light-mode .text-white { color: var(--text-main) !important; }
+.light-mode .text-slate-300 { color: #334155 !important; }
+.light-mode .text-slate-400 { color: #475569 !important; }
+.light-mode .text-slate-500 { color: #64748b !important; }
+.light-mode .text-blue-300 { color: #1d4ed8 !important; }
+.light-mode .text-blue-400 { color: #2563eb !important; }
+.light-mode .bg-blue-800\/50 { background-color: rgba(37, 99, 235, 0.12) !important; }
+
+/* Keep white text where needed (on colored/dark backgrounds) */
+.light-mode .btn-primary,
+.light-mode .btn-primary *,
+.light-mode .btn-premium,
+.light-mode .btn-premium *,
+.light-mode .search-action-primary,
+.light-mode .search-action-primary *,
+.light-mode .search-view-btn.active,
+.light-mode .search-view-btn.active *,
+.light-mode .search-layout-btn.active,
+.light-mode .search-layout-btn.active *,
+.light-mode .stepper-circle.active,
+.light-mode .stepper-circle.active *,
+.light-mode .stepper-circle.completed,
+.light-mode .stepper-circle.completed * {
+  color: white !important;
+}
+
+/* â”€â”€â”€ Gradient Text â”€â”€â”€ */
+.light-mode .gradient-text {
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 60%, #3b82f6 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.light-mode .details-title-gradient {
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 60%, var(--primary) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.light-mode .search-header-title {
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, var(--primary) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* â”€â”€â”€ Inline Style Overrides â€” Hardcoded #0f172a backgrounds â”€â”€â”€ */
+.light-mode *[style*="background: #0f172a"],
+.light-mode *[style*="background:#0f172a"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode *[style*="background: rgba(15,23,42"],
+.light-mode *[style*="background:rgba(15,23,42"],
+.light-mode *[style*="background: rgba(15, 23, 42"],
+.light-mode *[style*="background:rgba(15, 23, 42"] {
+  background: rgba(255, 255, 255, 0.75) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode *[style*="background: rgba(30,41,59"],
+.light-mode *[style*="background:rgba(30,41,59"],
+.light-mode *[style*="background: rgba(30, 41, 59"],
+.light-mode *[style*="background:rgba(30, 41, 59"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: var(--text-main) !important;
+}
+
+/* Dark card backgrounds override */
+.light-mode *[style*="background: #1e293b"],
+.light-mode *[style*="background:#1e293b"] {
+  background: rgba(239, 246, 255, 0.8) !important;
+  color: var(--text-main) !important;
+}
+
+/* Very subtle white transparent â†’ make visible */
+.light-mode div[style*="background: rgba(255,255,255,0.03)"],
+.light-mode div[style*="background: rgba(255, 255, 255, 0.03)"],
+.light-mode div[style*="background:rgba(255,255,255,0.03)"],
+.light-mode div[style*="background: rgba(255,255,255,0.02)"],
+.light-mode div[style*="background: rgba(255, 255, 255, 0.02)"],
+.light-mode div[style*="background:rgba(255,255,255,0.02)"] {
+  background: rgba(37, 99, 235, 0.03) !important;
+}
+
+/* White transparent borders â†’ blue tinted */
+.light-mode *[style*="border: 1px solid rgba(255,255,255,0.1)"],
+.light-mode *[style*="border: 1px solid rgba(255, 255, 255, 0.1)"],
+.light-mode *[style*="border: 1px solid rgba(255,255,255,0.08)"],
+.light-mode *[style*="border: 1px solid rgba(255, 255, 255, 0.08)"],
+.light-mode *[style*="border: 1px solid rgba(255,255,255,0.07)"],
+.light-mode *[style*="border: 1px solid rgba(255, 255, 255, 0.07)"],
+.light-mode *[style*="border: 1px solid rgba(255,255,255,0.06)"],
+.light-mode *[style*="border: 1px solid rgba(255, 255, 255, 0.06)"],
+.light-mode *[style*="border:1px solid rgba(255,255,255,0.08)"],
+.light-mode *[style*="border:1px solid rgba(255,255,255,0.06)"] {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode *[style*="border-top: 1px solid rgba(255,255,255,0.06)"],
+.light-mode *[style*="border-top: 1px solid rgba(255, 255, 255, 0.06)"],
+.light-mode *[style*="border-top: 1px solid rgba(255,255,255,0.05)"],
+.light-mode *[style*="border-top: 1px solid rgba(255, 255, 255, 0.05)"] {
+  border-top-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode *[style*="border-bottom: 1px solid rgba(255,255,255,0.05)"],
+.light-mode *[style*="border-bottom: 1px solid rgba(255, 255, 255, 0.05)"],
+.light-mode *[style*="border-bottom: 1px solid rgba(255,255,255,0.04)"],
+.light-mode *[style*="border-bottom: 1px solid rgba(255, 255, 255, 0.04)"] {
+  border-bottom-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+/* White color inline styles */
+.light-mode *[style*="color: white"]:not(.btn-primary *):not(.btn-premium *):not(.search-action-primary *):not(.selection-btn *) {
+  color: var(--text-main) !important;
+}
+
+.light-mode *[style*="color: #fff"]:not(.btn-primary *):not(.btn-premium *):not(.search-action-primary *):not(.selection-btn *),
+.light-mode *[style*="color:#fff"]:not(.btn-primary *):not(.btn-premium *):not(.search-action-primary *):not(.selection-btn *) {
+  color: var(--text-main) !important;
+}
+
+/* Dark text colors â†’ readable in light mode */
+.light-mode *[style*="color: #e2e8f0"],
+.light-mode *[style*="color:#e2e8f0"],
+.light-mode *[style*="color: #cbd5e1"],
+.light-mode *[style*="color:#cbd5e1"],
+.light-mode *[style*="color: #f1f5f9"],
+.light-mode *[style*="color:#f1f5f9"] {
+  color: var(--text-main) !important;
+}
+
+.light-mode *[style*="color: #94a3b8"],
+.light-mode *[style*="color:#94a3b8"],
+.light-mode *[style*="color: #64748b"],
+.light-mode *[style*="color:#64748b"],
+.light-mode *[style*="color: #475569"],
+.light-mode *[style*="color:#475569"] {
+  color: var(--text-muted) !important;
+}
+
+/* â”€â”€â”€ Buttons â€” fix dark buttons with white text â”€â”€â”€ */
+.light-mode button[style*="background: rgba(255,255,255,0.05)"],
+.light-mode button[style*="background:rgba(255,255,255,0.05)"],
+.light-mode button[style*="background: rgba(255,255,255,0.08)"],
+.light-mode button[style*="background:rgba(255,255,255,0.08)"] {
+  background: rgba(37, 99, 235, 0.05) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  color: var(--text-muted) !important;
+}
+
+.light-mode button[style*="background: rgba(255,255,255,0.05)"]:hover,
+.light-mode button[style*="background:rgba(255,255,255,0.05)"]:hover,
+.light-mode button[style*="background: rgba(255,255,255,0.08)"]:hover,
+.light-mode button[style*="background:rgba(255,255,255,0.08)"]:hover {
+  background: rgba(37, 99, 235, 0.08) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode button[style*="background: rgba(30,41,59,0.8)"],
+.light-mode button[style*="background:rgba(30,41,59,0.8)"],
+.light-mode button[style*="background: rgba(30, 41, 59, 0.8)"],
+.light-mode button[style*="background:rgba(30, 41, 59, 0.8)"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: var(--text-main) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-mode select[style*="background: rgba(30,41,59,0.8)"],
+.light-mode select[style*="background:rgba(30,41,59,0.8)"] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: var(--text-main) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Secondary Button */
+.light-mode .btn-secondary {
+  background: rgba(37, 99, 235, 0.05) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .btn-secondary:hover {
+  background: rgba(37, 99, 235, 0.09) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+/* â”€â”€â”€ Compass / Orientation widget (dark SVG widget fix) â”€â”€â”€ */
+.light-mode svg[style*="background"],
+.light-mode *[style*="background: #0a0f1e"],
+.light-mode *[style*="background:#0a0f1e"],
+.light-mode *[style*="background: #0d1117"],
+.light-mode *[style*="background:#0d1117"],
+.light-mode *[style*="background: #111827"],
+.light-mode *[style*="background:#111827"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Try targeting the compass div by common dark background values */
+.light-mode div[style*="background: rgb(10"],
+.light-mode div[style*="background:rgb(10"] {
+  background: rgba(239, 246, 255, 0.9) !important;
+}
+
+/* â”€â”€â”€ Rapoarte Risc month cards â”€â”€â”€ */
+.light-mode button[style*="background: #0f172a"],
+.light-mode button[style*="background:#0f172a"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode button[style*="background: #0f172a"]:hover,
+.light-mode button[style*="background:#0f172a"]:hover {
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 16px 40px rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-mode button[style*="background: #0f172a"] div[style*="color: #e2e8f0"],
+.light-mode button[style*="background:#0f172a"] div[style*="color: #e2e8f0"] {
+  color: var(--text-main) !important;
+}
+
+/* â”€â”€â”€ Search Page â”€â”€â”€ */
+.light-mode .search-view-toggle {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-mode .search-view-btn {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-view-btn:hover {
+  color: var(--text-main) !important;
+  background: rgba(37, 99, 235, 0.05) !important;
+}
+
+.light-mode .search-view-btn.active {
+  color: white !important;
+  background: var(--primary) !important;
+}
+
+.light-mode .search-page-size-pill {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-mode .search-filter-panel {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 20px 60px -15px rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .search-bar-input {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-bar-input::placeholder {
+  color: rgba(71, 85, 105, 0.5) !important;
+}
+
+.light-mode .search-bar-input:focus {
+  background: #ffffff !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08) !important;
+}
+
+.light-mode .search-bar-clear {
+  background: rgba(37, 99, 235, 0.06) !important;
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-filter-divider {
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1) 20%, rgba(59, 130, 246, 0.2) 50%, rgba(37, 99, 235, 0.1) 80%, transparent) !important;
+}
+
+.light-mode .search-filter-section {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  background: rgba(239, 246, 255, 0.3) !important;
+}
+
+.light-mode .search-filter-section:hover {
+  border-color: rgba(37, 99, 235, 0.18) !important;
+}
+
+.light-mode .search-filter-section-header {
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-filter-section-header:hover {
+  background: rgba(37, 99, 235, 0.03) !important;
+}
+
+.light-mode .search-filter-label {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-chip-btn {
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-chip-btn:hover {
+  background: rgba(37, 99, 235, 0.06) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-chip-btn.active {
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+.light-mode .search-date-input {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-date-input:focus {
+  border-color: var(--primary) !important;
+  background: #ffffff !important;
+}
+
+.light-mode .search-size-btn {
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-size-btn:hover {
+  background: rgba(37, 99, 235, 0.06) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-size-btn.active {
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+.light-mode .search-slider-card {
+  background: rgba(239, 246, 255, 0.4) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .search-slider-card:hover {
+  border-color: rgba(37, 99, 235, 0.18) !important;
+}
+
+.light-mode .search-slider-label {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-damage-btn {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-damage-btn:hover {
+  background: rgba(37, 99, 235, 0.05) !important;
+}
+
+.light-mode .search-action-reset {
+  color: var(--text-muted) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-mode .search-export-title {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-export-btn {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-export-btn:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+}
+
+.light-mode .search-results-header {
+  border-bottom-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .search-layout-toggle {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-mode .search-layout-btn {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-layout-btn:hover {
+  color: var(--text-main) !important;
+  background: rgba(37, 99, 235, 0.06) !important;
+}
+
+.light-mode .search-layout-btn.active {
+  color: white !important;
+  background: var(--primary) !important;
+}
+
+.light-mode .search-result-card {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .search-result-card:hover {
+  border-color: var(--primary) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 20px 50px -12px rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-mode .search-card-date {
+  color: var(--text-muted) !important;
+  background: rgba(37, 99, 235, 0.04) !important;
+}
+
+.light-mode .search-card-info-row {
+  color: var(--text-main) !important;
+  background: rgba(37, 99, 235, 0.03) !important;
+  border-color: rgba(37, 99, 235, 0.05) !important;
+}
+
+.light-mode .search-result-card:hover .search-card-info-row {
+  background: rgba(37, 99, 235, 0.05) !important;
+}
+
+.light-mode .search-card-detail {
+  color: var(--text-muted) !important;
+  background: rgba(37, 99, 235, 0.02) !important;
+  border-color: rgba(37, 99, 235, 0.05) !important;
+}
+
+.light-mode .search-card-detail strong,
+.light-mode .search-card-equip strong {
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-card-footer {
+  border-top-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .search-skeleton-card {
+  background: rgba(37, 99, 235, 0.04) !important;
+  border-color: rgba(37, 99, 235, 0.06) !important;
+}
+
+.light-mode .search-skeleton-line {
+  background: linear-gradient(90deg, rgba(37,99,235,0.03) 25%, rgba(37,99,235,0.07) 50%, rgba(37,99,235,0.03) 75%) !important;
+}
+
+.light-mode .search-empty-state {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .search-pagination {
+  border-top-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .search-pagination-dot {
+  background: rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-mode .search-pagination-btn {
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-pagination-btn:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+.light-mode .search-pagination-num {
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  color: var(--text-muted) !important;
+}
+
+.light-mode .search-pagination-num:hover {
+  color: var(--text-main) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+.light-mode .search-pagination-num.active {
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+/* â”€â”€â”€ Search Header Badge â”€â”€â”€ */
+.light-mode .search-header-badge {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+/* â”€â”€â”€ Timeline & Stepper â”€â”€â”€ */
+.light-mode .stepper-line {
+  background: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .stepper-circle {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+  color: var(--text-muted) !important;
+}
+
+.light-mode .stepper-step:hover .stepper-circle {
+  border-color: rgba(37, 99, 235, 0.35) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .stepper-circle.active {
+  border-color: var(--primary) !important;
+  background: var(--primary) !important;
+  color: white !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3) !important;
+}
+
+.light-mode .stepper-circle.completed {
+  border-color: var(--accent-green) !important;
+  background: var(--accent-green) !important;
+  color: white !important;
+}
+
+.light-mode .stepper-step.active .stepper-label {
+  color: var(--text-main) !important;
+  text-shadow: none !important;
+}
+
+/* â”€â”€â”€ Dropzone â”€â”€â”€ */
+.light-mode .dropzone {
+  border-color: rgba(37, 99, 235, 0.2) !important;
+  background: rgba(239, 246, 255, 0.3) !important;
+}
+
+.light-mode .dropzone:hover {
+  border-color: var(--primary) !important;
+  background: rgba(239, 246, 255, 0.5) !important;
+}
+
+.light-mode .dropzone-icon-wrap {
+  background: rgba(37, 99, 235, 0.06) !important;
+}
+
+/* â”€â”€â”€ Counter Buttons â”€â”€â”€ */
+.light-mode .counter-card {
+  background: rgba(239, 246, 255, 0.4) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .counter-card:hover {
+  background: rgba(239, 246, 255, 0.65) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+}
+
+.light-mode .counter-btn {
+  background: rgba(255, 255, 255, 0.7) !important;
+  color: var(--text-main) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-mode .counter-btn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+.light-mode .counter-value {
+  color: var(--text-main) !important;
+}
+
+.light-mode .counter-value.has-value {
+  color: var(--primary) !important;
+}
+
+.light-mode .coords-panel {
+  background: rgba(239, 246, 255, 0.3) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* â”€â”€â”€ Size selector buttons in forms â”€â”€â”€ */
+.light-mode .bg-glass-bg {
+  background: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* â”€â”€â”€ Selection Cards (AddReportSelectionPage) â”€â”€â”€ */
+.light-mode .selection-card {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+}
+
+.light-mode .selection-card-avalanche:hover {
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  box-shadow: 0 20px 40px -15px rgba(239, 68, 68, 0.12) !important;
+}
+
+.light-mode .selection-card-conditions:hover {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.12) !important;
+}
+
+/* â”€â”€â”€ Details Pages â”€â”€â”€ */
+.light-mode .details-header {
+  border-bottom-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .details-back-btn {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .details-back-btn:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+.light-mode .telemetry-card {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .telemetry-card:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.light-mode .telemetry-value {
+  color: var(--text-main) !important;
+}
+
+.light-mode .sidebar-list-item {
+  border-bottom-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .sidebar-item-value {
+  color: var(--text-main) !important;
+}
+
+.light-mode .victim-widget {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode .victim-widget:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.light-mode .victim-widget.danger {
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+.light-mode .bulletin-box {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(255, 255, 255, 0.0) 100%) !important;
+  border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.light-mode .bulletin-quote {
+  color: #334155 !important;
+}
+
+.light-mode .gallery-card {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  background: rgba(239, 246, 255, 0.3) !important;
+}
+
+/* â”€â”€â”€ Lightbox â”€â”€â”€ */
+.light-mode .lightbox-modal {
+  background: rgba(239, 246, 255, 0.92) !important;
+  backdrop-filter: blur(24px) !important;
+}
+
+.light-mode .lightbox-image {
+  box-shadow: 0 30px 60px -10px rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.light-mode .lightbox-close,
+.light-mode .lightbox-prev,
+.light-mode .lightbox-next {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .lightbox-close:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: var(--accent-red) !important;
+}
+
+.light-mode .lightbox-prev:hover,
+.light-mode .lightbox-next:hover {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: var(--primary) !important;
+}
+
+/* â”€â”€â”€ Toasts â”€â”€â”€ */
+.light-mode .Toastify__toast {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: var(--text-main) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-mode .Toastify__close-button {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .Toastify__close-button:hover {
+  color: var(--text-main) !important;
+}
+
+/* â”€â”€â”€ Meteo RO page station cards â”€â”€â”€ */
+.light-mode div[style*="backdropFilter"] {
+  background: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* â”€â”€â”€ Charts / Stats pages â”€â”€â”€ */
+.light-mode div[style*="rgba(15,23,42,0.5)"],
+.light-mode div[style*="rgba(15,23,42, 0.5)"],
+.light-mode div[style*="rgba(15, 23, 42, 0.55)"],
+.light-mode div[style*="rgba(15,23,42,0.55)"],
+.light-mode div[style*="rgba(15, 23, 42, 0.4)"],
+.light-mode div[style*="rgba(15,23,42,0.4)"] {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* â”€â”€â”€ Home page border separator â”€â”€â”€ */
+.light-mode .border-white\/5 {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* â”€â”€â”€ Tables â”€â”€â”€ */
+.light-mode table thead tr {
+  background: rgba(239, 246, 255, 0.5) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode table tbody tr {
+  border-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode table tbody tr:hover {
+  background: rgba(239, 246, 255, 0.4) !important;
+}
+
+/* â”€â”€â”€ Border utilities â”€â”€â”€ */
+.light-mode .border-glass-border {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .border-l {
+  border-left-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* â”€â”€â”€ Hover effects â€” white/5 â†’ blue/5 â”€â”€â”€ */
+.light-mode .hover\:bg-white\/5:hover {
+  background-color: rgba(37, 99, 235, 0.05) !important;
+}
+
+/* â”€â”€â”€ User avatar circle â”€â”€â”€ */
+.light-mode .bg-primary\/20 {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+}
+
+/* â”€â”€â”€ Shadows for light mode â”€â”€â”€ */
+.light-mode .shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* â”€â”€â”€ Custom scrollbar in light mode â”€â”€â”€ */
+.light-mode .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.2) !important;
+}
+
+.light-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.35) !important;
+}
+
+/* ─── Misc: text-muted improvements ─── */
+.light-mode .text-text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* ─── Any remaining dark/transparent widget containers ─── */
+.light-mode div[class*="glass"],
+.light-mode div[class*="card"] {
+  color: var(--text-main);
+}
+
+/* ─── MeteoPage — Tab buttons (Alege din Lista / Introducere Manuala) ─── */
+.light-mode .bg-glass-bg {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Tab buttons not active in MeteoPage */
+.light-mode button.text-text-muted:not(.btn-primary):not(.btn-premium) {
+  color: var(--text-muted) !important;
+}
+
+.light-mode button.text-text-muted:hover:not(.btn-primary):not(.btn-premium) {
+  background: rgba(37, 99, 235, 0.06) !important;
+  color: var(--text-main) !important;
+}
+
+/* ─── HTML-injected weather report (dangerouslySetInnerHTML) ─── */
+/* The MeteoPage HTML report is generated by the backend and has dark inline styles */
+.light-mode .mx-auto.w-full * {
+  background-color: transparent !important;
+  color: var(--text-main) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .mx-auto.w-full [style*="background: #"],
+.light-mode .mx-auto.w-full [style*="background:#"] {
+  background: rgba(239, 246, 255, 0.8) !important;
+}
+
+/* ─── SearchPage filter — select and dropdown inputs ─── */
+.light-mode .search-filter-panel select {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(37, 99, 235, 0.15) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode .search-filter-panel select option {
+  background: #ffffff !important;
+  color: var(--text-main) !important;
+}
+
+/* ─── AvalancheFormPage / ConditionsFormPage selects & size buttons ─── */
+/* Size selector buttons (Mica / Medie / Mare) */
+.light-mode button.flex-1.py-2\.5 {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+  color: var(--text-main) !important;
+}
+
+.light-mode button.flex-1.py-2\.5:hover {
+  background: rgba(239, 246, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.25) !important;
+  color: var(--text-main) !important;
+}
+
+/* ─── MeteoRoPage header border ─── */
+.light-mode header[style*="border-bottom"] {
+  border-bottom-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* ─── RapoarteRiscuriPage — Informatie indisponibila box ─── */
+.light-mode div[style*="background: rgba(239,68,68,0.08)"] {
+  background: rgba(254, 226, 226, 0.6) !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+/* ─── ConditionsDetailsPage / AvalancheDetailsPage — bullet header gradients ─── */
+/* Keep gradient backgrounds on header banners but ensure text is white */
+.light-mode div[style*="background: linear-gradient"] h1,
+.light-mode div[style*="background: linear-gradient"] h2,
+.light-mode div[style*="background: linear-gradient"] h3,
+.light-mode div[style*="background: linear-gradient"] p,
+.light-mode div[style*="background: linear-gradient"] span {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
+
+/* ─── AvalancheRiskChartPage loading spinner ─── */
+.light-mode div[style*="border: 3px solid rgba(255,255,255,0.1)"] {
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+/* ─── Rapoarte tab months — loading spinner in light mode ─── */
+.light-mode div[style*="border: 3px solid rgba(255,255,255,0.1)"],
+.light-mode div[style*="border:3px solid rgba(255,255,255,0.1)"] {
+  border-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+/* ─── Fix all select elements globally in light mode (most important) ─── */
+.light-mode select,
+.light-mode select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* ─── Fix filter section toggleable region (SearchPage) ─── */
+.light-mode .search-filter-section-content {
+  background: transparent !important;
+}
+
+/* ─── MeteoPage — Masiv select ─── */
+.light-mode .relative select.w-full.pl-10 {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(37, 99, 235, 0.15) !important;
+  color: #0f172a !important;
+}
+
+/* ─── Compass / Wind direction widget from HTML report ─── */
+/* The generated HTML report may contain canvas or SVG with dark background */
+.light-mode canvas {
+  filter: brightness(0.95) contrast(1.05);
+}
+
+/* Force all deeply-nested dark backgrounds in injected HTML */
+.light-mode [style*="background-color: #0f172a"],
+.light-mode [style*="background-color:#0f172a"],
+.light-mode [style*="background-color: rgb(15, 23, 42)"],
+.light-mode [style*="backgroundColor: '#0f172a'"] {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+}
+
+.light-mode [style*="background-color: #1e293b"],
+.light-mode [style*="background-color:#1e293b"],
+.light-mode [style*="background-color: rgb(30, 41, 59)"] {
+  background-color: rgba(239, 246, 255, 0.8) !important;
+  color: #0f172a !important;
+}
+
+/* ─── UserManagementPanel / ValidationPanel table in light mode ─── */
+.light-mode table {
+  border-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-mode table td {
+  color: var(--text-main) !important;
+  border-color: rgba(37, 99, 235, 0.06) !important;
+}
+
+.light-mode table th {
+  color: var(--text-main) !important;
+  background: rgba(239, 246, 255, 0.5) !important;
+  border-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+/* ─── Badge text overrides ─── */
+.light-mode .text-accent-red { color: var(--accent-red) !important; }
+.light-mode .text-accent-green { color: var(--accent-green) !important; }
+.light-mode .text-primary { color: var(--primary) !important; }
+
+/* ─── HomeP page hero text ─── */
+.light-mode h1.text-white,
+.light-mode h2.text-white,
+.light-mode h3.text-white {
+  color: var(--text-main) !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+}
+
+/* But gradient text overrides text-white */
+.light-mode .gradient-text,
+.light-mode .gradient-text * {
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ─── Notification dropdown empty state ─── */
+.light-mode .notifications-empty {
+  color: var(--text-muted) !important;
+}
+
+/* ─── Icon colors in light mode ─── */
+.light-mode svg.text-white:not(.btn-primary svg):not(.btn-premium svg):not(.stepper-circle.active svg):not(.stepper-circle.completed svg) {
+  color: var(--text-main) !important;
+}

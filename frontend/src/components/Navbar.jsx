@@ -2,11 +2,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
-import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers, Menu, X, Wind, BarChart2, Activity, PieChart } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { Mountain, LogOut, User, ShieldCheck, PlusCircle, Search, Users, Cloud, Bell, Check, Trash2, UserCheck, Layers, Menu, X, Wind, BarChart2, Activity, PieChart, Sun, Moon } from 'lucide-react';
 
 const Navbar = () => {
     const { user, logout, isAdmin, isExpert, isReviewer, isDataEngineer, isUserAdmin } = useAuth();
     const { notifications, unreadCount, markAsRead, markAllAsRead, clearAll } = useNotifications();
+    const { theme, toggleTheme } = useTheme();
+    const isLight = theme === 'light';
     const [showNotifications, setShowNotifications] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showAdminDropdown, setShowAdminDropdown] = useState(false);
@@ -77,7 +80,7 @@ const Navbar = () => {
                                         </button>
 
                                         {showMeteoDropdown && (
-                                            <div style={{
+                                            <div className="navbar-dropdown" style={{
                                                 position: 'absolute', top: 'calc(100% + 0.5rem)', left: 0,
                                                 minWidth: '210px',
                                                 background: '#0f172a',
@@ -175,13 +178,13 @@ const Navbar = () => {
                                     </button>
 
                                     {showStatsDropdown && (
-                                        <div style={{
+                                        <div className="navbar-dropdown" style={{
                                             position: 'absolute', top: 'calc(100% + 0.5rem)', left: 0,
                                             minWidth: '320px',
-                                            background: '#0f172a',
-                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            background: isLight ? '#ffffff' : '#0f172a',
+                                            border: isLight ? '1px solid rgba(37,99,235,0.1)' : '1px solid rgba(255,255,255,0.1)',
                                             borderRadius: '1rem',
-                                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.7)',
+                                            boxShadow: isLight ? '0 20px 40px -10px rgba(37,99,235,0.15)' : '0 20px 40px -10px rgba(0,0,0,0.7)',
                                             padding: '0.75rem',
                                             zIndex: 1000,
                                             display: 'flex',
@@ -196,13 +199,13 @@ const Navbar = () => {
                                                     color: 'inherit', textDecoration: 'none',
                                                     transition: 'background 0.15s',
                                                 }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseEnter={e => e.currentTarget.style.background = isLight ? 'rgba(37,99,235,0.06)' : 'rgba(255,255,255,0.05)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                             >
                                                 <BarChart2 size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
                                                 <div>
-                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Risc Avalanșă</div>
-                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: isLight ? '#0f172a' : '#fff' }}>Risc Avalanșă</div>
+                                                    <div style={{ fontSize: '0.75rem', color: isLight ? '#475569' : '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
                                                         Evoluția gradelor de risc în zonele monitorizate
                                                     </div>
                                                 </div>
@@ -216,13 +219,13 @@ const Navbar = () => {
                                                     color: 'inherit', textDecoration: 'none',
                                                     transition: 'background 0.15s',
                                                 }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseEnter={e => e.currentTarget.style.background = isLight ? 'rgba(37,99,235,0.06)' : 'rgba(255,255,255,0.05)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                             >
                                                 <Activity size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
                                                 <div>
-                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Bilanț Uman &amp; Victime</div>
-                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: isLight ? '#0f172a' : '#fff' }}>Bilanț Uman &amp; Victime</div>
+                                                    <div style={{ fontSize: '0.75rem', color: isLight ? '#475569' : '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
                                                         Focus pe siguranță, decese/salvări, echipamente folosite
                                                     </div>
                                                 </div>
@@ -236,13 +239,13 @@ const Navbar = () => {
                                                     color: 'inherit', textDecoration: 'none',
                                                     transition: 'background 0.15s',
                                                 }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseEnter={e => e.currentTarget.style.background = isLight ? 'rgba(37,99,235,0.06)' : 'rgba(255,255,255,0.05)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                             >
                                                 <Mountain size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
                                                 <div>
-                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Analiza Terenului</div>
-                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: isLight ? '#0f172a' : '#fff' }}>Analiza Terenului</div>
+                                                    <div style={{ fontSize: '0.75rem', color: isLight ? '#475569' : '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
                                                         Top masive active, orientări pante, altitudini vs. înclinație
                                                     </div>
                                                 </div>
@@ -256,13 +259,13 @@ const Navbar = () => {
                                                     color: 'inherit', textDecoration: 'none',
                                                     transition: 'background 0.15s',
                                                 }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                onMouseEnter={e => e.currentTarget.style.background = isLight ? 'rgba(37,99,235,0.06)' : 'rgba(255,255,255,0.05)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                             >
                                                 <PieChart size={18} style={{ color: 'var(--primary)', marginTop: '2px', flexShrink: 0 }} />
                                                 <div>
-                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#fff' }}>Cauze &amp; Tipologii</div>
-                                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
+                                                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: isLight ? '#0f172a' : '#fff' }}>Cauze &amp; Tipologii</div>
+                                                    <div style={{ fontSize: '0.75rem', color: isLight ? '#475569' : '#64748b', marginTop: '2px', lineHeight: '1.3' }}>
                                                         Tipuri de zăpadă, cauze naturale vs. umane, dimensiuni
                                                     </div>
                                                 </div>
@@ -284,14 +287,14 @@ const Navbar = () => {
                             </>
                         )}
 
-                        {(isExpert || isReviewer) && (
+                        {isExpert && (
                             <Link to="/validation" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                 <ShieldCheck size={18} />
                                 <span>Validare</span>
                             </Link>
                         )}
 
-                        {user && (
+                        {user && !isRestrictedAdmin && (
                             <Link to="/search" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
                                 <Search size={18} />
                                 <span>Căutare</span>
@@ -321,7 +324,7 @@ const Navbar = () => {
 
                                 {/* Dropdown panel */}
                                 {showAdminDropdown && (
-                                    <div style={{
+                                    <div className="navbar-dropdown" style={{
                                         position: 'absolute', top: 'calc(100% + 0.5rem)', right: 0,
                                         minWidth: '200px',
                                         background: '#0f172a',
@@ -331,34 +334,38 @@ const Navbar = () => {
                                         padding: '0.5rem',
                                         zIndex: 1000,
                                     }}>
-                                        <Link to="/admin/users"
-                                            onClick={() => setShowAdminDropdown(false)}
-                                            style={{
-                                                display: 'flex', alignItems: 'center', gap: '0.65rem',
-                                                padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
-                                                fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
-                                                transition: 'background 0.15s',
-                                            }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                                        >
-                                            <Users size={16} style={{ color: 'var(--primary)' }} />
-                                            Utilizatori
-                                        </Link>
-                                        <Link to="/admin/requests"
-                                            onClick={() => setShowAdminDropdown(false)}
-                                            style={{
-                                                display: 'flex', alignItems: 'center', gap: '0.65rem',
-                                                padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
-                                                fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
-                                                transition: 'background 0.15s',
-                                            }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                                        >
-                                            <UserCheck size={16} style={{ color: 'var(--primary)' }} />
-                                            Cereri Conturi
-                                        </Link>
+                                        {isUserAdmin && (
+                                            <>
+                                                <Link to="/admin/users"
+                                                    onClick={() => setShowAdminDropdown(false)}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                        padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                        fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                        transition: 'background 0.15s',
+                                                    }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                                >
+                                                    <Users size={16} style={{ color: 'var(--primary)' }} />
+                                                    Utilizatori
+                                                </Link>
+                                                <Link to="/admin/requests"
+                                                    onClick={() => setShowAdminDropdown(false)}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: '0.65rem',
+                                                        padding: '0.65rem 0.9rem', borderRadius: '0.65rem',
+                                                        fontSize: '0.875rem', fontWeight: 500, color: 'inherit',
+                                                        transition: 'background 0.15s',
+                                                    }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                                >
+                                                    <UserCheck size={16} style={{ color: 'var(--primary)' }} />
+                                                    Cereri Conturi
+                                                </Link>
+                                            </>
+                                        )}
                                         {(isAdmin || isDataEngineer) && (
                                             <Link to="/admin/metadata"
                                                 onClick={() => setShowAdminDropdown(false)}
@@ -383,6 +390,15 @@ const Navbar = () => {
 
                     {/* Notification & User Actions */}
                     <div className="flex items-center gap-3 md:pl-6 md:border-l relative">
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 transition-colors rounded-full hover:bg-white/5"
+                            title={theme === 'dark' ? "Mod Luminos" : "Mod Întunecat"}
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}
+                        >
+                            {theme === 'dark' ? <Sun size={20} className="text-white" /> : <Moon size={20} className="text-white" />}
+                        </button>
+
                         {user ? (
                             <>
                                 <div style={{ position: 'relative' }}>
@@ -506,7 +522,7 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="md:hidden mt-4 border-t border-glass-border bg-[#0f172a]/95 backdrop-blur-xl animate-in slide-in-from-top-2">
+                <div className="md:hidden mt-4 border-t border-glass-border navbar-mobile-menu backdrop-blur-xl animate-in slide-in-from-top-2">
                     <div className="container py-6 flex flex-col gap-4">
                         {!isRestrictedAdmin && (
                             <>
@@ -554,14 +570,14 @@ const Navbar = () => {
                             </>
                         )}
 
-                        {(isExpert || isReviewer) && (
+                        {isExpert && (
                             <Link to="/validation" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                 <ShieldCheck size={18} className="text-primary" />
                                 <span>Validare Evenimente</span>
                             </Link>
                         )}
 
-                        {user && (
+                        {user && !isRestrictedAdmin && (
                             <Link to="/search" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                 <Search size={18} className="text-primary" />
                                 <span>Căutare Rapoarte</span>
@@ -571,14 +587,18 @@ const Navbar = () => {
                         {(isUserAdmin || isDataEngineer) && (
                             <div className="mt-2 pt-2 border-t border-white/5 flex flex-col gap-2">
                                 <span className="px-3 text-[10px] font-bold text-text-muted uppercase tracking-widest">Administrare</span>
-                                <Link to="/admin/users" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
-                                    <Users size={18} className="text-primary" />
-                                    <span>Gestiune Utilizatori</span>
-                                </Link>
-                                <Link to="/admin/requests" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
-                                    <UserCheck size={18} className="text-primary" />
-                                    <span>Cereri Conturi</span>
-                                </Link>
+                                {isUserAdmin && (
+                                    <>
+                                        <Link to="/admin/users" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                            <Users size={18} className="text-primary" />
+                                            <span>Gestiune Utilizatori</span>
+                                        </Link>
+                                        <Link to="/admin/requests" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
+                                            <UserCheck size={18} className="text-primary" />
+                                            <span>Cereri Conturi</span>
+                                        </Link>
+                                    </>
+                                )}
                                 {(isAdmin || isDataEngineer) && (
                                     <Link to="/admin/metadata" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-sm font-medium">
                                         <Layers size={18} className="text-primary" />

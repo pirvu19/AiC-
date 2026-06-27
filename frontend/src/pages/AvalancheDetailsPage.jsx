@@ -218,7 +218,7 @@ const AvalancheDetailsPage = () => {
                                     <Trash2 size={18} /> <span>Șterge</span>
                                 </button>
                             )}
-                            {avalanche.status === 'PENDING' && (isAdmin || isExpert || isReviewer) && (
+                            {avalanche.status === 'PENDING' && (isAdmin || isExpert) && (
                                 <button 
                                     onClick={handleValidate} 
                                     className="btn-premium bg-accent-green hover:bg-green-600 flex items-center gap-2 py-2 px-4 shadow-lg text-white"

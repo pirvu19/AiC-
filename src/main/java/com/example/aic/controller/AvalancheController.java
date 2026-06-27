@@ -165,7 +165,7 @@ public class AvalancheController {
     }
 
     @PutMapping("/{id}/validate")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EXPERT', 'REVIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EXPERT')")
     public ResponseEntity<AvalancheDTO> validate(@PathVariable Integer id) {
         return ResponseEntity.ok(avalancheService.validateAvalanche(id));
     }

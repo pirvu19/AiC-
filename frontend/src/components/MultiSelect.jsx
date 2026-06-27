@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, X } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const MultiSelect = ({ options = [], value = [], onChange, placeholder = "Selectează...", label }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +9,8 @@ const MultiSelect = ({ options = [], value = [], onChange, placeholder = "Select
     const [dropdownStyle, setDropdownStyle] = useState({});
     const containerRef = useRef(null);
     const inputRef = useRef(null);
+    const { theme } = useTheme();
+    const isLight = theme === 'light';
 
     const updateDropdownPosition = useCallback(() => {
         if (!containerRef.current) return;
@@ -67,34 +70,77 @@ const MultiSelect = ({ options = [], value = [], onChange, placeholder = "Select
         return name.includes(searchTerm.toLowerCase());
     });
 
+    // Theme-aware dropdown styles
+    const dropdownBg = isLight ? '#ffffff' : '#1e293b';
+    const dropdownBorder = isLight ? '1px solid rgba(37, 99, 235, 0.15)' : '1px solid rgba(255,255,255,0.1)';
+    const dropdownShadow = isLight
+        ? '0 20px 60px rgba(37,99,235,0.12), 0 4px 16px rgba(0,0,0,0.04)'
+        : '0 20px 60px rgba(0,0,0,0.8)';
+
     const dropdown = isOpen ? createPortal(
         <div
-            style={{ ...dropdownStyle, backgroundColor: '#1e293b' }}
-            className="rounded-2xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden"
+            style={{
+                ...dropdownStyle,
+                backgroundColor: dropdownBg,
+                border: dropdownBorder,
+                boxShadow: dropdownShadow,
+                borderRadius: '1rem',
+                overflow: 'hidden',
+            }}
         >
-            <div className="max-h-60 overflow-y-auto custom-scrollbar p-2">
-                {filteredOptions.length > 0 ? (
-                    filteredOptions.map(opt => {
-                        const isSelected = value.includes(opt.id);
-                        return (
-                            <div
-                                key={opt.id}
-                                onMouseDown={(e) => { e.preventDefault(); toggleOption(opt.id); }}
-                                className={`p-3 rounded-xl cursor-pointer flex items-center justify-between transition-all mb-1 ${isSelected
-                                        ? 'bg-primary text-white font-black'
-                                        : 'hover:bg-white/10 text-slate-300 hover:text-white'
-                                    }`}
-                            >
-                                <span className="text-sm">{opt.name || opt.direction || opt.description}</span>
-                                {isSelected && <Check size={14} />}
-                            </div>
-                        );
-                    })
-                ) : (
-                    <div className="p-4 text-center text-slate-500 text-xs italic">
-                        Niciun rezultat găsit
-                    </div>
-                )}
+            <div style={{ maxHeight: '240px', overflowY: 'auto' }} className="custom-scrollbar">
+                <div style={{ padding: '6px' }}>
+                    {filteredOptions.length > 0 ? (
+                        filteredOptions.map(opt => {
+                            const isSelected = value.includes(opt.id);
+                            return (
+                                <div
+                                    key={opt.id}
+                                    onMouseDown={(e) => { e.preventDefault(); toggleOption(opt.id); }}
+                                    style={{
+                                        padding: '10px 12px',
+                                        borderRadius: '0.6rem',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginBottom: '2px',
+                                        fontSize: '0.875rem',
+                                        fontWeight: isSelected ? '700' : '400',
+                                        backgroundColor: isSelected
+                                            ? 'var(--primary)'
+                                            : 'transparent',
+                                        color: isSelected
+                                            ? '#ffffff'
+                                            : (isLight ? '#334155' : '#cbd5e1'),
+                                        transition: 'all 0.15s ease',
+                                    }}
+                                    onMouseEnter={e => {
+                                        if (!isSelected) {
+                                            e.currentTarget.style.backgroundColor = isLight
+                                                ? 'rgba(37, 99, 235, 0.06)'
+                                                : 'rgba(255,255,255,0.08)';
+                                            e.currentTarget.style.color = isLight ? '#0f172a' : '#ffffff';
+                                        }
+                                    }}
+                                    onMouseLeave={e => {
+                                        if (!isSelected) {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                            e.currentTarget.style.color = isLight ? '#334155' : '#cbd5e1';
+                                        }
+                                    }}
+                                >
+                                    <span>{opt.name || opt.direction || opt.description}</span>
+                                    {isSelected && <Check size={14} color="#ffffff" />}
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div style={{ padding: '16px', textAlign: 'center', color: isLight ? '#94a3b8' : '#475569', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                            Niciun rezultat găsit
+                        </div>
+                    )}
+                </div>
             </div>
         </div>,
         document.getElementById('portal-root')
@@ -110,14 +156,38 @@ const MultiSelect = ({ options = [], value = [], onChange, placeholder = "Select
             </label>
 
             <div
-                className={`min-h-[3rem] p-2 bg-glass-bg/50 border border-glass-border rounded-xl cursor-text flex flex-wrap gap-2 justify-center transition-all duration-300 ${isOpen
-                        ? 'ring-2 ring-primary/30 border-primary shadow-2xl bg-glass-bg'
-                        : 'hover:border-glass-border-hover/30'
-                    }`}
+                style={{
+                    minHeight: '3rem',
+                    padding: '8px',
+                    background: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.05)',
+                    border: isOpen
+                        ? `2px solid var(--primary)`
+                        : isLight
+                            ? '1px solid rgba(37,99,235,0.18)'
+                            : '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '0.75rem',
+                    cursor: 'text',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '6px',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                    boxShadow: isOpen
+                        ? '0 0 0 4px rgba(59,130,246,0.1)'
+                        : isLight
+                            ? '0 2px 8px rgba(37,99,235,0.05)'
+                            : 'none',
+                }}
                 onClick={handleTriggerClick}
             >
                 {value.length === 0 && !isOpen && (
-                    <span className="text-dark-blue text-sm py-1.5 px-2 text-center w-full">
+                    <span style={{
+                        color: isLight ? '#94a3b8' : 'rgba(148,163,184,0.5)',
+                        fontSize: '0.875rem',
+                        padding: '6px 8px',
+                        textAlign: 'center',
+                        width: '100%',
+                    }}>
                         {placeholder}
                     </span>
                 )}
@@ -144,7 +214,16 @@ const MultiSelect = ({ options = [], value = [], onChange, placeholder = "Select
                     <input
                         ref={inputRef}
                         autoFocus
-                        className="flex-1 bg-transparent border-none p-1 text-sm outline-none text-white placeholder-dark-blue/50"
+                        style={{
+                            flex: 1,
+                            background: 'transparent',
+                            border: 'none',
+                            padding: '4px',
+                            fontSize: '0.875rem',
+                            outline: 'none',
+                            color: isLight ? '#0f172a' : '#ffffff',
+                            minWidth: '80px',
+                        }}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onClick={(e) => e.stopPropagation()}

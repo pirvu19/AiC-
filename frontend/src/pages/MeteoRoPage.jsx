@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, Wind, Thermometer, Droplets, Eye, Cloud, Snowflake, AlertCircle } from 'lucide-react';
 import api from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 // ─── Mapare iconiță + culoare accent în funcție de fenomenul meteo ───────────
 const getPhenomenonStyle = (fenomen) => {
@@ -33,33 +34,33 @@ const getTempStyle = (temp) => {
 };
 
 // ─── Rând info în card ────────────────────────────────────────────────────────
-const InfoRow = ({ icon: Icon, label, value, color }) => {
+const InfoRow = ({ icon: Icon, label, value, color, isLight }) => {
     if (!value || value === 'indisponibil' || value === 'N/A') return null;
     return (
         <div style={{
             display: 'flex', alignItems: 'center', gap: '0.5rem',
             padding: '0.45rem 0.6rem', borderRadius: '0.6rem',
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: isLight ? 'rgba(239,246,255,0.5)' : 'rgba(255,255,255,0.03)',
+            border: isLight ? '1px solid rgba(37,99,235,0.08)' : '1px solid rgba(255,255,255,0.06)',
         }}>
             <Icon size={13} style={{ color: color || '#64748b', flexShrink: 0 }} />
             <span style={{ fontSize: '0.7rem', color: '#64748b', minWidth: '60px' }}>{label}</span>
-            <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'white' }}>{value}</span>
+            <span style={{ fontSize: '0.78rem', fontWeight: 600, color: isLight ? '#0f172a' : 'white' }}>{value}</span>
         </div>
     );
 };
 
 // ─── Card stație ─────────────────────────────────────────────────────────────
-const StationCard = ({ station }) => {
+const StationCard = ({ station, isLight }) => {
     const props = station.properties;
     const phStyle = getPhenomenonStyle(props.fenomen_e);
     const tempStyle = getTempStyle(props.tempe);
 
     return (
         <div style={{
-            background: 'rgba(15, 23, 42, 0.55)',
+            background: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(15, 23, 42, 0.55)',
             backdropFilter: 'blur(20px)',
-            border: `1px solid ${phStyle.color}28`,
+            border: isLight ? `1px solid ${phStyle.color}22` : `1px solid ${phStyle.color}28`,
             borderRadius: '1.5rem',
             padding: '1.5rem',
             display: 'flex',
@@ -68,11 +69,14 @@ const StationCard = ({ station }) => {
             transition: 'all 0.3s ease',
             position: 'relative',
             overflow: 'hidden',
+            boxShadow: isLight ? '0 4px 20px rgba(37,99,235,0.06)' : 'none',
         }}
             onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.borderColor = `${phStyle.color}55`;
-                e.currentTarget.style.boxShadow = `0 20px 40px -10px rgba(0,0,0,0.5), 0 0 0 1px ${phStyle.color}22`;
+                e.currentTarget.style.boxShadow = isLight
+                    ? `0 20px 40px -10px ${phStyle.color}30, 0 0 0 1px ${phStyle.color}18`
+                    : `0 20px 40px -10px rgba(0,0,0,0.5), 0 0 0 1px ${phStyle.color}22`;
             }}
             onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translateY(0)';
@@ -91,7 +95,7 @@ const StationCard = ({ station }) => {
             {/* Header: nume stație + icoana fenomen */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', marginBottom: '0.2rem' }}>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: isLight ? '#0f172a' : 'white', letterSpacing: '-0.02em', marginBottom: '0.2rem' }}>
                         {props.nume}
                     </h3>
                     <span style={{
@@ -120,17 +124,17 @@ const StationCard = ({ station }) => {
 
             {/* Rânduri detalii */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                <InfoRow icon={Wind}       label="Vânt"        value={props.vant}         color="#60a5fa" />
-                <InfoRow icon={Droplets}   label="Umiditate"   value={props.umezeala ? `${props.umezeala}%` : null} color="#22d3ee" />
-                <InfoRow icon={Eye}        label="Presiune"    value={props.presiunetext}  color="#a78bfa" />
-                <InfoRow icon={Cloud}      label="Nebuloz."    value={props.nebulozitate}  color="#94a3b8" />
-                <InfoRow icon={Snowflake}  label="Zăpadă"      value={props.zapada}        color="#bfdbfe" />
+                <InfoRow icon={Wind}       label="Vânt"        value={props.vant}         color="#60a5fa" isLight={isLight} />
+                <InfoRow icon={Droplets}   label="Umiditate"   value={props.umezeala ? `${props.umezeala}%` : null} color="#22d3ee" isLight={isLight} />
+                <InfoRow icon={Eye}        label="Presiune"    value={props.presiunetext}  color="#a78bfa" isLight={isLight} />
+                <InfoRow icon={Cloud}      label="Nebuloz."    value={props.nebulozitate}  color="#94a3b8" isLight={isLight} />
+                <InfoRow icon={Snowflake}  label="Zăpadă"      value={props.zapada}        color="#bfdbfe" isLight={isLight} />
             </div>
 
             {/* Timestamp */}
             <div style={{
                 marginTop: 'auto', paddingTop: '0.75rem',
-                borderTop: '1px solid rgba(255,255,255,0.06)',
+                borderTop: isLight ? '1px solid rgba(37,99,235,0.08)' : '1px solid rgba(255,255,255,0.06)',
                 display: 'flex', alignItems: 'center', gap: '0.4rem',
             }}>
                 <div style={{
@@ -149,6 +153,8 @@ const StationCard = ({ station }) => {
 
 // ─── Pagina principală ────────────────────────────────────────────────────────
 const MeteoRoPage = () => {
+    const { theme } = useTheme();
+    const isLight = theme === 'light';
     const [roData, setRoData] = useState(null);
     const [roLoading, setRoLoading] = useState(false);
     const [lastFetch, setLastFetch] = useState(null);
@@ -184,7 +190,7 @@ const MeteoRoPage = () => {
             <header style={{ paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
-                        <h1 style={{ fontSize: '2.25rem', fontWeight: 900, color: 'white', letterSpacing: '-0.04em', marginBottom: '0.25rem' }}>
+                        <h1 style={{ fontSize: '2.25rem', fontWeight: 900, color: isLight ? '#0f172a' : 'white', letterSpacing: '-0.04em', marginBottom: '0.25rem' }}>
                             Meteo RO
                         </h1>
                         <p style={{ color: '#64748b', fontSize: '1rem', fontWeight: 500 }}>
@@ -287,7 +293,7 @@ const MeteoRoPage = () => {
                             gap: '1.25rem',
                         }}>
                             {roData.map((station, idx) => (
-                                <StationCard key={idx} station={station} />
+                                <StationCard key={idx} station={station} isLight={isLight} />
                             ))}
                         </div>
                     </>
