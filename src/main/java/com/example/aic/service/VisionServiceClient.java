@@ -42,8 +42,8 @@ public class VisionServiceClient {
 
             if (response != null && response.containsKey("valid")) {
                 boolean isValid = (Boolean) response.get("valid");
-                String label = (String) response.get("label");
-                Double score = (Double) response.get("score");
+                String label = (String) response.get("top_label");
+                Double score = (Double) response.get("confidence");
                 System.out.println("AI Validation for " + file.getOriginalFilename() + ": " + isValid + " (Label: " + label + ", Score: " + score + ")");
                 return isValid;
             }
