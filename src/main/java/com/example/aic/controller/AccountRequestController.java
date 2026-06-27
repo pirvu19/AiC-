@@ -31,7 +31,7 @@ public class AccountRequestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'ADMIN_UTILIZATORI', 'DATA_ENGINEER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ADMIN_UTILIZATORI')")
     public ResponseEntity<?> getAllRequests() {
         try {
             logger.info("Admin fetching all account requests");
@@ -43,7 +43,7 @@ public class AccountRequestController {
     }
 
     @PutMapping("/{id}/approve")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ADMIN_UTILIZATORI', 'DATA_ENGINEER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ADMIN_UTILIZATORI')")
     public ResponseEntity<Void> approveRequest(@PathVariable Long id) {
         requestService.approveRequest(id);
         return ResponseEntity.ok().build();
