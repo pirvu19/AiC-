@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./vision-service
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -62,4 +62,4 @@ jobs:
             "${{ secrets.TRUENAS_URL }}/api/v2.0/app/redeploy" \
             -H "Authorization: Bearer ${{ secrets.TRUENAS_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '"aic-vision"'
+            -d '"aic-vision-service"'
