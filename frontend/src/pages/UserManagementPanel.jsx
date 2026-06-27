@@ -101,7 +101,7 @@ const UserManagementPanel = () => {
             )}
 
             <div className="card glass overflow-hidden">
-                <div className="overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-glass-border bg-white/5">
@@ -178,6 +178,77 @@ const UserManagementPanel = () => {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile Cards View */}
+                <div className="grid grid-cols-1 gap-4 md:hidden p-4">
+                    {loading && users.length === 0 ? (
+                        <div className="p-10 text-center text-text-muted">Se încarcă...</div>
+                    ) : users.length === 0 ? (
+                        <div className="p-10 text-center text-text-muted">Niciun utilizator găsit.</div>
+                    ) : (
+                        users.map(u => (
+                            <div key={u.id} className="bg-white/5 border border-glass-border rounded-2xl p-4 flex flex-col gap-4">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+                                            {u.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-lg">{u.username}</div>
+                                            <div className="text-xs text-text-muted uppercase tracking-wider">
+                                                {(u.firstName || u.lastName) ? `${u.firstName || ''} ${u.lastName || ''}`.trim() : 'Fără nume setat'}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDeleteUser(u.id, u.username)}
+                                        className="p-2 bg-accent-red/10 text-accent-red rounded-xl transition-all"
+                                        title="Șterge utilizator"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 gap-2 text-sm bg-black/20 p-3 rounded-xl border border-white/5">
+                                    <div className="flex justify-between">
+                                        <span className="text-text-muted">Email:</span>
+                                        <span className="font-medium truncate ml-2">{u.email}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-text-muted">Telefon:</span>
+                                        <span className="font-mono">{u.phone || '-'}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-text-muted">Creat:</span>
+                                        <span>{new Date(u.createdAt).toLocaleDateString('ro-RO')}</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <span className="text-xs font-bold text-text-muted uppercase">Rol & Permisiuni:</span>
+                                    <div className="flex items-center justify-between gap-3">
+                                        <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase ${getRoleBadgeClass(u.roleName)}`}>
+                                            {getRoleIcon(u.roleName)}
+                                            {u.roleName?.replace('ROLE_', '')}
+                                        </span>
+                                        <select
+                                            className="bg-glass-bg border-none text-xs font-bold py-2 px-3 rounded-xl flex-1"
+                                            value={u.roleName?.toUpperCase()}
+                                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                                        >
+                                            <option value="USER">USER</option>
+                                            <option value="ADMIN_UTILIZATORI">ADMIN UTILIZATORI</option>
+                                            <option value="REVIEWER">REVIEWER</option>
+                                            <option value="DATA_ENGINEER">DATA ENGINEER</option>
+                                            <option value="EXPERT">EXPERT</option>
+                                            <option value="ADMIN">ADMIN</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </div>

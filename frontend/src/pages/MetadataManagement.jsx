@@ -16,11 +16,11 @@ const MetadataManagement = () => {
     const { user } = useAuth();
 
     const tabs = [
-        { id: 'massifs', label: 'Masive', icon: <Mountain size={18} />, endpoint: '/metadata/massifs', field: 'name' },
-        { id: 'regions', label: 'Regiuni', icon: <Map size={18} />, endpoint: '/metadata/regions', field: 'name' },
-        { id: 'types', label: 'Tipuri', icon: <Layers size={18} />, endpoint: '/metadata/types', field: 'name' },
-        { id: 'causes', label: 'Cauze', icon: <HelpCircle size={18} />, endpoint: '/metadata/causes', field: 'description' },
-        { id: 'orientations', label: 'Orientări', icon: <Compass size={18} />, endpoint: '/metadata/orientations', field: 'direction' },
+        { id: 'massifs', label: 'Masive', singularLabel: 'Masiv', icon: <Mountain size={18} />, endpoint: '/metadata/massifs', field: 'name' },
+        { id: 'regions', label: 'Regiuni', singularLabel: 'Regiune', icon: <Map size={18} />, endpoint: '/metadata/regions', field: 'name' },
+        { id: 'types', label: 'Tipuri', singularLabel: 'Tip', icon: <Layers size={18} />, endpoint: '/metadata/types', field: 'name' },
+        { id: 'causes', label: 'Cauze', singularLabel: 'Cauză', icon: <HelpCircle size={18} />, endpoint: '/metadata/causes', field: 'description' },
+        { id: 'orientations', label: 'Orientări', singularLabel: 'Orientare', icon: <Compass size={18} />, endpoint: '/metadata/orientations', field: 'direction' },
     ];
 
     const currentTab = tabs.find(t => t.id === activeTab);
@@ -198,120 +198,99 @@ const MetadataManagement = () => {
             </header>
 
             {/* Tabs */}
-            <div className="flex flex-wrap gap-2 p-1 bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl w-fit">
+            <div className="flex flex-wrap md:flex-nowrap gap-1 p-1 bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl w-full">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                        className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${
                             activeTab === tab.id 
                             ? "bg-primary text-white shadow-lg shadow-primary/20" 
                             : "text-slate-400 hover:text-white hover:bg-white/5"
                         }`}
                     >
                         {tab.icon}
-                        {tab.label}
+                        <span>{tab.label}</span>
                     </button>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* List Section */}
-                <div className="md:col-span-2 space-y-4">
-                    <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden min-h-[400px]">
-                        {loading && (
-                            <div className="p-12 text-center text-slate-500">Se încarcă...</div>
-                        )}
-                        
-                        {!loading && items.length === 0 && (
-                            <div className="p-12 text-center text-slate-500">Nu există elemente în această categorie.</div>
-                        )}
+            <div className="space-y-6">
+                {/* Add New Section (Horizontal) */}
+                <div className="card glass p-6">
+                    <div className="flex flex-col md:flex-row items-end gap-4">
+                        <div className="flex-1 w-full space-y-2">
+                            <label className="text-sm font-medium text-slate-400 uppercase tracking-wider text-[10px] flex items-center gap-2">
+                                <Plus size={14} className="text-primary" /> Adaugă {currentTab.singularLabel}
+                            </label>
+                            <input 
+                                className="w-full" 
+                                placeholder={`ex: ${activeTab === 'massifs' ? 'Făgăraș' : 'Nume nou'}`}
+                                value={newValue}
+                                onChange={(e) => setNewValue(e.target.value)}
+                            />
+                        </div>
 
-                        {!loading && items.length > 0 && (
-                            <div className="divide-y divide-white/5">
-                                {activeTab === 'massifs' ? (
-                                    sortedRegionEntries.map(([regionName, regionItems]) => (
-                                        <div key={regionName} className="border-b border-white/5 last:border-0">
-                                            <div className="bg-slate-800/30 px-6 py-3 flex items-center gap-3 border-b border-white/5">
-                                                <Map size={14} className="text-primary/70" />
-                                                <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">{regionName}</span>
-                                                <span className="ml-auto text-[10px] font-mono bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full shadow-inner">
-                                                    {regionItems.length} masive
-                                                </span>
-                                            </div>
-                                            <div className="divide-y divide-white/5 bg-slate-900/20">
-                                                {regionItems.map((item) => renderItem(item))}
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    items.map((item) => renderItem(item))
-                                )}
+                        {activeTab === 'massifs' && (
+                            <div className="flex-1 w-full space-y-2">
+                                <label className="text-sm font-medium text-slate-400 uppercase tracking-wider text-[10px]">
+                                    Regiune
+                                </label>
+                                <select 
+                                    className="w-full"
+                                    value={newSecondaryValue}
+                                    onChange={(e) => setNewSecondaryValue(e.target.value)}
+                                >
+                                    <option value="">Selectează regiune...</option>
+                                    {regions.map(r => (
+                                        <option key={r.id} value={r.id}>{r.name}</option>
+                                    ))}
+                                </select>
                             </div>
                         )}
+
+                        <button
+                            disabled={!newValue}
+                            onClick={handleCreate}
+                            className="w-full md:w-auto btn-primary py-[0.8rem] px-8 text-sm font-bold flex items-center justify-center gap-2 md:mt-0"
+                        >
+                            Creează
+                        </button>
                     </div>
                 </div>
 
-                {/* Add New Section */}
-                <div className="space-y-6">
-                    <div className="card glass p-6 space-y-6">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-primary/20 rounded-xl">
-                                <Plus size={20} className="text-primary" />
-                            </div>
-                            <h3 className="text-white font-bold">Adaugă {currentTab.label.slice(0, -1)}</h3>
-                        </div>
+                {/* List Section */}
+                <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden min-h-[400px]">
+                    {loading && (
+                        <div className="p-12 text-center text-slate-500">Se încarcă...</div>
+                    )}
+                    
+                    {!loading && items.length === 0 && (
+                        <div className="p-12 text-center text-slate-500">Nu există elemente în această categorie.</div>
+                    )}
 
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-400 uppercase tracking-wider text-[10px]">
-                                    Nume / Valoare
-                                </label>
-                                <input 
-                                    className="w-full" 
-                                    placeholder={`ex: ${activeTab === 'massifs' ? 'Făgăraș' : 'Nume nou'}`}
-                                    value={newValue}
-                                    onChange={(e) => setNewValue(e.target.value)}
-                                />
-                            </div>
-
-                            {activeTab === 'massifs' && (
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-400 uppercase tracking-wider text-[10px]">
-                                        Regiune
-                                    </label>
-                                    <select 
-                                        className="w-full"
-                                        value={newSecondaryValue}
-                                        onChange={(e) => setNewSecondaryValue(e.target.value)}
-                                    >
-                                        <option value="">Selectează regiune...</option>
-                                        {regions.map(r => (
-                                            <option key={r.id} value={r.id}>{r.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                    {!loading && items.length > 0 && (
+                        <div className="divide-y divide-white/5">
+                            {activeTab === 'massifs' ? (
+                                sortedRegionEntries.map(([regionName, regionItems]) => (
+                                    <div key={regionName} className="border-b border-white/5 last:border-0">
+                                        <div className="bg-slate-800/30 px-6 py-3 flex items-center gap-3 border-b border-white/5">
+                                            <Map size={14} className="text-primary/70" />
+                                            <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">{regionName}</span>
+                                            <span className="ml-auto text-[10px] font-mono bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full shadow-inner">
+                                                {regionItems.length} masive
+                                            </span>
+                                        </div>
+                                        <div className="divide-y divide-white/5 bg-slate-900/20">
+                                            {regionItems.map((item) => renderItem(item))}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                items.map((item) => renderItem(item))
                             )}
-
-                            <button
-                                disabled={!newValue}
-                                onClick={handleCreate}
-                                className="w-full btn-primary py-3 text-sm font-bold flex items-center justify-center gap-2"
-                            >
-                                <Plus size={18} /> Creează
-                            </button>
                         </div>
-                    </div>
-
-                    <div className="bg-primary/5 border border-primary/10 rounded-3xl p-6">
-                        <h4 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
-                            <Layers size={16} className="text-primary" />
-                            Notă Importante
-                        </h4>
-                        <p className="text-slate-400 text-xs leading-relaxed">
-                            Modificarea metadatelor afectează toți utilizatorii platformei. Fii atent la ștergerea elementelor care ar putea avea legături active.
-                        </p>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>

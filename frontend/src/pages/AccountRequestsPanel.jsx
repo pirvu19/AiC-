@@ -89,7 +89,7 @@ const AccountRequestsPanel = () => {
             </div>
 
             <div className="card glass overflow-hidden">
-                <div className="overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-glass-border bg-white/5">
@@ -172,6 +172,81 @@ const AccountRequestsPanel = () => {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile Cards View */}
+                <div className="grid grid-cols-1 gap-4 md:hidden p-4">
+                    {loading && requests.length === 0 ? (
+                        <div className="p-10 text-center text-text-muted">Se încarcă...</div>
+                    ) : filteredRequests.length === 0 ? (
+                        <div className="p-10 text-center text-text-muted">Nicio cerere găsită.</div>
+                    ) : (
+                        filteredRequests.map(r => (
+                            <div key={r.id} className="bg-white/5 border border-glass-border rounded-2xl p-4 flex flex-col gap-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <div className="font-bold text-lg">{r.lastName} {r.firstName}</div>
+                                        <div className="text-xs text-text-muted uppercase tracking-wider">
+                                            Creat: {new Date(r.createdAt).toLocaleDateString('ro-RO')}
+                                        </div>
+                                    </div>
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase ${
+                                        r.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-500' :
+                                        r.status === 'APPROVED' ? 'bg-green-500/10 text-green-500' :
+                                        'bg-red-500/10 text-red-500'
+                                    }`}>
+                                        {r.status === 'PENDING' && <Clock size={12} />}
+                                        {r.status === 'APPROVED' && <CheckCircle size={12} />}
+                                        {r.status === 'REJECTED' && <XCircle size={12} />}
+                                        {r.status}
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-2 text-sm bg-black/20 p-3 rounded-xl border border-white/5">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-text-muted">Rol Cerut:</span>
+                                        <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-black uppercase border border-primary/20">
+                                            {r.requestedRole}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-text-muted">Email:</span>
+                                        <span className="font-medium truncate ml-2">{r.email}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-text-muted">Telefon:</span>
+                                        <span className="font-mono">{r.phone || '-'}</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Instituție / Proiect:</span>
+                                    <div className="font-medium">{r.institution || 'N/A'}</div>
+                                    <div className="text-sm text-text-muted line-clamp-2" title={r.projectDetails}>
+                                        {r.projectDetails || 'Fără detalii proiect'}
+                                    </div>
+                                    <div className="text-xs italic text-primary/70">Perioada: {r.projectPeriod || 'Nespecificată'}</div>
+                                </div>
+
+                                {r.status === 'PENDING' && (
+                                    <div className="flex gap-3 pt-2 mt-2 border-t border-white/5">
+                                        <button 
+                                            onClick={() => handleApprove(r.id)}
+                                            className="flex-1 bg-accent-green/20 hover:bg-accent-green/30 text-accent-green py-2 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all"
+                                        >
+                                            <CheckCircle size={18} /> Aprobă
+                                        </button>
+                                        <button 
+                                            onClick={() => handleReject(r.id)}
+                                            className="flex-1 bg-accent-red/20 hover:bg-accent-red/30 text-accent-red py-2 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all"
+                                        >
+                                            <XCircle size={18} /> Respinge
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </div>

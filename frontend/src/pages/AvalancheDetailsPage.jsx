@@ -35,9 +35,10 @@ const AvalancheDetailsPage = () => {
     const [activeImageIndex, setActiveImageIndex] = useState(null);
     const [lightboxOpen, setLightboxOpen] = useState(false);
 
-    const { isAdmin, isExpert, isReviewer, isDataEngineer } = useAuth();
+    const { isAdmin, isExpert, isReviewer, isDataEngineer, isUserAdmin } = useAuth();
     const canEdit = isAdmin || isExpert || isReviewer;
     const canDelete = isAdmin || isDataEngineer;
+    const canViewAuthor = isAdmin || isExpert || isReviewer || isDataEngineer || isUserAdmin;
 
     const handleValidate = async () => {
         try {
@@ -350,39 +351,41 @@ const AvalancheDetailsPage = () => {
                             })()}
                         </div>
 
-                        <div className="card glass p-6 space-y-4">
-                            <h2 className="text-lg font-bold flex items-center gap-2 text-accent-blue border-b border-glass-border pb-3">
-                                <Users size={18} /> Raportat de
-                            </h2>
-                            {avalanche.guestContactInfo ? (
-                                <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-3">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-accent-blue" />
-                                        <p className="font-bold text-primary text-sm">Vizitator Anonim</p>
-                                    </div>
-                                    <div className="text-sm space-y-2 pt-2 border-t border-glass-border">
-                                        <p className="text-text-muted flex justify-between">Nume: <span className="text-white font-medium">{avalanche.guestContactInfo.firstName} {avalanche.guestContactInfo.lastName}</span></p>
-                                        {(isAdmin || isExpert) && (
-                                            <>
-                                                <p className="text-text-muted flex justify-between">Email: <span className="text-white font-medium">{avalanche.guestContactInfo.email}</span></p>
-                                                <p className="text-text-muted flex justify-between">Tel: <span className="text-white font-medium">{avalanche.guestContactInfo.phone}</span></p>
-                                            </>
+                        {canViewAuthor && (
+                            <div className="card glass p-6 space-y-4">
+                                <h2 className="text-lg font-bold flex items-center gap-2 text-accent-blue border-b border-glass-border pb-3">
+                                    <Users size={18} /> Raportat de
+                                </h2>
+                                {avalanche.guestContactInfo ? (
+                                    <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-3">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-accent-blue" />
+                                            <p className="font-bold text-primary text-sm">Vizitator Anonim</p>
+                                        </div>
+                                        <div className="text-sm space-y-2 pt-2 border-t border-glass-border">
+                                            <p className="text-text-muted flex justify-between">Nume: <span className="text-white font-medium">{avalanche.guestContactInfo.firstName} {avalanche.guestContactInfo.lastName}</span></p>
+                                            {(isAdmin || isExpert) && (
+                                                <>
+                                                    <p className="text-text-muted flex justify-between">Email: <span className="text-white font-medium">{avalanche.guestContactInfo.email}</span></p>
+                                                    <p className="text-text-muted flex justify-between">Tel: <span className="text-white font-medium">{avalanche.guestContactInfo.phone}</span></p>
+                                                </>
+                                            )}
+                                        </div>
+                                        {avalanche.status !== 'VALIDATED' && (
+                                            <p className="text-[10px] text-text-muted italic mt-2">* Datele de contact sunt vizibile doar experților.</p>
                                         )}
                                     </div>
-                                    {avalanche.status !== 'VALIDATED' && (
-                                        <p className="text-[10px] text-text-muted italic mt-2">* Datele de contact sunt vizibile doar experților.</p>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-accent-green" />
-                                        <p className="font-bold text-white text-sm">{avalanche.visitorId ? 'Utilizator Înregistrat' : 'Anonim'}</p>
+                                ) : (
+                                    <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-accent-green" />
+                                            <p className="font-bold text-white text-sm">{avalanche.visitorId ? 'Utilizator Înregistrat' : 'Anonim'}</p>
+                                        </div>
+                                        {avalanche.visitorId && <p className="text-xs text-text-muted">ID Vizitator: {avalanche.visitorId}</p>}
                                     </div>
-                                    {avalanche.visitorId && <p className="text-xs text-text-muted">ID Vizitator: {avalanche.visitorId}</p>}
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Main Content Area */}

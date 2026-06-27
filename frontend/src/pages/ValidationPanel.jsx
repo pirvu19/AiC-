@@ -127,9 +127,6 @@ const ValidationPanel = () => {
                                 <div className="flex-1 space-y-6">
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-3">
-                                            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">
-                                                ID: {item.id}
-                                            </span>
                                             <span className="text-[10px] text-text-muted flex items-center gap-1 font-bold">
                                                 <Calendar size={12} /> {item.date}
                                             </span>
@@ -187,21 +184,21 @@ const ValidationPanel = () => {
                                 <div className="flex flex-row lg:flex-col items-center justify-end gap-3 lg:w-48 shrink-0">
                                     <button
                                         onClick={() => handleValidate(item.id)}
-                                        className="flex-1 lg:w-full bg-accent-green hover:bg-accent-green/80 text-white px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black transition-all hover:scale-105 shadow-xl shadow-accent-green/20"
+                                        className="flex-1 lg:w-full bg-accent-green hover:bg-accent-green/80 text-white px-6 py-3 rounded-full flex items-center justify-center gap-2 text-xs font-black transition-all hover:scale-105 shadow-xl shadow-accent-green/20"
                                     >
                                         <ShieldCheck size={18} /> Validare
                                     </button>
 
                                     <Link
                                         to={`/${activeTab === 'avalanches' ? 'avalanche' : 'conditions'}/${item.id}`}
-                                        className="flex-1 lg:w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black transition-all hover:scale-105"
+                                        className="flex-1 lg:w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 px-6 py-3 rounded-full flex items-center justify-center gap-2 text-xs font-black transition-all hover:scale-105"
                                     >
                                         <ExternalLink size={18} /> Detalii
                                     </Link>
                                     
                                     <Link
                                         to={`/${activeTab === 'avalanches' ? 'avalanche' : 'conditions'}/edit/${item.id}`}
-                                        className="p-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-2xl transition-all hover:scale-105"
+                                        className="p-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full transition-all hover:scale-105"
                                         title="Editează"
                                     >
                                         <Edit size={18} />
@@ -210,7 +207,7 @@ const ValidationPanel = () => {
                                     {(isAdmin || isDataEngineer) && (
                                         <button
                                             onClick={() => handleDelete(item.id)}
-                                            className="p-3 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-2xl transition-all hover:scale-105"
+                                            className="p-3 bg-accent-red/10 hover:bg-accent-red/20 text-accent-red border border-accent-red/20 rounded-full transition-all hover:scale-105"
                                             title="Șterge"
                                         >
                                             <Trash2 size={18} />
