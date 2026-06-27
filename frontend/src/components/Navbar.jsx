@@ -19,7 +19,7 @@ const Navbar = () => {
     const meteoRef = useRef(null);
     const statsRef = useRef(null);
     const navigate = useNavigate();
-    const isRestrictedAdmin = isUserAdmin && !isAdmin;
+    const isRestrictedAdmin = (isUserAdmin && !isAdmin) || (isDataEngineer && !isAdmin);
 
     // Închide dropdown-urile când se dă click în afara lor
     useEffect(() => {

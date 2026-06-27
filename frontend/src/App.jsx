@@ -36,6 +36,17 @@ const ProtectedRoute = ({ children, roleRequired }) => {
   const { user, isAdmin, isExpert, isReviewer, isDataEngineer, isUserAdmin, loading } = useAuth();
 
   if (loading) return <div className="container py-20 text-center">Loading...</div>;
+
+  if (roleRequired === 'NOT_RESTRICTED_ADMIN') {
+    if (user) {
+      const isRestrictedAdmin = !isAdmin && isUserAdmin;
+      const isOnlyDataEngineer = !isAdmin && user.roles?.some(role => role === 'ROLE_DATA_ENGINEER' || role === 'DATA_ENGINEER');
+      if (isRestrictedAdmin) return <Navigate to="/admin/users" />;
+      if (isOnlyDataEngineer) return <Navigate to="/admin/metadata" />;
+    }
+    return children;
+  }
+
   if (!user) return <Navigate to="/login" />;
 
   if (roleRequired === 'ADMIN' && !isAdmin) return <Navigate to="/" />;
@@ -45,7 +56,6 @@ const ProtectedRoute = ({ children, roleRequired }) => {
   if (roleRequired === 'USER_ADMIN_OR_DATA_ENGINEER' && !isUserAdmin && !isDataEngineer) return <Navigate to="/" />;
   if (roleRequired === 'ADMIN_OR_DATA_ENGINEER' && !isAdmin && !isDataEngineer) return <Navigate to="/" />;
   if (roleRequired === 'USER_ADMIN' && !isUserAdmin) return <Navigate to="/" />;
-  if (roleRequired === 'NOT_RESTRICTED_ADMIN' && isUserAdmin && !isAdmin) return <Navigate to="/admin/users" />;
 
   return children;
 };
@@ -61,9 +71,16 @@ function App() {
   const isMap3D = location.pathname === '/map3d';
 
   useEffect(() => {
-    const isRestrictedAdmin = user && !user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_ADMIN_UTILIZATORI');
-    if ((isRestrictedAdmin || (user && user.roles?.includes('ROLE_DATA_ENGINEER'))) && window.location.pathname === '/') {
-      navigate('/admin/users');
+    if (user) {
+      const isAdmin = user.roles?.some(r => r === 'ROLE_ADMIN' || r === 'ADMIN');
+      const isRestrictedAdmin = !isAdmin && user.roles?.some(r => r === 'ROLE_ADMIN_UTILIZATORI' || r === 'ADMIN_UTILIZATORI');
+      const isOnlyDataEngineer = !isAdmin && user.roles?.some(r => r === 'ROLE_DATA_ENGINEER' || r === 'DATA_ENGINEER');
+
+      if (isRestrictedAdmin && window.location.pathname === '/') {
+        navigate('/admin/users');
+      } else if (isOnlyDataEngineer && window.location.pathname === '/') {
+        navigate('/admin/metadata');
+      }
     }
   }, [user, navigate]);
 
