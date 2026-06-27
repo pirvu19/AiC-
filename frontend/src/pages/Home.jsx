@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import avalancheService from '../services/avalancheService';
 import conditionsService from '../services/conditionsService';
 import api from '../services/api';
@@ -39,7 +39,8 @@ const SafeImage = ({ src, alt, className, style }) => {
 };
 
 // Memoized Card component to prevent unnecessary re-renders
-const AvalancheCard = memo(({ item, view, isExpert, handleValidate }) => {
+const AvalancheCard = memo(({ item, view, isExpert, handleValidate, canViewBadge }) => {
+    const navigate = useNavigate();
     const allUrls = item.imageUrls
         ? item.imageUrls.flatMap(urlGroup => urlGroup.split(';')).map(url => url.trim()).filter(url => url.length > 0)
         : [];
@@ -49,22 +50,27 @@ const AvalancheCard = memo(({ item, view, isExpert, handleValidate }) => {
         : null;
 
     return (
-        <div className="card glass hover:border-primary transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-2xl group relative overflow-hidden flex flex-col sm:flex-row justify-between gap-6 p-6 min-h-[160px]">
+        <div 
+            onClick={() => navigate(`/${view === 'avalanches' ? 'avalanche' : 'conditions'}/${item.id}`)}
+            className="card glass hover:border-primary transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-2xl group relative overflow-hidden flex flex-col sm:flex-row justify-between gap-6 p-6 min-h-[160px] cursor-pointer"
+        >
             <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 -mr-12 -mt-12 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
 
             {/* Left Section (Info) */}
             <div className="flex-1 space-y-3 min-w-0">
                 <div className="flex items-center gap-3 relative z-10 mb-1">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${item.status === 'VALIDATED' ? 'bg-accent-green/20 text-accent-green' : 'bg-primary/20 text-primary'}`}>
-                        {item.status === 'VALIDATED' ? 'Validat' : 'În așteptare'}
-                    </span>
+                    {canViewBadge && (
+                        <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${item.status === 'VALIDATED' ? 'bg-accent-green/20 text-accent-green' : 'bg-primary/20 text-primary'}`}>
+                            {item.status === 'VALIDATED' ? 'Validat' : 'În așteptare'}
+                        </span>
+                    )}
                     <div className="text-[11px] text-text-muted font-medium flex items-center gap-1">
                         <Calendar size={13} className="text-primary/70" />
                         {new Date(item.date || item.createdAt).toLocaleDateString('ro-RO')}
                     </div>
                 </div>
 
-                <h3 className="text-lg md:text-xl font-black line-clamp-2 group-hover:text-primary transition-colors relative z-10 leading-tight">
+                <h3 className="text-lg md:text-xl font-black line-clamp-2 group-hover:text-primary transition-colors relative z-10 leading-tight text-center sm:text-left">
                     {item.title || (view === 'conditions' ? 'Raport Vizibilitate & Zăpadă' : 'Fără titlu')}
                 </h3>
 
@@ -87,16 +93,9 @@ const AvalancheCard = memo(({ item, view, isExpert, handleValidate }) => {
                 </div>
 
                 <div className="pt-2 flex items-center gap-4 relative z-10">
-                    <Link
-                        to={`/${view === 'avalanches' ? 'avalanche' : 'conditions'}/${item.id}`}
-                        className="text-[10px] font-black text-primary flex items-center gap-1.5 hover:gap-2.5 transition-all uppercase tracking-widest bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/10 hover:border-primary/30"
-                    >
-                        Detalii <Search size={12} />
-                    </Link>
-
                     {isExpert && item.status !== 'VALIDATED' && view === 'avalanches' && (
                         <button
-                            onClick={(e) => { e.preventDefault(); handleValidate(item.id); }}
+                            onClick={(e) => { e.stopPropagation(); handleValidate(item.id); }}
                             className="bg-accent-green hover:bg-accent-green/80 text-white p-1.5 rounded-lg transition-transform hover:scale-110 shadow-lg shadow-accent-green/20"
                             title="Validează Raport"
                         >
@@ -122,6 +121,7 @@ const AvalancheCard = memo(({ item, view, isExpert, handleValidate }) => {
                         href={item.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
                         className="w-full py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/20 hover:border-primary/50 rounded-lg text-[9px] font-black uppercase tracking-[0.1em] text-center text-primary transition-all flex items-center justify-center gap-1 group/btn shadow-sm"
                     >
                         Blog <Activity size={10} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -141,7 +141,8 @@ const Home = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
-    const { user, isExpert, mustChangePassword } = useAuth();
+    const { user, isAdmin, isExpert, isReviewer, isDataEngineer, isUserAdmin, mustChangePassword } = useAuth();
+    const canViewBadge = isAdmin || isExpert || isReviewer || isDataEngineer || isUserAdmin;
 
     useEffect(() => {
         setCurrentPage(0);
@@ -288,6 +289,7 @@ const Home = () => {
                                 view={view}
                                 isExpert={isExpert}
                                 handleValidate={handleValidate}
+                                canViewBadge={canViewBadge}
                             />
                         ))
                     )}

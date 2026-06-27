@@ -59,6 +59,10 @@ textarea {
   width: 100%;
 }
 
+input.pl-10 {
+  padding-left: 2.5rem !important;
+}
+
 input:focus,
 select:focus,
 textarea:focus {
@@ -4085,4 +4089,273 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
 /* ─── Icon colors in light mode ─── */
 .light-mode svg.text-white:not(.btn-primary svg):not(.btn-premium svg):not(.stepper-circle.active svg):not(.stepper-circle.completed svg) {
   color: var(--text-main) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE MOBILE / TABLET — adăugat pe feat/frontend-mobile
+   Aceste reguli se aplică DOAR pe ecrane mici (max 768px) și
+   medii (max 1024px). Nu afectează desktop-ul.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─── Global: previne overflow orizontal pe mobil ─── */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+  }
+
+  /* Container padding mai mic pe mobil */
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+  }
+
+  /* ─── Navbar: notificări dropdown să nu iasă din ecran ─── */
+  .navbar-notifications-dropdown {
+    right: -1rem !important;
+    left: auto !important;
+    width: calc(100vw - 2rem) !important;
+    max-width: 380px !important;
+  }
+
+  /* ─── Navbar mobile menu ─── */
+  .navbar-mobile-menu {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* ─── Page headers cu flex justify-between ─── */
+  /* Convertim header-urile rigide în coloană pe mobil */
+  .max-w-6xl header.flex.items-center.justify-between,
+  .max-w-7xl header.flex.items-center.justify-between,
+  .max-w-5xl header.flex.items-center.justify-between {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+
+  /* ─── UserManagementPanel & AccountRequestsPanel — tabele ─── */
+  /* Tabelul devine card-uri stivuite pe mobil */
+  .max-w-6xl .card.glass .overflow-x-auto table,
+  .max-w-7xl .card.glass .overflow-x-auto table {
+    min-width: 600px; /* permite scroll orizontal controlat */
+  }
+
+  /* Wrapper-ul tabelului devine scroll orizontal curat */
+  .max-w-6xl .card.glass .overflow-x-auto,
+  .max-w-7xl .card.glass .overflow-x-auto {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0;
+  }
+
+  /* ─── UserManagementPanel — header + h1 ─── */
+  .max-w-6xl h1.text-4xl {
+    font-size: 1.75rem !important;
+  }
+
+  /* ─── AccountRequestsPanel — header + h1 ─── */
+  .max-w-7xl h1.text-4xl {
+    font-size: 1.75rem !important;
+  }
+
+  /* ─── MetadataManagement — grid 3 col -> 1 col ─── */
+  .max-w-5xl .grid.grid-cols-1.md\\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tab-urile din MetadataManagement — wrap pe mobile ─── */
+  .max-w-5xl .flex.flex-wrap.gap-2 {
+    width: 100% !important;
+  }
+
+  .max-w-5xl .flex.flex-wrap.gap-2 button {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* ─── ValidationPanel — card-uri flex col ─── */
+  .container .card.glass .p-8.flex.flex-col.lg\\:flex-row {
+    flex-direction: column !important;
+    padding: 1.25rem !important;
+  }
+
+  /* Butoane validare/detalii — rând orizontal pe mobil ─── */
+  .container .card.glass .flex.flex-row.lg\\:flex-col {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  /* ValidationPanel header tab switcher */
+  .container header.flex.flex-col > div.flex.bg-glass-bg {
+    width: 100% !important;
+  }
+
+  .container header.flex.flex-col > div.flex.bg-glass-bg button {
+    flex: 1 !important;
+    justify-content: center !important;
+    padding: 0.65rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* ─── h1 text-4xl prea mare pe mobil ─── */
+  h1.text-4xl {
+    font-size: 1.75rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* ─── Pagini cu max-w-* mx-auto space-y-8 (panel-uri admin) ─── */
+  .max-w-6xl.mx-auto,
+  .max-w-7xl.mx-auto,
+  .max-w-5xl.mx-auto {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* ─── SearchPage — panel filtru ─── */
+  .search-filter-panel {
+    width: 100% !important;
+  }
+
+  /* Search page grid rezultate */
+  .search-results-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── MeteoPage / MeteoRoPage ─── */
+  /* Selectoare și input-uri full width pe mobil */
+  .meteo-selector-row {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  /* ─── AvalancheDetailsPage / ConditionsDetailsPage ─── */
+  /* Butoane acțiune stivuite vertical */
+  .avalanche-detail-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .avalanche-detail-actions a,
+  .avalanche-detail-actions button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* ─── Card glass padding redus pe mobil ─── */
+  .card.glass {
+    padding: 1rem !important;
+    border-radius: 1.25rem !important;
+  }
+
+  /* ─── Statistici / Chart pages ─── */
+  /* Previne overflow la grafice */
+  .recharts-wrapper,
+  .recharts-surface {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* ─── Home page hero ─── */
+  .home-hero-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .home-hero-actions a,
+  .home-hero-actions button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* ─── Formulare (AvalancheFormPage / ConditionsFormPage) ─── */
+  /* Grid-urile cu 2 coloane devin 1 coloană */
+  .form-grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── Login / Register / ForgotPassword ─── */
+  .auth-card {
+    margin: 0 0.5rem !important;
+    padding: 1.5rem !important;
+  }
+
+  /* ─── Butoane btn-primary / btn-premium prea late ─── */
+  /* Nu forțăm full-width global, doar în contexte specifice */
+  .auth-card .btn-primary,
+  .auth-card .btn-premium {
+    width: 100% !important;
+  }
+
+  /* ─── Scrollbar touch-friendly ─── */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ─── Tabletă: 769px – 1024px ─── */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .container {
+    max-width: 100% !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  /* ─── MetadataManagement — grid 3 col -> 2 col pe tabletă ─── */
+  .max-w-5xl .grid.grid-cols-1.md\\:grid-cols-3 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Header h1 puțin mai mic */
+  h1.text-4xl {
+    font-size: 2.25rem !important;
+  }
+
+  /* ─── Tabele cu overflow pe tabletă ─── */
+  .max-w-6xl .card.glass .overflow-x-auto,
+  .max-w-7xl .card.glass .overflow-x-auto {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .max-w-6xl .card.glass .overflow-x-auto table,
+  .max-w-7xl .card.glass .overflow-x-auto table {
+    min-width: 700px;
+  }
+
+  /* ─── Navbar notificări dropdown pe tabletă ─── */
+  .navbar-notifications-dropdown {
+    right: 0 !important;
+    width: 360px !important;
+  }
+}
+
+/* ─── Extra-small (telefoane mici < 400px) ─── */
+@media (max-width: 400px) {
+  h1.text-4xl {
+    font-size: 1.5rem !important;
+  }
+
+  .card.glass {
+    padding: 0.75rem !important;
+    border-radius: 1rem !important;
+  }
+
+  /* Tab-uri mai compacte */
+  .max-w-5xl .flex.flex-wrap.gap-2 button {
+    font-size: 0.65rem !important;
+    padding: 0.4rem 0.5rem !important;
+  }
+
+  /* Notificări full-width */
+  .navbar-notifications-dropdown {
+    width: calc(100vw - 1rem) !important;
+    right: -0.5rem !important;
+  }
 }

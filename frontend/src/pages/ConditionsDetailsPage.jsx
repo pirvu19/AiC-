@@ -13,9 +13,10 @@ const ConditionsDetailsPage = () => {
     const navigate = useNavigate();
     const [conditions, setConditions] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { isAdmin, isExpert, isReviewer, isDataEngineer } = useAuth();
+    const { isAdmin, isExpert, isReviewer, isDataEngineer, isUserAdmin } = useAuth();
     const canEdit = isAdmin || isExpert || isReviewer;
     const canDelete = isAdmin || isDataEngineer;
+    const canViewAuthor = isAdmin || isExpert || isReviewer || isDataEngineer || isUserAdmin;
     
     const [metadata, setMetadata] = useState({
         massifs: [],
@@ -226,37 +227,41 @@ const ConditionsDetailsPage = () => {
 
                     {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Reporter Card */}
-                        <div className="card glass p-6 space-y-4">
-                            <h2 className="text-lg font-bold flex items-center gap-2 text-accent-blue border-b border-glass-border pb-3">
-                                <Users size={18} /> Raportat de
-                            </h2>
-                            {conditions.guestContactInfo ? (
-                                <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-3">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-accent-blue" />
-                                        <p className="font-bold text-primary text-sm">Vizitator Anonim</p>
-                                    </div>
-                                    <div className="text-sm space-y-2 pt-2 border-t border-glass-border">
-                                        <p className="text-text-muted flex justify-between">Nume: <span className="text-white font-medium">{conditions.guestContactInfo.firstName} {conditions.guestContactInfo.lastName}</span></p>
-                                        {(isAdmin || isExpert) && (
-                                            <>
-                                                <p className="text-text-muted flex justify-between">Email: <span className="text-white font-medium">{conditions.guestContactInfo.email}</span></p>
-                                                <p className="text-text-muted flex justify-between">Tel: <span className="text-white font-medium">{conditions.guestContactInfo.phone}</span></p>
-                                            </>
+                        {canViewAuthor && (
+                            <div className="card glass p-6 space-y-4">
+                                <h2 className="text-lg font-bold flex items-center gap-2 text-accent-blue border-b border-glass-border pb-3">
+                                    <Users size={18} /> Raportat de
+                                </h2>
+                                {conditions.guestContactInfo ? (
+                                    <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-3">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-accent-blue" />
+                                            <p className="font-bold text-primary text-sm">Vizitator Anonim</p>
+                                        </div>
+                                        <div className="text-sm space-y-2 pt-2 border-t border-glass-border">
+                                            <p className="text-text-muted flex justify-between">Nume: <span className="text-white font-medium">{conditions.guestContactInfo.firstName} {conditions.guestContactInfo.lastName}</span></p>
+                                            {(isAdmin || isExpert) && (
+                                                <>
+                                                    <p className="text-text-muted flex justify-between">Email: <span className="text-white font-medium">{conditions.guestContactInfo.email}</span></p>
+                                                    <p className="text-text-muted flex justify-between">Tel: <span className="text-white font-medium">{conditions.guestContactInfo.phone}</span></p>
+                                                </>
+                                            )}
+                                        </div>
+                                        {conditions.status !== 'VALIDATED' && (
+                                            <p className="text-[10px] text-text-muted italic mt-2">* Datele de contact sunt vizibile doar experților.</p>
                                         )}
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-accent-green" />
-                                        <p className="font-bold text-white text-sm">{conditions.visitorId ? 'Utilizator Înregistrat' : 'Anonim'}</p>
+                                ) : (
+                                    <div className="bg-glass-bg/40 p-4 rounded-2xl border border-glass-border space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-accent-green" />
+                                            <p className="font-bold text-white text-sm">{conditions.visitorId ? 'Utilizator Înregistrat' : 'Anonim'}</p>
+                                        </div>
+                                        {conditions.visitorId && <p className="text-xs text-text-muted">ID Vizitator: {conditions.visitorId}</p>}
                                     </div>
-                                    {conditions.visitorId && <p className="text-xs text-text-muted">ID Vizitator: {conditions.visitorId}</p>}
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        )}
 
                         {/* Image Gallery */}
                         {allImages.length > 0 && (
