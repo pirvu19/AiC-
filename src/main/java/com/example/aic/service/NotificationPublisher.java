@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,9 @@ public class NotificationPublisher {
 
     @Autowired
     private com.example.aic.repository.UserRepository userRepository;
+
+    @Value("${app.avalanche.notification.email:razvan.pirvu9@gmail.com}")
+    private String targetEmail;
 
     public void sendAvalancheCreatedEvent(String message) {
         logger.info("Broadcasting avalanche validation request to ALL ADMINS: {}", message);
@@ -159,7 +163,7 @@ public class NotificationPublisher {
             sb.append("* Numar de persoane decedate : ").append(killed).append("\n");
             sb.append("* Pagube materiale: ").append(matDamage).append("\n");
 
-            String payload = "SEND_EMAIL:razvan.pirvu9@gmail.com|SUBJECT:postare noua pe blog|BODY:" + sb.toString();
+            String payload = "SEND_EMAIL:" + targetEmail + "|SUBJECT:postare noua pe blog|BODY:" + sb.toString();
             logger.info("Publishing avalanche email notification payload to RabbitMQ");
             rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, "avalanche.validated.email", payload);
         } catch (Exception e) {
