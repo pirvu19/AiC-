@@ -215,13 +215,19 @@ public class AvalancheService {
         Avalanche avalanche = avalancheRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avalanche not found"));
         avalanche.setStatus(Avalanche.Status.VALIDATED);
-        Avalanche saved = avalancheRepository.save(avalanche);
+        avalancheRepository.save(avalanche);
+
+        // Re-fetch from DB to ensure all lazy-loaded relations are initialized
+        // (massif, type, cause, orientation, technicalDetails, damagesAndVictims)
+        // Without this, sendAvalancheEmailNotification silently fails with LazyInitializationException
+        Avalanche fresh = avalancheRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Avalanche not found after save"));
 
         notificationPublisher
                 .sendAvalancheValidatedEvent("Avalanșa cu ID-ul " + id + " a fost validată de către un admin!");
-        notificationPublisher.sendAvalancheEmailNotification(saved);
+        notificationPublisher.sendAvalancheEmailNotification(fresh);
 
-        return convertToDto(saved);
+        return convertToDto(fresh);
     }
 
     private AvalancheDTO convertToDto(Avalanche avalanche) {
