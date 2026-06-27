@@ -107,9 +107,21 @@ const ConditionsFormPage = () => {
                 }
             }
         }
-        if (step === 2 && !formData.description) {
-            alert('Te rugăm să adaugi o descriere.');
-            return;
+        if (step === 2) {
+            if (!formData.description) {
+                alert('Te rugăm să adaugi o descriere.');
+                return;
+            }
+            const temp = parseFloat(formData.temperature);
+            if (formData.temperature !== '' && !isNaN(temp) && (temp < -40 || temp > 40)) {
+                alert('Temperatură nerealistă: Temperatura trebuie să fie între -40°C și +40°C.');
+                return;
+            }
+            const depth = parseInt(formData.snowDepth, 10);
+            if (formData.snowDepth !== '' && !isNaN(depth) && depth < 0) {
+                alert('Valoarea nu poate fi negativă: Grosimea stratului de zăpadă trebuie să fie un număr pozitiv.');
+                return;
+            }
         }
         setStep(step + 1);
     };
