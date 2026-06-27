@@ -1,0 +1,19 @@
+{
+  "TP": 44,
+  "TN": 39,
+  "FP": 1,
+  "FN": 0,
+  "accuracy": 98.8,
+  "precision": 97.8,
+  "recall": 100.0,
+  "f1": 98.9,
+  "greseli": [
+    {
+      "imagine": "mtsjrdl-5yAhL8ViUVg-unsplash.jpg",
+      "categorie_reala": "spam",
+      "decizie_model": "acceptata",
+      "top_label": "hiking",
+      "confidence": 0.2211
+    }
+  ]
+}
