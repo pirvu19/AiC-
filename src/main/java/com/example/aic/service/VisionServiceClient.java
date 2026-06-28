@@ -18,7 +18,7 @@ public class VisionServiceClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${app.vision.service.url:http://aic-vision-service:8000/analyze}")
+    @Value("${app.vision.service.url}")
     private String visionServiceUrl;
 
     public boolean validateImage(MultipartFile file) {
