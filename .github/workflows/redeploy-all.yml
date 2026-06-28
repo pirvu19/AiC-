@@ -1,0 +1,24 @@
+name: Redeploy All
+
+on:
+  workflow_dispatch:
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - aic-backend
+          - aic-frontend
+          - aic-notification-service
+          - aic-vision
+    steps:
+      - name: Redeploy ${{ matrix.app }} on TrueNAS
+        run: |
+          curl -sSf -k -X POST \
+            "${{ secrets.TRUENAS_URL }}/api/v2.0/app/redeploy" \
+            -H "Authorization: Bearer ${{ secrets.TRUENAS_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '"${{ matrix.app }}"'
