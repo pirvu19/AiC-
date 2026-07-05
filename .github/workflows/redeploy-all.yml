@@ -13,7 +13,7 @@ jobs:
           - aic-backend
           - aic-frontend
           - aic-notification-service
-          - aic-vision
+          - aic-vision-service
     steps:
       - name: Redeploy ${{ matrix.app }} on TrueNAS
         run: |
