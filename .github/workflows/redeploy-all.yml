@@ -18,7 +18,7 @@ jobs:
       - name: Redeploy ${{ matrix.app }} on TrueNAS
         run: |
           curl -sSf -k -X POST \
-            "${{ secrets.TRUENAS_URL }}/api/v2.0/app/redeploy" \
+            "${{ secrets.TRUENAS_URL }}:40800/api/v2.0/app/redeploy" \
             -H "Authorization: Bearer ${{ secrets.TRUENAS_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '"${{ matrix.app }}"'
