@@ -20,6 +20,7 @@ services:
       SPRING_RABBITMQ_PASSWORD: aic_pass
       GEMINI_API_KEY: ${GEMINI_API_KEY:-YOUR_NEW_API_KEY_HERE}
       APP_AVALANCHE_NOTIFICATION_EMAIL: ${APP_AVALANCHE_NOTIFICATION_EMAIL:-razvan.pirvu9@gmail.com}
+      APP_VISION_SERVICE_URL: ${APP_VISION_SERVICE_URL:-http://vision-service:8000/analyze}
     ports:
       - "8080:8080"
     depends_on:
