@@ -11,7 +11,7 @@ services:
   backend:
     build: .
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mirciulica007.go.ro:22050/aic_avalanse?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://m-stack.go.ro:22050/aic_avalanse?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: changeme
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -20,6 +20,7 @@ services:
       SPRING_RABBITMQ_PASSWORD: aic_pass
       GEMINI_API_KEY: ${GEMINI_API_KEY:-YOUR_NEW_API_KEY_HERE}
       APP_AVALANCHE_NOTIFICATION_EMAIL: ${APP_AVALANCHE_NOTIFICATION_EMAIL:-razvan.pirvu9@gmail.com}
+      APP_VISION_SERVICE_URL: ${APP_VISION_SERVICE_URL:-http://vision-service:8000/analyze}
     ports:
       - "8080:8080"
     depends_on:
@@ -40,7 +41,7 @@ services:
       SPRING_MAIL_PORT: 587
       SPRING_MAIL_USERNAME: delia.ioana.halmaciu@gmail.com
       SPRING_MAIL_PASSWORD: prcxenbzegwxwigs
-      APP_FRONTEND_URL: https://mirciulica007.go.ro:40802
+      APP_FRONTEND_URL: https://m-stack.go.ro:40802
     depends_on:
       - rabbitmq
 
