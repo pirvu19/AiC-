@@ -10,6 +10,12 @@ import {
 } from 'lucide-react';
 
 const DB_ID_TO_3D_INCIDENT = {
+    "349": "balea_2026",
+    "347": "arpasel_2026",
+    "346": "rodnei_2026",
+    "168": "balea_2026",
+    "170": "arpasel_2026",
+    "169": "rodnei_2026",
     "166": "balea_2025",
     "163": "incident_163",
     "133": "incident_133",

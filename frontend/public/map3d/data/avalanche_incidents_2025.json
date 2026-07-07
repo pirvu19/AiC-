@@ -1,6 +1,9 @@
 {
-  "defaultIncidentId": "balea_2025",
+  "defaultIncidentId": "balea_2026",
   "order": [
+    "balea_2026",
+    "rodnei_2026",
+    "arpasel_2026",
     "balea_2025",
     "rodnei_2025",
     "arpasel_2025",
@@ -12,6 +15,110 @@
     "incident_163"
   ],
   "incidents": {
+    "balea_2026": {
+      "id": "balea_2026",
+      "name": "Avalansa Balea Lac , Versant N est de \"steag\" (2026)",
+      "date": "2026-06-02",
+      "type": "PLACA",
+      "triggerText": "Spontana",
+      "size": "medie",
+      "altitude": 2250,
+      "slopeOrientation": "N",
+      "slopeAngle": 40,
+      "trigger": [
+        24.61642,
+        45.599427
+      ],
+      "accumulation": [
+        24.617139,
+        45.601852
+      ],
+      "crownWidthM": 37,
+      "crownDepthCm": 35,
+      "crownDepthLabel": "30-40cm",
+      "trackLengthM": 240,
+      "debrisWidthM": 22,
+      "runVerticalM": 180,
+      "lockCamera": true,
+      "camera": {
+        "center": [
+          24.61678,
+          45.60064
+        ],
+        "zoom": 15.8,
+        "pitch": 72,
+        "bearing": -160
+      }
+    },
+    "rodnei_2026": {
+      "id": "rodnei_2026",
+      "name": "Avalansa vf Gargalau , muntii Rodnei (2026)",
+      "date": "2026-05-27",
+      "type": "PLACA",
+      "triggerText": "Spontana",
+      "size": "mica",
+      "altitude": 2030,
+      "slopeOrientation": "N",
+      "slopeAngle": 40,
+      "trigger": [
+        24.809457,
+        47.565623
+      ],
+      "accumulation": [
+        24.80997,
+        47.566615
+      ],
+      "crownWidthM": 30,
+      "crownDepthCm": 45,
+      "trackLengthM": 30,
+      "debrisWidthM": 17,
+      "runVerticalM": 22,
+      "lockCamera": true,
+      "camera": {
+        "center": [
+          24.80971,
+          47.56612
+        ],
+        "zoom": 17.0,
+        "pitch": 67,
+        "bearing": 18
+      }
+    },
+    "arpasel_2026": {
+      "id": "arpasel_2026",
+      "name": "Avalansa topire Valea Arpasel (2026)",
+      "date": "2026-05-27",
+      "type": "TOPIRE",
+      "triggerText": "Spontana, avalansa de topire de suprafata",
+      "size": "medie",
+      "altitude": 2200,
+      "slopeOrientation": "N",
+      "slopeAngle": 40,
+      "trigger": [
+        24.63847,
+        45.603731
+      ],
+      "accumulation": [
+        24.63957,
+        45.607292
+      ],
+      "crownWidthM": 150,
+      "crownDepthCm": 35,
+      "crownDepthLabel": "30-40cm",
+      "trackLengthM": 200,
+      "debrisWidthM": 260,
+      "runVerticalM": 130,
+      "lockCamera": true,
+      "camera": {
+        "center": [
+          24.63902,
+          45.60551
+        ],
+        "zoom": 15.8,
+        "pitch": 72,
+        "bearing": -170
+      }
+    },
     "balea_2025": {
       "id": "balea_2025",
       "name": "Clasica de Balea 2025",
